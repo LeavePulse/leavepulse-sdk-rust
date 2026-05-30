@@ -43,8 +43,8 @@ impl User {
     }
 
     /// user.report
-    pub async fn report(&self, body: Value) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Post, &format!("/v1/community/users/{}/report", self.id()), Channel::Platform, Some(body)).await?;
+    pub async fn report(&self, user_id: String, body: Value) -> Result<(), TransportError> {
+        let data = self.client.transport().request(Method::Post, &format!("/v1/community/users/{}/report", user_id), Channel::Platform, Some(body)).await?;
         let _: User = self.client.hydrate("User", data, None);
         Ok(())
     }

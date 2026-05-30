@@ -46,29 +46,29 @@ impl Binding {
     }
 
     /// binding.delete
-    pub async fn delete(&self) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Delete, &format!("/v1/whitelist/bindings/{}", self.id()), Channel::Platform, None).await?;
+    pub async fn delete(&self, binding_id: String) -> Result<(), TransportError> {
+        let data = self.client.transport().request(Method::Delete, &format!("/v1/whitelist/bindings/{}", binding_id), Channel::Platform, None).await?;
         let _: Binding = self.client.hydrate("Binding", data, None);
         Ok(())
     }
 
     /// binding.update
-    pub async fn update(&self, body: Value) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Patch, &format!("/v1/whitelist/bindings/{}", self.id()), Channel::Platform, Some(body)).await?;
+    pub async fn update(&self, binding_id: String, body: Value) -> Result<(), TransportError> {
+        let data = self.client.transport().request(Method::Patch, &format!("/v1/whitelist/bindings/{}", binding_id), Channel::Platform, Some(body)).await?;
         let _: Binding = self.client.hydrate("Binding", data, None);
         Ok(())
     }
 
     /// binding.test
-    pub async fn test(&self, audience: Option<String>) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Post, &resource::with_query(&format!("/v1/whitelist/bindings/{}/actions/test-notifications", self.id()), &[("audience", audience.map(|v| v.to_string()))]), Channel::Platform, None).await?;
+    pub async fn test(&self, binding_id: String, audience: Option<String>) -> Result<(), TransportError> {
+        let data = self.client.transport().request(Method::Post, &resource::with_query(&format!("/v1/whitelist/bindings/{}/actions/test-notifications", binding_id), &[("audience", audience.map(|v| v.to_string()))]), Channel::Platform, None).await?;
         let _: Binding = self.client.hydrate("Binding", data, None);
         Ok(())
     }
 
     /// binding.entries.add
-    pub async fn entries_add(&self, body: Value) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Post, &format!("/v1/whitelist/bindings/{}/direct/entries", self.id()), Channel::Platform, Some(body)).await?;
+    pub async fn entries_add(&self, binding_id: String, body: Value) -> Result<(), TransportError> {
+        let data = self.client.transport().request(Method::Post, &format!("/v1/whitelist/bindings/{}/direct/entries", binding_id), Channel::Platform, Some(body)).await?;
         let _: Binding = self.client.hydrate("Binding", data, None);
         Ok(())
     }

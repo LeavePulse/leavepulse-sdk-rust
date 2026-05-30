@@ -334,15 +334,15 @@ impl Server {
     }
 
     /// server.members.delete
-    pub async fn members_delete(&self, server_id: String) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Delete, &format!("/v1/servers/{}/team/members/{}", server_id, self.id()), Channel::Platform, None).await?;
+    pub async fn members_delete(&self, member_id: String) -> Result<(), TransportError> {
+        let data = self.client.transport().request(Method::Delete, &format!("/v1/servers/{}/team/members/{}", self.id(), member_id), Channel::Platform, None).await?;
         let _: Server = self.client.hydrate("Server", data, None);
         Ok(())
     }
 
     /// server.members.update
-    pub async fn members_update(&self, server_id: String, body: Value) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Patch, &format!("/v1/servers/{}/team/members/{}", server_id, self.id()), Channel::Platform, Some(body)).await?;
+    pub async fn members_update(&self, member_id: String, body: Value) -> Result<(), TransportError> {
+        let data = self.client.transport().request(Method::Patch, &format!("/v1/servers/{}/team/members/{}", self.id(), member_id), Channel::Platform, Some(body)).await?;
         let _: Server = self.client.hydrate("Server", data, None);
         Ok(())
     }
@@ -355,29 +355,29 @@ impl Server {
     }
 
     /// server.roles.delete
-    pub async fn roles_delete(&self, server_id: String) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Delete, &format!("/v1/servers/{}/team/roles/{}", server_id, self.id()), Channel::Platform, None).await?;
+    pub async fn roles_delete(&self, role_id: String) -> Result<(), TransportError> {
+        let data = self.client.transport().request(Method::Delete, &format!("/v1/servers/{}/team/roles/{}", self.id(), role_id), Channel::Platform, None).await?;
         let _: Server = self.client.hydrate("Server", data, None);
         Ok(())
     }
 
     /// server.roles.update
-    pub async fn roles_update(&self, server_id: String, body: Value) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Patch, &format!("/v1/servers/{}/team/roles/{}", server_id, self.id()), Channel::Platform, Some(body)).await?;
+    pub async fn roles_update(&self, role_id: String, body: Value) -> Result<(), TransportError> {
+        let data = self.client.transport().request(Method::Patch, &format!("/v1/servers/{}/team/roles/{}", self.id(), role_id), Channel::Platform, Some(body)).await?;
         let _: Server = self.client.hydrate("Server", data, None);
         Ok(())
     }
 
     /// server.translations.delete
-    pub async fn translations_delete(&self, server_id: String, field: String) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Delete, &format!("/v1/servers/{}/translations/{}/{}", server_id, field, self.id()), Channel::Platform, None).await?;
+    pub async fn translations_delete(&self, field: String, locale: String) -> Result<(), TransportError> {
+        let data = self.client.transport().request(Method::Delete, &format!("/v1/servers/{}/translations/{}/{}", self.id(), field, locale), Channel::Platform, None).await?;
         let _: Server = self.client.hydrate("Server", data, None);
         Ok(())
     }
 
     /// server.translations.set
-    pub async fn translations_set(&self, server_id: String, field: String, body: Value) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Patch, &format!("/v1/servers/{}/translations/{}/{}", server_id, field, self.id()), Channel::Platform, Some(body)).await?;
+    pub async fn translations_set(&self, field: String, locale: String, body: Value) -> Result<(), TransportError> {
+        let data = self.client.transport().request(Method::Patch, &format!("/v1/servers/{}/translations/{}/{}", self.id(), field, locale), Channel::Platform, Some(body)).await?;
         let _: Server = self.client.hydrate("Server", data, None);
         Ok(())
     }
@@ -390,8 +390,8 @@ impl Server {
     }
 
     /// server.whitelist.remove_direct
-    pub async fn whitelist_remove_direct(&self, server_id: String) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Delete, &format!("/v1/servers/{}/whitelist/direct/{}", server_id, self.id()), Channel::Platform, None).await?;
+    pub async fn whitelist_remove_direct(&self, entry_id: String) -> Result<(), TransportError> {
+        let data = self.client.transport().request(Method::Delete, &format!("/v1/servers/{}/whitelist/direct/{}", self.id(), entry_id), Channel::Platform, None).await?;
         let _: Server = self.client.hydrate("Server", data, None);
         Ok(())
     }

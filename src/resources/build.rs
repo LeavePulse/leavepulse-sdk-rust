@@ -99,8 +99,8 @@ impl Build {
     }
 
     /// build.collaborators.remove
-    pub async fn collaborators_remove(&self, build_id: String) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Delete, &format!("/v1/builds/{}/collaborators/{}", build_id, self.id()), Channel::Platform, None).await?;
+    pub async fn collaborators_remove(&self, user_id: String) -> Result<(), TransportError> {
+        let data = self.client.transport().request(Method::Delete, &format!("/v1/builds/{}/collaborators/{}", self.id(), user_id), Channel::Platform, None).await?;
         let _: Build = self.client.hydrate("Build", data, None);
         Ok(())
     }

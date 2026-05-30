@@ -106,15 +106,15 @@ impl Project {
     }
 
     /// project.bridge.update
-    pub async fn bridge_update(&self, body: Value) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Patch, &format!("/v1/discord/servers/{}/bridge", self.id()), Channel::Platform, Some(body)).await?;
+    pub async fn bridge_update(&self, server_id: String, body: Value) -> Result<(), TransportError> {
+        let data = self.client.transport().request(Method::Patch, &format!("/v1/discord/servers/{}/bridge", server_id), Channel::Platform, Some(body)).await?;
         let _: Project = self.client.hydrate("Project", data, None);
         Ok(())
     }
 
     /// project.bridge.import
-    pub async fn bridge_import(&self, body: Value) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Post, &format!("/v1/discord/servers/{}/import-pull", self.id()), Channel::Platform, Some(body)).await?;
+    pub async fn bridge_import(&self, server_id: String, body: Value) -> Result<(), TransportError> {
+        let data = self.client.transport().request(Method::Post, &format!("/v1/discord/servers/{}/import-pull", server_id), Channel::Platform, Some(body)).await?;
         let _: Project = self.client.hydrate("Project", data, None);
         Ok(())
     }
@@ -155,22 +155,22 @@ impl Project {
     }
 
     /// project.policies.delete
-    pub async fn policies_delete(&self, project_id: String) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Delete, &format!("/v1/projects/{}/whitelist/policies/{}", project_id, self.id()), Channel::Platform, None).await?;
+    pub async fn policies_delete(&self, policy_id: String) -> Result<(), TransportError> {
+        let data = self.client.transport().request(Method::Delete, &format!("/v1/projects/{}/whitelist/policies/{}", self.id(), policy_id), Channel::Platform, None).await?;
         let _: Project = self.client.hydrate("Project", data, None);
         Ok(())
     }
 
     /// project.policies.update
-    pub async fn policies_update(&self, project_id: String, body: Value) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Patch, &format!("/v1/projects/{}/whitelist/policies/{}", project_id, self.id()), Channel::Platform, Some(body)).await?;
+    pub async fn policies_update(&self, policy_id: String, body: Value) -> Result<(), TransportError> {
+        let data = self.client.transport().request(Method::Patch, &format!("/v1/projects/{}/whitelist/policies/{}", self.id(), policy_id), Channel::Platform, Some(body)).await?;
         let _: Project = self.client.hydrate("Project", data, None);
         Ok(())
     }
 
     /// project.policies.test
-    pub async fn policies_test(&self, project_id: String, audience: Option<String>) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Post, &resource::with_query(&format!("/v1/projects/{}/whitelist/policies/{}/actions/test-notifications", project_id, self.id()), &[("audience", audience.map(|v| v.to_string()))]), Channel::Platform, None).await?;
+    pub async fn policies_test(&self, policy_id: String, audience: Option<String>) -> Result<(), TransportError> {
+        let data = self.client.transport().request(Method::Post, &resource::with_query(&format!("/v1/projects/{}/whitelist/policies/{}/actions/test-notifications", self.id(), policy_id), &[("audience", audience.map(|v| v.to_string()))]), Channel::Platform, None).await?;
         let _: Project = self.client.hydrate("Project", data, None);
         Ok(())
     }

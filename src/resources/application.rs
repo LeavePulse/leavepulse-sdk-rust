@@ -56,8 +56,8 @@ impl Application {
     }
 
     /// server.whitelist.apply
-    pub async fn whitelist_apply(&self, body: Value) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Post, &format!("/v1/servers/{}/whitelist/applications", self.id()), Channel::Platform, Some(body)).await?;
+    pub async fn whitelist_apply(&self, server_id: String, body: Value) -> Result<(), TransportError> {
+        let data = self.client.transport().request(Method::Post, &format!("/v1/servers/{}/whitelist/applications", server_id), Channel::Platform, Some(body)).await?;
         let _: Application = self.client.hydrate("Application", data, None);
         Ok(())
     }
