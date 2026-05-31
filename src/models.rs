@@ -528,7 +528,7 @@ pub struct Build {
     pub icon: Option<String>,
     pub id: String,
     pub is_public: bool,
-    pub manifest: serde_json::Value,
+    pub manifest: BuildManifest,
     pub name: String,
     pub owner_id: String,
     #[serde(default)]
@@ -544,7 +544,7 @@ pub struct BuildCreateRequest {
     #[serde(default)]
     pub icon: Option<String>,
     #[serde(default)]
-    pub manifest: Option<serde_json::Value>,
+    pub manifest: Option<BuildManifest>,
     pub name: String,
     #[serde(default)]
     pub summary: Option<String>,
@@ -555,6 +555,48 @@ pub struct BuildCreateRequest {
 pub struct BuildList {
     pub items: Vec<BuildSummary>,
     pub total: i64,
+}
+
+/// BuildManifest
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct BuildManifest {
+    #[serde(default)]
+    pub game_args: Option<Vec<String>>,
+    #[serde(default)]
+    pub game_version: Option<String>,
+    #[serde(default)]
+    pub jvm_args: Option<Vec<String>>,
+    #[serde(default)]
+    pub loader_kind: Option<String>,
+    #[serde(default)]
+    pub loader_version: Option<String>,
+    #[serde(default)]
+    pub memory_max_mb: Option<i64>,
+    #[serde(default)]
+    pub memory_min_mb: Option<i64>,
+    #[serde(default)]
+    pub mods: Option<Vec<BuildManifestMod>>,
+    #[serde(default)]
+    pub schema_version: Option<i64>,
+}
+
+/// BuildManifestMod
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct BuildManifestMod {
+    #[serde(default)]
+    pub enabled: Option<bool>,
+    #[serde(default)]
+    pub file_path: Option<String>,
+    pub kind: String,
+    pub name: String,
+    #[serde(default)]
+    pub provider: Option<String>,
+    #[serde(default)]
+    pub sha256: Option<String>,
+    #[serde(default)]
+    pub source_url: Option<String>,
+    #[serde(default)]
+    pub version: Option<String>,
 }
 
 /// BuildSummary
@@ -580,7 +622,7 @@ pub struct BuildUpdateRequest {
     #[serde(default)]
     pub icon: Option<String>,
     #[serde(default)]
-    pub manifest: Option<serde_json::Value>,
+    pub manifest: Option<BuildManifest>,
     #[serde(default)]
     pub name: Option<String>,
     #[serde(default)]
