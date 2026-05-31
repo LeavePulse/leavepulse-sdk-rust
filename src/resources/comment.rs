@@ -5,6 +5,7 @@ use serde_json::Value;
 
 use crate::cache::DataCell;
 use crate::client::LeavePulse;
+use crate::models;
 use crate::resource;
 use crate::transport::{Channel, Method, TransportError};
 
@@ -42,21 +43,68 @@ impl Comment {
 
     /// comment.delete
     pub async fn delete(&self, project_id: String) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Delete, &format!("/v1/community/projects/{}/comments/{}", project_id, self.id()), Channel::Platform, None).await?;
+        let data = self
+            .client
+            .transport()
+            .request(
+                Method::Delete,
+                &format!(
+                    "/v1/community/projects/{}/comments/{}",
+                    project_id,
+                    self.id()
+                ),
+                Channel::Platform,
+                None,
+            )
+            .await?;
         let _: Comment = self.client.hydrate("Comment", data, None);
         Ok(())
     }
 
     /// comment.like
     pub async fn like(&self, project_id: String) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Post, &format!("/v1/community/projects/{}/comments/{}/like", project_id, self.id()), Channel::Platform, None).await?;
+        let data = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                &format!(
+                    "/v1/community/projects/{}/comments/{}/like",
+                    project_id,
+                    self.id()
+                ),
+                Channel::Platform,
+                None,
+            )
+            .await?;
         let _: Comment = self.client.hydrate("Comment", data, None);
         Ok(())
     }
 
     /// comment.reply
-    pub async fn reply(&self, project_id: String, body: Value, target_locale: Option<String>) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Post, &resource::with_query(&format!("/v1/community/projects/{}/comments/{}/replies", project_id, self.id()), &[("target_locale", target_locale.map(|v| v.to_string()))]), Channel::Platform, Some(body)).await?;
+    pub async fn reply(
+        &self,
+        project_id: String,
+        body: models::CommentCreateRequest,
+        params: models::CommentReplyParams,
+    ) -> Result<(), TransportError> {
+        let data = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                &resource::with_query(
+                    &format!(
+                        "/v1/community/projects/{}/comments/{}/replies",
+                        project_id,
+                        self.id()
+                    ),
+                    &[("target_locale", params.target_locale.map(|v| v.to_string()))],
+                ),
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
         let _: Comment = self.client.hydrate("Comment", data, None);
         Ok(())
     }

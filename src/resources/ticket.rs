@@ -5,6 +5,7 @@ use serde_json::Value;
 
 use crate::cache::DataCell;
 use crate::client::LeavePulse;
+use crate::models;
 use crate::resource;
 use crate::transport::{Channel, Method, TransportError};
 
@@ -41,15 +42,39 @@ impl Ticket {
     }
 
     /// ticket.set_status
-    pub async fn set_status(&self, body: Value) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Patch, &format!("/v1/community/tickets/{}", self.id()), Channel::Platform, Some(body)).await?;
+    pub async fn set_status(
+        &self,
+        body: models::TicketStatusUpdateRequest,
+    ) -> Result<(), TransportError> {
+        let data = self
+            .client
+            .transport()
+            .request(
+                Method::Patch,
+                &format!("/v1/community/tickets/{}", self.id()),
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
         let _: Ticket = self.client.hydrate("Ticket", data, None);
         Ok(())
     }
 
     /// ticket.reply
-    pub async fn reply(&self, body: Value) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Post, &format!("/v1/community/tickets/{}/messages", self.id()), Channel::Platform, Some(body)).await?;
+    pub async fn reply(
+        &self,
+        body: models::TicketMessageCreateRequest,
+    ) -> Result<(), TransportError> {
+        let data = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                &format!("/v1/community/tickets/{}/messages", self.id()),
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
         let _: Ticket = self.client.hydrate("Ticket", data, None);
         Ok(())
     }

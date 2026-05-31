@@ -5,6 +5,7 @@ use serde_json::Value;
 
 use crate::cache::DataCell;
 use crate::client::LeavePulse;
+use crate::models;
 use crate::resource;
 use crate::transport::{Channel, Method, TransportError};
 
@@ -32,7 +33,16 @@ impl Form {
 
     /// Re-fetch this Form and hydrate in place.
     pub async fn refresh(&self) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Get, &format!("/v1/whitelist/forms/{}", self.id()), Channel::Platform, None).await?;
+        let data = self
+            .client
+            .transport()
+            .request(
+                Method::Get,
+                &format!("/v1/whitelist/forms/{}", self.id()),
+                Channel::Platform,
+                None,
+            )
+            .await?;
         let _: Form = self.client.hydrate("Form", data, None);
         Ok(())
     }
@@ -49,21 +59,54 @@ impl Form {
 
     /// form.delete
     pub async fn delete(&self) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Delete, &format!("/v1/whitelist/forms/{}", self.id()), Channel::Platform, None).await?;
+        let data = self
+            .client
+            .transport()
+            .request(
+                Method::Delete,
+                &format!("/v1/whitelist/forms/{}", self.id()),
+                Channel::Platform,
+                None,
+            )
+            .await?;
         let _: Form = self.client.hydrate("Form", data, None);
         Ok(())
     }
 
     /// form.update
-    pub async fn update(&self, body: Value) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Patch, &format!("/v1/whitelist/forms/{}", self.id()), Channel::Platform, Some(body)).await?;
+    pub async fn update(
+        &self,
+        body: models::WhitelistFormUpdateRequest,
+    ) -> Result<(), TransportError> {
+        let data = self
+            .client
+            .transport()
+            .request(
+                Method::Patch,
+                &format!("/v1/whitelist/forms/{}", self.id()),
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
         let _: Form = self.client.hydrate("Form", data, None);
         Ok(())
     }
 
     /// form.set_import_mapping
-    pub async fn set_import_mapping(&self, body: Value) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Patch, &format!("/v1/whitelist/forms/{}/import-mapping", self.id()), Channel::Platform, Some(body)).await?;
+    pub async fn set_import_mapping(
+        &self,
+        body: models::WhitelistFormImportMappingRequest,
+    ) -> Result<(), TransportError> {
+        let data = self
+            .client
+            .transport()
+            .request(
+                Method::Patch,
+                &format!("/v1/whitelist/forms/{}/import-mapping", self.id()),
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
         let _: Form = self.client.hydrate("Form", data, None);
         Ok(())
     }

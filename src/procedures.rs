@@ -4,6 +4,7 @@ use std::sync::Arc;
 use serde_json::Value;
 
 use crate::client::LeavePulse;
+use crate::models;
 use crate::resource;
 use crate::transport::{Channel, Method, TransportError};
 
@@ -18,38 +19,155 @@ impl AdminDiscoveryNs {
     }
 
     /// admin.discovery.candidates
-    pub async fn candidates(&self, page: Option<i64>, limit: Option<i64>, status: Option<String>, search: Option<String>, source: Option<String>, edition: Option<String>, region: Option<String>, min_sources: Option<String>, min_mc_online: Option<String>, min_discord_members: Option<String>, sort: Option<String>) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Get, &resource::with_query(&"/v1/admin/discovery/candidates".to_string(), &[("page", page.map(|v| v.to_string())), ("limit", limit.map(|v| v.to_string())), ("status", status.map(|v| v.to_string())), ("search", search.map(|v| v.to_string())), ("source", source.map(|v| v.to_string())), ("edition", edition.map(|v| v.to_string())), ("region", region.map(|v| v.to_string())), ("min_sources", min_sources.map(|v| v.to_string())), ("min_mc_online", min_mc_online.map(|v| v.to_string())), ("min_discord_members", min_discord_members.map(|v| v.to_string())), ("sort", sort.map(|v| v.to_string()))]), Channel::Platform, None).await
+    pub async fn candidates(
+        &self,
+        params: models::AdminDiscoveryCandidatesParams,
+    ) -> Result<Value, TransportError> {
+        self.client
+            .transport()
+            .request(
+                Method::Get,
+                &resource::with_query(
+                    "/v1/admin/discovery/candidates",
+                    &[
+                        ("page", params.page.map(|v| v.to_string())),
+                        ("limit", params.limit.map(|v| v.to_string())),
+                        ("status", params.status.map(|v| v.to_string())),
+                        ("search", params.search.map(|v| v.to_string())),
+                        ("source", params.source.map(|v| v.to_string())),
+                        ("edition", params.edition.map(|v| v.to_string())),
+                        ("region", params.region.map(|v| v.to_string())),
+                        ("min_sources", params.min_sources.map(|v| v.to_string())),
+                        ("min_mc_online", params.min_mc_online.map(|v| v.to_string())),
+                        (
+                            "min_discord_members",
+                            params.min_discord_members.map(|v| v.to_string()),
+                        ),
+                        ("sort", params.sort.map(|v| v.to_string())),
+                    ],
+                ),
+                Channel::Platform,
+                None,
+            )
+            .await
     }
 
     /// admin.discovery.edit
-    pub async fn edit(&self, candidate_id: i64, body: Value) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Patch, &format!("/v1/admin/discovery/candidates/{}", candidate_id), Channel::Platform, Some(body)).await
+    pub async fn edit(
+        &self,
+        candidate_id: i64,
+        body: models::DiscoveryCandidateEditRequest,
+    ) -> Result<Value, TransportError> {
+        self.client
+            .transport()
+            .request(
+                Method::Patch,
+                &format!("/v1/admin/discovery/candidates/{}", candidate_id),
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await
     }
 
     /// admin.discovery.approve
-    pub async fn approve(&self, candidate_id: i64, show_in_public: Option<bool>, server_id: Option<String>) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Post, &resource::with_query(&format!("/v1/admin/discovery/candidates/{}/actions/approve", candidate_id), &[("show_in_public", show_in_public.map(|v| v.to_string())), ("server_id", server_id.map(|v| v.to_string()))]), Channel::Platform, None).await
+    pub async fn approve(
+        &self,
+        candidate_id: i64,
+        params: models::AdminDiscoveryApproveParams,
+    ) -> Result<Value, TransportError> {
+        self.client
+            .transport()
+            .request(
+                Method::Post,
+                &resource::with_query(
+                    &format!(
+                        "/v1/admin/discovery/candidates/{}/actions/approve",
+                        candidate_id
+                    ),
+                    &[
+                        (
+                            "show_in_public",
+                            params.show_in_public.map(|v| v.to_string()),
+                        ),
+                        ("server_id", params.server_id.map(|v| v.to_string())),
+                    ],
+                ),
+                Channel::Platform,
+                None,
+            )
+            .await
     }
 
     /// admin.discovery.ignore
-    pub async fn ignore(&self, candidate_id: i64, reason: Option<String>) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Post, &resource::with_query(&format!("/v1/admin/discovery/candidates/{}/actions/ignore", candidate_id), &[("reason", reason.map(|v| v.to_string()))]), Channel::Platform, None).await
+    pub async fn ignore(
+        &self,
+        candidate_id: i64,
+        params: models::AdminDiscoveryIgnoreParams,
+    ) -> Result<Value, TransportError> {
+        self.client
+            .transport()
+            .request(
+                Method::Post,
+                &resource::with_query(
+                    &format!(
+                        "/v1/admin/discovery/candidates/{}/actions/ignore",
+                        candidate_id
+                    ),
+                    &[("reason", params.reason.map(|v| v.to_string()))],
+                ),
+                Channel::Platform,
+                None,
+            )
+            .await
     }
 
     /// admin.discovery.observations
-    pub async fn observations(&self, candidate_id: i64, limit: Option<i64>) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Get, &resource::with_query(&format!("/v1/admin/discovery/candidates/{}/observations", candidate_id), &[("limit", limit.map(|v| v.to_string()))]), Channel::Platform, None).await
+    pub async fn observations(
+        &self,
+        candidate_id: i64,
+        params: models::AdminDiscoveryObservationsParams,
+    ) -> Result<Value, TransportError> {
+        self.client
+            .transport()
+            .request(
+                Method::Get,
+                &resource::with_query(
+                    &format!(
+                        "/v1/admin/discovery/candidates/{}/observations",
+                        candidate_id
+                    ),
+                    &[("limit", params.limit.map(|v| v.to_string()))],
+                ),
+                Channel::Platform,
+                None,
+            )
+            .await
     }
 
     /// admin.discovery.preview
     pub async fn preview(&self, candidate_id: i64) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Get, &format!("/v1/admin/discovery/candidates/{}/preview", candidate_id), Channel::Platform, None).await
+        self.client
+            .transport()
+            .request(
+                Method::Get,
+                &format!("/v1/admin/discovery/candidates/{}/preview", candidate_id),
+                Channel::Platform,
+                None,
+            )
+            .await
     }
 
     /// admin.discovery.sources
     pub async fn sources(&self) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Get, &"/v1/admin/discovery/sources".to_string(), Channel::Platform, None).await
+        self.client
+            .transport()
+            .request(
+                Method::Get,
+                "/v1/admin/discovery/sources",
+                Channel::Platform,
+                None,
+            )
+            .await
     }
 }
 
@@ -64,18 +182,69 @@ impl AdminOverridesNs {
     }
 
     /// admin.overrides.list
-    pub async fn list(&self, server_id: i64, start: Option<String>, end: Option<String>) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Get, &resource::with_query(&format!("/v1/admin/servers/{}/status-overrides", server_id), &[("start", start.map(|v| v.to_string())), ("end", end.map(|v| v.to_string()))]), Channel::Platform, None).await
+    pub async fn list(
+        &self,
+        server_id: i64,
+        params: models::AdminOverridesListParams,
+    ) -> Result<models::StatusOverrideItem, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Get,
+                &resource::with_query(
+                    &format!("/v1/admin/servers/{}/status-overrides", server_id),
+                    &[
+                        ("start", params.start.map(|v| v.to_string())),
+                        ("end", params.end.map(|v| v.to_string())),
+                    ],
+                ),
+                Channel::Platform,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// admin.overrides.create
-    pub async fn create(&self, server_id: i64, body: Value) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Post, &format!("/v1/admin/servers/{}/status-overrides", server_id), Channel::Platform, Some(body)).await
+    pub async fn create(
+        &self,
+        server_id: i64,
+        body: models::CreateStatusOverrideRequest,
+    ) -> Result<models::StatusOverrideItem, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                &format!("/v1/admin/servers/{}/status-overrides", server_id),
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// admin.overrides.delete
-    pub async fn delete(&self, server_id: i64, override_id: String) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Delete, &format!("/v1/admin/servers/{}/status-overrides/{}", server_id, override_id), Channel::Platform, None).await
+    pub async fn delete(
+        &self,
+        server_id: i64,
+        override_id: String,
+    ) -> Result<models::DeleteStatusOverrideResponse, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Delete,
+                &format!(
+                    "/v1/admin/servers/{}/status-overrides/{}",
+                    server_id, override_id
+                ),
+                Channel::Platform,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 }
 
@@ -90,8 +259,28 @@ impl AdminPlayersNs {
     }
 
     /// admin.players.search
-    pub async fn search(&self, q: Option<String>, page: Option<i64>, per_page: Option<i64>) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Get, &resource::with_query(&"/v1/admin/players".to_string(), &[("q", q.map(|v| v.to_string())), ("page", page.map(|v| v.to_string())), ("per_page", per_page.map(|v| v.to_string()))]), Channel::Platform, None).await
+    pub async fn search(
+        &self,
+        params: models::AdminPlayersSearchParams,
+    ) -> Result<models::PlayerSearchPage, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Get,
+                &resource::with_query(
+                    "/v1/admin/players",
+                    &[
+                        ("q", params.q.map(|v| v.to_string())),
+                        ("page", params.page.map(|v| v.to_string())),
+                        ("per_page", params.per_page.map(|v| v.to_string())),
+                    ],
+                ),
+                Channel::Platform,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 }
 
@@ -106,38 +295,147 @@ impl AdminProjectsNs {
     }
 
     /// admin.projects.list
-    pub async fn list(&self, q: Option<String>, page: Option<i64>, per_page: Option<i64>) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Get, &resource::with_query(&"/v1/admin/projects".to_string(), &[("q", q.map(|v| v.to_string())), ("page", page.map(|v| v.to_string())), ("per_page", per_page.map(|v| v.to_string()))]), Channel::Platform, None).await
+    pub async fn list(
+        &self,
+        params: models::AdminProjectsListParams,
+    ) -> Result<models::AdminProjectListResponse, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Get,
+                &resource::with_query(
+                    "/v1/admin/projects",
+                    &[
+                        ("q", params.q.map(|v| v.to_string())),
+                        ("page", params.page.map(|v| v.to_string())),
+                        ("per_page", params.per_page.map(|v| v.to_string())),
+                    ],
+                ),
+                Channel::Platform,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// admin.projects.delete
-    pub async fn delete(&self, project_id: i64) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Delete, &format!("/v1/admin/projects/{}", project_id), Channel::Platform, None).await
+    pub async fn delete(
+        &self,
+        project_id: i64,
+    ) -> Result<models::AdminProjectDeleteResponse, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Delete,
+                &format!("/v1/admin/projects/{}", project_id),
+                Channel::Platform,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// admin.projects.change_slug
-    pub async fn change_slug(&self, project_id: i64, body: Value) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Post, &format!("/v1/admin/projects/{}/actions/change-slug", project_id), Channel::Platform, Some(body)).await
+    pub async fn change_slug(
+        &self,
+        project_id: i64,
+        body: models::AdminChangeProjectSlugRequest,
+    ) -> Result<models::AdminProject, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                &format!("/v1/admin/projects/{}/actions/change-slug", project_id),
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// admin.projects.rename
-    pub async fn rename(&self, project_id: i64, body: Value) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Post, &format!("/v1/admin/projects/{}/actions/rename", project_id), Channel::Platform, Some(body)).await
+    pub async fn rename(
+        &self,
+        project_id: i64,
+        body: models::AdminRenameProjectRequest,
+    ) -> Result<models::AdminProject, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                &format!("/v1/admin/projects/{}/actions/rename", project_id),
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// admin.projects.set_online_strategy
-    pub async fn set_online_strategy(&self, project_id: i64, body: Value) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Post, &format!("/v1/admin/projects/{}/actions/set-online-strategy", project_id), Channel::Platform, Some(body)).await
+    pub async fn set_online_strategy(
+        &self,
+        project_id: i64,
+        body: models::AdminSetProjectOnlineStrategyRequest,
+    ) -> Result<models::AdminProject, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                &format!(
+                    "/v1/admin/projects/{}/actions/set-online-strategy",
+                    project_id
+                ),
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// admin.projects.set_rollout_mode
-    pub async fn set_rollout_mode(&self, project_id: i64, body: Value) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Post, &format!("/v1/admin/projects/{}/actions/set-rollout-mode", project_id), Channel::Platform, Some(body)).await
+    pub async fn set_rollout_mode(
+        &self,
+        project_id: i64,
+        body: models::AdminSetProjectRolloutModeRequest,
+    ) -> Result<models::AdminProject, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                &format!("/v1/admin/projects/{}/actions/set-rollout-mode", project_id),
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// admin.projects.transfer_ownership
-    pub async fn transfer_ownership(&self, project_id: i64, body: Value) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Post, &format!("/v1/admin/projects/{}/actions/transfer-ownership", project_id), Channel::Platform, Some(body)).await
+    pub async fn transfer_ownership(
+        &self,
+        project_id: i64,
+        body: models::AdminTransferOwnershipRequest,
+    ) -> Result<models::AdminProject, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                &format!(
+                    "/v1/admin/projects/{}/actions/transfer-ownership",
+                    project_id
+                ),
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 }
 
@@ -152,23 +450,68 @@ impl AdminRolesNs {
     }
 
     /// admin.roles.list
-    pub async fn list(&self) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Get, &"/v1/admin/roles".to_string(), Channel::Platform, None).await
+    pub async fn list(&self) -> Result<models::AdminRoleListResponse, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(Method::Get, "/v1/admin/roles", Channel::Platform, None)
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// admin.roles.create
-    pub async fn create(&self, body: Value) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Post, &"/v1/admin/roles".to_string(), Channel::Platform, Some(body)).await
+    pub async fn create(
+        &self,
+        body: models::AdminRoleRequest,
+    ) -> Result<models::AdminRole, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                "/v1/admin/roles",
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// admin.roles.delete
-    pub async fn delete(&self, role_id: i64) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Delete, &format!("/v1/admin/roles/{}", role_id), Channel::Platform, None).await
+    pub async fn delete(
+        &self,
+        role_id: i64,
+    ) -> Result<models::AdminRoleDeleteResponse, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Delete,
+                &format!("/v1/admin/roles/{}", role_id),
+                Channel::Platform,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// admin.roles.update
-    pub async fn update(&self, role_id: i64, body: Value) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Patch, &format!("/v1/admin/roles/{}", role_id), Channel::Platform, Some(body)).await
+    pub async fn update(
+        &self,
+        role_id: i64,
+        body: models::AdminRoleRequest,
+    ) -> Result<models::AdminRole, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Patch,
+                &format!("/v1/admin/roles/{}", role_id),
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 }
 
@@ -183,28 +526,98 @@ impl AdminServersNs {
     }
 
     /// admin.servers.list
-    pub async fn list(&self, page: Option<i64>, per_page: Option<i64>, q: Option<String>) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Get, &resource::with_query(&"/v1/admin/servers".to_string(), &[("page", page.map(|v| v.to_string())), ("per_page", per_page.map(|v| v.to_string())), ("q", q.map(|v| v.to_string()))]), Channel::Platform, None).await
+    pub async fn list(
+        &self,
+        params: models::AdminServersListParams,
+    ) -> Result<models::AdminServerListResponse, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Get,
+                &resource::with_query(
+                    "/v1/admin/servers",
+                    &[
+                        ("page", params.page.map(|v| v.to_string())),
+                        ("per_page", params.per_page.map(|v| v.to_string())),
+                        ("q", params.q.map(|v| v.to_string())),
+                    ],
+                ),
+                Channel::Platform,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// admin.servers.create
-    pub async fn create(&self, body: Value) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Post, &"/v1/admin/servers".to_string(), Channel::Platform, Some(body)).await
+    pub async fn create(
+        &self,
+        body: models::AdminForceCreateRequest,
+    ) -> Result<models::AdminServerSummary, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                "/v1/admin/servers",
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// admin.servers.stats
-    pub async fn stats(&self) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Get, &"/v1/admin/servers/stats".to_string(), Channel::Platform, None).await
+    pub async fn stats(&self) -> Result<models::GlobalServerStats, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Get,
+                "/v1/admin/servers/stats",
+                Channel::Platform,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// admin.servers.delete
-    pub async fn delete(&self, server_id: i64) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Delete, &format!("/v1/admin/servers/{}", server_id), Channel::Platform, None).await
+    pub async fn delete(
+        &self,
+        server_id: i64,
+    ) -> Result<models::AdminDeleteResponse, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Delete,
+                &format!("/v1/admin/servers/{}", server_id),
+                Channel::Platform,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// admin.servers.update
-    pub async fn update(&self, server_id: i64, body: Value) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Patch, &format!("/v1/admin/servers/{}", server_id), Channel::Platform, Some(body)).await
+    pub async fn update(
+        &self,
+        server_id: i64,
+        body: models::AdminServerUpdateRequest,
+    ) -> Result<models::AdminServerSummary, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Patch,
+                &format!("/v1/admin/servers/{}", server_id),
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 }
 
@@ -219,8 +632,21 @@ impl AdminSessionsNs {
     }
 
     /// admin.sessions.revoke
-    pub async fn revoke(&self, session_id: i64) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Post, &format!("/v1/admin/sessions/{}/actions/revoke", session_id), Channel::Platform, None).await
+    pub async fn revoke(
+        &self,
+        session_id: i64,
+    ) -> Result<models::SessionRevokeResult, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                &format!("/v1/admin/sessions/{}/actions/revoke", session_id),
+                Channel::Platform,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 }
 
@@ -235,8 +661,18 @@ impl AdminSystemNs {
     }
 
     /// admin.system.health
-    pub async fn health(&self) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Get, &"/v1/admin/system/services-health".to_string(), Channel::Platform, None).await
+    pub async fn health(&self) -> Result<models::ServicesHealthResponse, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Get,
+                "/v1/admin/system/services-health",
+                Channel::Platform,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 }
 
@@ -251,53 +687,191 @@ impl AdminUsersNs {
     }
 
     /// admin.users.list
-    pub async fn list(&self, page: Option<i64>, per_page: Option<i64>, q: Option<String>) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Get, &resource::with_query(&"/v1/admin/users".to_string(), &[("page", page.map(|v| v.to_string())), ("per_page", per_page.map(|v| v.to_string())), ("q", q.map(|v| v.to_string()))]), Channel::Platform, None).await
+    pub async fn list(
+        &self,
+        params: models::AdminUsersListParams,
+    ) -> Result<models::AdminUserListResponse, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Get,
+                &resource::with_query(
+                    "/v1/admin/users",
+                    &[
+                        ("page", params.page.map(|v| v.to_string())),
+                        ("per_page", params.per_page.map(|v| v.to_string())),
+                        ("q", params.q.map(|v| v.to_string())),
+                    ],
+                ),
+                Channel::Platform,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// admin.users.by_minecraft
-    pub async fn by_minecraft(&self, uuid: String) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Get, &format!("/v1/admin/users/by-minecraft-uuid/{}", uuid), Channel::Platform, None).await
+    pub async fn by_minecraft(
+        &self,
+        uuid: String,
+    ) -> Result<models::AdminUserDetail, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Get,
+                &format!("/v1/admin/users/by-minecraft-uuid/{}", uuid),
+                Channel::Platform,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// admin.users.search
-    pub async fn search(&self, q: Option<String>, limit: Option<i64>) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Get, &resource::with_query(&"/v1/admin/users/search".to_string(), &[("q", q.map(|v| v.to_string())), ("limit", limit.map(|v| v.to_string()))]), Channel::Platform, None).await
+    pub async fn search(
+        &self,
+        params: models::AdminUsersSearchParams,
+    ) -> Result<models::AdminUserListResponse, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Get,
+                &resource::with_query(
+                    "/v1/admin/users/search",
+                    &[
+                        ("q", params.q.map(|v| v.to_string())),
+                        ("limit", params.limit.map(|v| v.to_string())),
+                    ],
+                ),
+                Channel::Platform,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// admin.users.get
-    pub async fn get(&self, user_id: i64) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Get, &format!("/v1/admin/users/{}", user_id), Channel::Platform, None).await
+    pub async fn get(&self, user_id: i64) -> Result<models::AdminUserDetail, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Get,
+                &format!("/v1/admin/users/{}", user_id),
+                Channel::Platform,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// admin.users.update
-    pub async fn update(&self, user_id: i64, body: Value) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Patch, &format!("/v1/admin/users/{}", user_id), Channel::Platform, Some(body)).await
+    pub async fn update(
+        &self,
+        user_id: i64,
+        body: models::AdminUserUpdateRequest,
+    ) -> Result<models::AdminUserDetail, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Patch,
+                &format!("/v1/admin/users/{}", user_id),
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// admin.users.set_discord
-    pub async fn set_discord(&self, user_id: i64, body: Value) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Patch, &format!("/v1/admin/users/{}/discord", user_id), Channel::Platform, Some(body)).await
+    pub async fn set_discord(
+        &self,
+        user_id: i64,
+        body: models::AdminUserDiscordUpdateRequest,
+    ) -> Result<models::AdminUserDetail, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Patch,
+                &format!("/v1/admin/users/{}/discord", user_id),
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// admin.users.roles
-    pub async fn roles(&self, user_id: i64) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Get, &format!("/v1/admin/users/{}/roles", user_id), Channel::Platform, None).await
+    pub async fn roles(&self, user_id: i64) -> Result<models::UserRolesResponse, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Get,
+                &format!("/v1/admin/users/{}/roles", user_id),
+                Channel::Platform,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// admin.users.remove_role
-    pub async fn remove_role(&self, user_id: i64, role_slug: String) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Delete, &format!("/v1/admin/users/{}/roles/{}", user_id, role_slug), Channel::Platform, None).await
+    pub async fn remove_role(
+        &self,
+        user_id: i64,
+        role_slug: String,
+    ) -> Result<models::UserRolesResponse, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Delete,
+                &format!("/v1/admin/users/{}/roles/{}", user_id, role_slug),
+                Channel::Platform,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// admin.users.assign_role
-    pub async fn assign_role(&self, user_id: i64, role_slug: String) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Post, &format!("/v1/admin/users/{}/roles/{}", user_id, role_slug), Channel::Platform, None).await
+    pub async fn assign_role(
+        &self,
+        user_id: i64,
+        role_slug: String,
+    ) -> Result<models::UserRolesResponse, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                &format!("/v1/admin/users/{}/roles/{}", user_id, role_slug),
+                Channel::Platform,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// admin.users.sessions
-    pub async fn sessions(&self, user_id: i64) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Get, &format!("/v1/admin/users/{}/sessions", user_id), Channel::Platform, None).await
+    pub async fn sessions(&self, user_id: i64) -> Result<models::SessionList, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Get,
+                &format!("/v1/admin/users/{}/sessions", user_id),
+                Channel::Platform,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 }
 
@@ -311,23 +885,41 @@ impl AdminNs {
         Self { client }
     }
 
-    pub fn discovery(&self) -> AdminDiscoveryNs { AdminDiscoveryNs::new(Arc::clone(&self.client)) }
+    pub fn discovery(&self) -> AdminDiscoveryNs {
+        AdminDiscoveryNs::new(Arc::clone(&self.client))
+    }
 
-    pub fn overrides(&self) -> AdminOverridesNs { AdminOverridesNs::new(Arc::clone(&self.client)) }
+    pub fn overrides(&self) -> AdminOverridesNs {
+        AdminOverridesNs::new(Arc::clone(&self.client))
+    }
 
-    pub fn players(&self) -> AdminPlayersNs { AdminPlayersNs::new(Arc::clone(&self.client)) }
+    pub fn players(&self) -> AdminPlayersNs {
+        AdminPlayersNs::new(Arc::clone(&self.client))
+    }
 
-    pub fn projects(&self) -> AdminProjectsNs { AdminProjectsNs::new(Arc::clone(&self.client)) }
+    pub fn projects(&self) -> AdminProjectsNs {
+        AdminProjectsNs::new(Arc::clone(&self.client))
+    }
 
-    pub fn roles(&self) -> AdminRolesNs { AdminRolesNs::new(Arc::clone(&self.client)) }
+    pub fn roles(&self) -> AdminRolesNs {
+        AdminRolesNs::new(Arc::clone(&self.client))
+    }
 
-    pub fn servers(&self) -> AdminServersNs { AdminServersNs::new(Arc::clone(&self.client)) }
+    pub fn servers(&self) -> AdminServersNs {
+        AdminServersNs::new(Arc::clone(&self.client))
+    }
 
-    pub fn sessions(&self) -> AdminSessionsNs { AdminSessionsNs::new(Arc::clone(&self.client)) }
+    pub fn sessions(&self) -> AdminSessionsNs {
+        AdminSessionsNs::new(Arc::clone(&self.client))
+    }
 
-    pub fn system(&self) -> AdminSystemNs { AdminSystemNs::new(Arc::clone(&self.client)) }
+    pub fn system(&self) -> AdminSystemNs {
+        AdminSystemNs::new(Arc::clone(&self.client))
+    }
 
-    pub fn users(&self) -> AdminUsersNs { AdminUsersNs::new(Arc::clone(&self.client)) }
+    pub fn users(&self) -> AdminUsersNs {
+        AdminUsersNs::new(Arc::clone(&self.client))
+    }
 }
 
 /// AuthOauthNs procedure namespace.
@@ -341,13 +933,38 @@ impl AuthOauthNs {
     }
 
     /// auth.oauth.callback
-    pub async fn callback(&self, provider: String, body: Value) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Post, &format!("/auth/oauth/{}/callback", provider), Channel::Auth, Some(body)).await
+    pub async fn callback(
+        &self,
+        provider: String,
+        body: models::OAuthCallbackRequest,
+    ) -> Result<Value, TransportError> {
+        self.client
+            .transport()
+            .request(
+                Method::Post,
+                &format!("/auth/oauth/{}/callback", provider),
+                Channel::Auth,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await
     }
 
     /// auth.oauth.start
-    pub async fn start(&self, provider: String) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Get, &format!("/auth/oauth/{}/start", provider), Channel::Auth, None).await
+    pub async fn start(
+        &self,
+        provider: String,
+    ) -> Result<models::OAuthStartResponse, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Get,
+                &format!("/auth/oauth/{}/start", provider),
+                Channel::Auth,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 }
 
@@ -361,26 +978,72 @@ impl AuthNs {
         Self { client }
     }
 
-    pub fn oauth(&self) -> AuthOauthNs { AuthOauthNs::new(Arc::clone(&self.client)) }
+    pub fn oauth(&self) -> AuthOauthNs {
+        AuthOauthNs::new(Arc::clone(&self.client))
+    }
 
     /// auth.login
-    pub async fn login(&self, body: Value) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Post, &"/auth/login".to_string(), Channel::Auth, Some(body)).await
+    pub async fn login(
+        &self,
+        body: models::UserLogin,
+    ) -> Result<models::LoginResponse, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                "/auth/login",
+                Channel::Auth,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// auth.logout
-    pub async fn logout(&self) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Post, &"/auth/logout".to_string(), Channel::Auth, None).await
+    pub async fn logout(&self) -> Result<models::LogoutResponse, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(Method::Post, "/auth/logout", Channel::Auth, None)
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// auth.refresh
-    pub async fn refresh(&self, body: Value) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Post, &"/auth/refresh".to_string(), Channel::Auth, Some(body)).await
+    pub async fn refresh(
+        &self,
+        body: models::RefreshTokenRequest,
+    ) -> Result<models::LoginResponse, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                "/auth/refresh",
+                Channel::Auth,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// auth.register
-    pub async fn register(&self, body: Value) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Post, &"/auth/register".to_string(), Channel::Auth, Some(body)).await
+    pub async fn register(
+        &self,
+        body: models::UserRegister,
+    ) -> Result<models::UserPublic, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                "/auth/register",
+                Channel::Auth,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 }
 
@@ -395,8 +1058,27 @@ impl BillingOrdersNs {
     }
 
     /// billing.orders.list
-    pub async fn list(&self, page: Option<i64>, limit: Option<i64>) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Get, &resource::with_query(&"/v1/billing/orders".to_string(), &[("page", page.map(|v| v.to_string())), ("limit", limit.map(|v| v.to_string()))]), Channel::Platform, None).await
+    pub async fn list(
+        &self,
+        params: models::BillingOrdersListParams,
+    ) -> Result<models::OrderList, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Get,
+                &resource::with_query(
+                    "/v1/billing/orders",
+                    &[
+                        ("page", params.page.map(|v| v.to_string())),
+                        ("limit", params.limit.map(|v| v.to_string())),
+                    ],
+                ),
+                Channel::Platform,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 }
 
@@ -411,8 +1093,13 @@ impl BillingProductsNs {
     }
 
     /// billing.products.list
-    pub async fn list(&self) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Get, &"/v1/billing/products".to_string(), Channel::Platform, None).await
+    pub async fn list(&self) -> Result<models::Product, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(Method::Get, "/v1/billing/products", Channel::Platform, None)
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 }
 
@@ -427,8 +1114,27 @@ impl BillingSubscriptionsNs {
     }
 
     /// billing.subscriptions.list
-    pub async fn list(&self, page: Option<i64>, limit: Option<i64>) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Get, &resource::with_query(&"/v1/billing/subscriptions".to_string(), &[("page", page.map(|v| v.to_string())), ("limit", limit.map(|v| v.to_string()))]), Channel::Platform, None).await
+    pub async fn list(
+        &self,
+        params: models::BillingSubscriptionsListParams,
+    ) -> Result<models::SubscriptionList, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Get,
+                &resource::with_query(
+                    "/v1/billing/subscriptions",
+                    &[
+                        ("page", params.page.map(|v| v.to_string())),
+                        ("limit", params.limit.map(|v| v.to_string())),
+                    ],
+                ),
+                Channel::Platform,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 }
 
@@ -442,15 +1148,34 @@ impl BillingNs {
         Self { client }
     }
 
-    pub fn orders(&self) -> BillingOrdersNs { BillingOrdersNs::new(Arc::clone(&self.client)) }
+    pub fn orders(&self) -> BillingOrdersNs {
+        BillingOrdersNs::new(Arc::clone(&self.client))
+    }
 
-    pub fn products(&self) -> BillingProductsNs { BillingProductsNs::new(Arc::clone(&self.client)) }
+    pub fn products(&self) -> BillingProductsNs {
+        BillingProductsNs::new(Arc::clone(&self.client))
+    }
 
-    pub fn subscriptions(&self) -> BillingSubscriptionsNs { BillingSubscriptionsNs::new(Arc::clone(&self.client)) }
+    pub fn subscriptions(&self) -> BillingSubscriptionsNs {
+        BillingSubscriptionsNs::new(Arc::clone(&self.client))
+    }
 
     /// billing.checkout
-    pub async fn checkout(&self, body: Value) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Post, &"/v1/billing/checkout".to_string(), Channel::Platform, Some(body)).await
+    pub async fn checkout(
+        &self,
+        body: models::CheckoutRequest,
+    ) -> Result<models::CheckoutResult, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                "/v1/billing/checkout",
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 }
 
@@ -465,18 +1190,54 @@ impl BuildsNs {
     }
 
     /// builds.create
-    pub async fn create(&self, body: Value) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Post, &"/v1/builds".to_string(), Channel::Platform, Some(body)).await
+    pub async fn create(
+        &self,
+        body: models::BuildCreateRequest,
+    ) -> Result<models::Build, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                "/v1/builds",
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// builds.import
-    pub async fn import(&self, body: Value) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Post, &"/v1/builds/import".to_string(), Channel::Platform, Some(body)).await
+    pub async fn import(
+        &self,
+        body: models::ImportSharedBuildRequest,
+    ) -> Result<models::Build, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                "/v1/builds/import",
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// builds.shared_with_me
-    pub async fn shared_with_me(&self) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Get, &"/v1/builds/shared-with-me".to_string(), Channel::Platform, None).await
+    pub async fn shared_with_me(&self) -> Result<models::BuildList, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Get,
+                "/v1/builds/shared-with-me",
+                Channel::Platform,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 }
 
@@ -491,18 +1252,60 @@ impl DiscordLinkNs {
     }
 
     /// discord.link.complete
-    pub async fn complete(&self, body: Value) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Post, &"/v1/discord/link/complete".to_string(), Channel::Platform, Some(body)).await
+    pub async fn complete(
+        &self,
+        body: models::CompleteLinkRequest,
+    ) -> Result<models::CompleteLinkResult, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                "/v1/discord/link/complete",
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// discord.link.session
-    pub async fn session(&self, state: Option<String>) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Get, &resource::with_query(&"/v1/discord/link/session".to_string(), &[("state", state.map(|v| v.to_string()))]), Channel::Platform, None).await
+    pub async fn session(
+        &self,
+        params: models::DiscordLinkSessionParams,
+    ) -> Result<models::LinkSession, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Get,
+                &resource::with_query(
+                    "/v1/discord/link/session",
+                    &[("state", params.state.map(|v| v.to_string()))],
+                ),
+                Channel::Platform,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// discord.link.token
-    pub async fn token(&self, body: Value) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Post, &"/v1/discord/link/token".to_string(), Channel::Platform, Some(body)).await
+    pub async fn token(
+        &self,
+        body: models::CreateLinkTokenRequest,
+    ) -> Result<models::LinkTokenResult, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                "/v1/discord/link/token",
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 }
 
@@ -516,7 +1319,9 @@ impl DiscordNs {
         Self { client }
     }
 
-    pub fn link(&self) -> DiscordLinkNs { DiscordLinkNs::new(Arc::clone(&self.client)) }
+    pub fn link(&self) -> DiscordLinkNs {
+        DiscordLinkNs::new(Arc::clone(&self.client))
+    }
 }
 
 /// MonitoringNs procedure namespace.
@@ -530,8 +1335,18 @@ impl MonitoringNs {
     }
 
     /// monitoring.landing
-    pub async fn landing(&self) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Get, &"/v1/monitoring/landing".to_string(), Channel::Platform, None).await
+    pub async fn landing(&self) -> Result<models::LandingStats, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Get,
+                "/v1/monitoring/landing",
+                Channel::Platform,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 }
 
@@ -546,13 +1361,39 @@ impl PasswordNs {
     }
 
     /// password.reset_confirm
-    pub async fn reset_confirm(&self, body: Value) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Post, &"/v1/password/reset/confirm".to_string(), Channel::Platform, Some(body)).await
+    pub async fn reset_confirm(
+        &self,
+        body: models::PasswordResetConfirmRequest,
+    ) -> Result<models::PasswordResetResult, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                "/v1/password/reset/confirm",
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// password.reset_request
-    pub async fn reset_request(&self, body: Value) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Post, &"/v1/password/reset/request".to_string(), Channel::Platform, Some(body)).await
+    pub async fn reset_request(
+        &self,
+        body: models::PasswordResetRequest,
+    ) -> Result<models::PasswordResetResult, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                "/v1/password/reset/request",
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 }
 
@@ -567,8 +1408,32 @@ impl ProjectsNs {
     }
 
     /// projects.stats
-    pub async fn stats(&self, q: Option<String>, edition: Option<String>, access: Option<String>, features: Option<String>, region: Option<String>, hosting: Option<String>, verified: Option<String>) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Get, &resource::with_query(&"/v1/projects/stats".to_string(), &[("q", q.map(|v| v.to_string())), ("edition", edition.map(|v| v.to_string())), ("access", access.map(|v| v.to_string())), ("features", features.map(|v| v.to_string())), ("region", region.map(|v| v.to_string())), ("hosting", hosting.map(|v| v.to_string())), ("verified", verified.map(|v| v.to_string()))]), Channel::Platform, None).await
+    pub async fn stats(
+        &self,
+        params: models::ProjectsStatsParams,
+    ) -> Result<models::ProjectFilterStats, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Get,
+                &resource::with_query(
+                    "/v1/projects/stats",
+                    &[
+                        ("q", params.q.map(|v| v.to_string())),
+                        ("edition", params.edition.map(|v| v.to_string())),
+                        ("access", params.access.map(|v| v.to_string())),
+                        ("features", params.features.map(|v| v.to_string())),
+                        ("region", params.region.map(|v| v.to_string())),
+                        ("hosting", params.hosting.map(|v| v.to_string())),
+                        ("verified", params.verified.map(|v| v.to_string())),
+                    ],
+                ),
+                Channel::Platform,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 }
 
@@ -583,8 +1448,21 @@ impl RbacNs {
     }
 
     /// rbac.batch_resolve
-    pub async fn batch_resolve(&self, body: Value) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Post, &"/v1/rbac/batch-resolve".to_string(), Channel::Platform, Some(body)).await
+    pub async fn batch_resolve(
+        &self,
+        body: models::BatchResolveRequest,
+    ) -> Result<models::BatchResolveResponse, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                "/v1/rbac/batch-resolve",
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 }
 
@@ -599,8 +1477,18 @@ impl ServersNs {
     }
 
     /// servers.resolve
-    pub async fn resolve(&self, server_ref: String) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Get, &format!("/v1/servers/resolve/{}", server_ref), Channel::Platform, None).await
+    pub async fn resolve(&self, server_ref: String) -> Result<models::ServerCard, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Get,
+                &format!("/v1/servers/resolve/{}", server_ref),
+                Channel::Platform,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 }
 
@@ -615,13 +1503,43 @@ impl StatsNs {
     }
 
     /// stats.filter
-    pub async fn filter(&self, q: Option<String>, edition: Option<String>, access: Option<String>, features: Option<String>, region: Option<String>, hosting: Option<String>, verified: Option<String>, role: Option<String>) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Get, &resource::with_query(&"/v1/stats/filter".to_string(), &[("q", q.map(|v| v.to_string())), ("edition", edition.map(|v| v.to_string())), ("access", access.map(|v| v.to_string())), ("features", features.map(|v| v.to_string())), ("region", region.map(|v| v.to_string())), ("hosting", hosting.map(|v| v.to_string())), ("verified", verified.map(|v| v.to_string())), ("role", role.map(|v| v.to_string()))]), Channel::Platform, None).await
+    pub async fn filter(
+        &self,
+        params: models::StatsFilterParams,
+    ) -> Result<models::FilterStats, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Get,
+                &resource::with_query(
+                    "/v1/stats/filter",
+                    &[
+                        ("q", params.q.map(|v| v.to_string())),
+                        ("edition", params.edition.map(|v| v.to_string())),
+                        ("access", params.access.map(|v| v.to_string())),
+                        ("features", params.features.map(|v| v.to_string())),
+                        ("region", params.region.map(|v| v.to_string())),
+                        ("hosting", params.hosting.map(|v| v.to_string())),
+                        ("verified", params.verified.map(|v| v.to_string())),
+                        ("role", params.role.map(|v| v.to_string())),
+                    ],
+                ),
+                Channel::Platform,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// stats.live
-    pub async fn live(&self) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Get, &"/v1/stats/live".to_string(), Channel::Platform, None).await
+    pub async fn live(&self) -> Result<models::LiveDashboardStats, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(Method::Get, "/v1/stats/live", Channel::Platform, None)
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 }
 
@@ -636,13 +1554,45 @@ impl TicketsNs {
     }
 
     /// tickets.create
-    pub async fn create(&self, body: Value) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Post, &"/v1/community/tickets".to_string(), Channel::Platform, Some(body)).await
+    pub async fn create(
+        &self,
+        body: models::TicketCreateRequest,
+    ) -> Result<models::TicketDetail, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                "/v1/community/tickets",
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// tickets.mine
-    pub async fn mine(&self, page: Option<i64>, limit: Option<i64>) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Get, &resource::with_query(&"/v1/community/tickets/my".to_string(), &[("page", page.map(|v| v.to_string())), ("limit", limit.map(|v| v.to_string()))]), Channel::Platform, None).await
+    pub async fn mine(
+        &self,
+        params: models::TicketsMineParams,
+    ) -> Result<models::TicketList, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Get,
+                &resource::with_query(
+                    "/v1/community/tickets/my",
+                    &[
+                        ("page", params.page.map(|v| v.to_string())),
+                        ("limit", params.limit.map(|v| v.to_string())),
+                    ],
+                ),
+                Channel::Platform,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 }
 
@@ -657,23 +1607,88 @@ impl UpdatesNs {
     }
 
     /// updates.manifest
-    pub async fn manifest(&self, channel: Option<String>, platform: Option<String>, server_id: Option<String>) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Get, &resource::with_query(&"/updates/v1/launcher/manifest".to_string(), &[("channel", channel.map(|v| v.to_string())), ("platform", platform.map(|v| v.to_string())), ("server_id", server_id.map(|v| v.to_string()))]), Channel::Platform, None).await
+    pub async fn manifest(
+        &self,
+        params: models::UpdatesManifestParams,
+    ) -> Result<models::UpdateManifest, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Get,
+                &resource::with_query(
+                    "/updates/v1/launcher/manifest",
+                    &[
+                        ("channel", params.channel.map(|v| v.to_string())),
+                        ("platform", params.platform.map(|v| v.to_string())),
+                        ("server_id", params.server_id.map(|v| v.to_string())),
+                    ],
+                ),
+                Channel::Platform,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// updates.manifest_upsert
-    pub async fn manifest_upsert(&self, channel: String, platform: String, body: Value) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Put, &format!("/updates/v1/launcher/manifests/{}/{}", channel, platform), Channel::Platform, Some(body)).await
+    pub async fn manifest_upsert(
+        &self,
+        channel: String,
+        platform: String,
+        body: models::UpdateManifestUpsert,
+    ) -> Result<models::UpdateManifest, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Put,
+                &format!("/updates/v1/launcher/manifests/{}/{}", channel, platform),
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// updates.manifest_delete
-    pub async fn manifest_delete(&self, channel: String, platform: String) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Post, &format!("/updates/v1/launcher/manifests/{}/{}/delete", channel, platform), Channel::Platform, None).await
+    pub async fn manifest_delete(
+        &self,
+        channel: String,
+        platform: String,
+    ) -> Result<models::DeleteAck, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                &format!(
+                    "/updates/v1/launcher/manifests/{}/{}/delete",
+                    channel, platform
+                ),
+                Channel::Platform,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// updates.report
-    pub async fn report(&self, body: Value) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Post, &"/updates/v1/launcher/report".to_string(), Channel::Platform, Some(body)).await
+    pub async fn report(
+        &self,
+        body: models::UpdateReportInput,
+    ) -> Result<models::UpdateReportAck, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                "/updates/v1/launcher/report",
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 }
 
@@ -688,13 +1703,45 @@ impl UsersNs {
     }
 
     /// users.batch
-    pub async fn batch(&self, body: Value) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Post, &"/v1/users/public-profiles".to_string(), Channel::Platform, Some(body)).await
+    pub async fn batch(
+        &self,
+        body: models::BatchPublicProfilesRequest,
+    ) -> Result<models::BatchPublicProfilesResponse, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                "/v1/users/public-profiles",
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// users.search
-    pub async fn search(&self, q: Option<String>, limit: Option<i64>) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Get, &resource::with_query(&"/v1/users/search".to_string(), &[("q", q.map(|v| v.to_string())), ("limit", limit.map(|v| v.to_string()))]), Channel::Platform, None).await
+    pub async fn search(
+        &self,
+        params: models::UsersSearchParams,
+    ) -> Result<models::BatchPublicProfilesResponse, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Get,
+                &resource::with_query(
+                    "/v1/users/search",
+                    &[
+                        ("q", params.q.map(|v| v.to_string())),
+                        ("limit", params.limit.map(|v| v.to_string())),
+                    ],
+                ),
+                Channel::Platform,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 }
 
@@ -709,33 +1756,111 @@ impl VerificationNs {
     }
 
     /// verification.start_dns
-    pub async fn start_dns(&self, body: Value) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Post, &"/v1/servers/verification/dns".to_string(), Channel::Platform, Some(body)).await
+    pub async fn start_dns(
+        &self,
+        body: models::VerificationStartRequest,
+    ) -> Result<models::DnsVerification, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                "/v1/servers/verification/dns",
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// verification.check_dns
-    pub async fn check_dns(&self, body: Value) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Post, &"/v1/servers/verification/dns/check".to_string(), Channel::Platform, Some(body)).await
+    pub async fn check_dns(
+        &self,
+        body: models::VerificationCheckRequest,
+    ) -> Result<models::DnsVerification, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                "/v1/servers/verification/dns/check",
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// verification.start_motd
-    pub async fn start_motd(&self, body: Value) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Post, &"/v1/servers/verification/motd".to_string(), Channel::Platform, Some(body)).await
+    pub async fn start_motd(
+        &self,
+        body: models::VerificationStartRequest,
+    ) -> Result<models::MotdVerification, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                "/v1/servers/verification/motd",
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// verification.check_motd
-    pub async fn check_motd(&self, body: Value) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Post, &"/v1/servers/verification/motd/check".to_string(), Channel::Platform, Some(body)).await
+    pub async fn check_motd(
+        &self,
+        body: models::VerificationCheckRequest,
+    ) -> Result<models::MotdVerification, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                "/v1/servers/verification/motd/check",
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// verification.start_plugin
-    pub async fn start_plugin(&self, body: Value) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Post, &"/v1/servers/verification/plugin".to_string(), Channel::Platform, Some(body)).await
+    pub async fn start_plugin(
+        &self,
+        body: models::PluginVerificationStartRequest,
+    ) -> Result<models::PluginVerification, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                "/v1/servers/verification/plugin",
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// verification.check_plugin
-    pub async fn check_plugin(&self, server_id: i64) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Get, &format!("/v1/servers/verification/plugin/{}", server_id), Channel::Platform, None).await
+    pub async fn check_plugin(
+        &self,
+        server_id: i64,
+    ) -> Result<models::PluginVerification, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Get,
+                &format!("/v1/servers/verification/plugin/{}", server_id),
+                Channel::Platform,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 }
 
@@ -750,8 +1875,21 @@ impl WhitelistBindingsNs {
     }
 
     /// whitelist.bindings.create
-    pub async fn create(&self, body: Value) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Post, &"/v1/whitelist/bindings".to_string(), Channel::Platform, Some(body)).await
+    pub async fn create(
+        &self,
+        body: models::WhitelistBindingWriteRequest,
+    ) -> Result<models::WhitelistBindingDetail, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                "/v1/whitelist/bindings",
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 }
 
@@ -766,13 +1904,47 @@ impl WhitelistFormsNs {
     }
 
     /// whitelist.forms.list
-    pub async fn list(&self, project_id: Option<String>, search: Option<String>, page: Option<i64>, per_page: Option<i64>) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Get, &resource::with_query(&"/v1/whitelist/forms".to_string(), &[("project_id", project_id.map(|v| v.to_string())), ("search", search.map(|v| v.to_string())), ("page", page.map(|v| v.to_string())), ("per_page", per_page.map(|v| v.to_string()))]), Channel::Platform, None).await
+    pub async fn list(
+        &self,
+        params: models::WhitelistFormsListParams,
+    ) -> Result<models::WhitelistFormPage, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Get,
+                &resource::with_query(
+                    "/v1/whitelist/forms",
+                    &[
+                        ("project_id", params.project_id.map(|v| v.to_string())),
+                        ("search", params.search.map(|v| v.to_string())),
+                        ("page", params.page.map(|v| v.to_string())),
+                        ("per_page", params.per_page.map(|v| v.to_string())),
+                    ],
+                ),
+                Channel::Platform,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// whitelist.forms.create
-    pub async fn create(&self, body: Value) -> Result<Value, TransportError> {
-        self.client.transport().request(Method::Post, &"/v1/whitelist/forms".to_string(), Channel::Platform, Some(body)).await
+    pub async fn create(
+        &self,
+        body: models::WhitelistFormCreateRequest,
+    ) -> Result<models::WhitelistFormDetail, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                "/v1/whitelist/forms",
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 }
 
@@ -786,7 +1958,11 @@ impl WhitelistNs {
         Self { client }
     }
 
-    pub fn bindings(&self) -> WhitelistBindingsNs { WhitelistBindingsNs::new(Arc::clone(&self.client)) }
+    pub fn bindings(&self) -> WhitelistBindingsNs {
+        WhitelistBindingsNs::new(Arc::clone(&self.client))
+    }
 
-    pub fn forms(&self) -> WhitelistFormsNs { WhitelistFormsNs::new(Arc::clone(&self.client)) }
+    pub fn forms(&self) -> WhitelistFormsNs {
+        WhitelistFormsNs::new(Arc::clone(&self.client))
+    }
 }

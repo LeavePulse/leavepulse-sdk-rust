@@ -9,11 +9,10 @@ pub mod resource;
 pub mod transport;
 
 pub mod client;
+pub mod models;
 pub mod procedures;
 pub mod resources;
 
 pub use client::LeavePulse;
 pub use errors::{HttpError, HttpErrorKind, LeavePulseError, ProblemDetails};
-pub use transport::{
-    BearerTransport, Channel, Method, RetryOptions, Transport, TransportError,
-};
+pub use transport::{BearerTransport, Channel, Method, RetryOptions, Transport, TransportError};

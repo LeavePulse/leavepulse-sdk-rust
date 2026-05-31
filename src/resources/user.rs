@@ -5,6 +5,7 @@ use serde_json::Value;
 
 use crate::cache::DataCell;
 use crate::client::LeavePulse;
+use crate::models;
 use crate::resource;
 use crate::transport::{Channel, Method, TransportError};
 
@@ -32,7 +33,16 @@ impl User {
 
     /// Re-fetch this User and hydrate in place.
     pub async fn refresh(&self) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Get, &format!("/v1/users/{}/public-profile", self.id()), Channel::Platform, None).await?;
+        let data = self
+            .client
+            .transport()
+            .request(
+                Method::Get,
+                &format!("/v1/users/{}/public-profile", self.id()),
+                Channel::Platform,
+                None,
+            )
+            .await?;
         let _: User = self.client.hydrate("User", data, None);
         Ok(())
     }
@@ -43,8 +53,21 @@ impl User {
     }
 
     /// user.report
-    pub async fn report(&self, user_id: String, body: Value) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Post, &format!("/v1/community/users/{}/report", user_id), Channel::Platform, Some(body)).await?;
+    pub async fn report(
+        &self,
+        user_id: String,
+        body: models::ReportUserRequest,
+    ) -> Result<(), TransportError> {
+        let data = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                &format!("/v1/community/users/{}/report", user_id),
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
         let _: User = self.client.hydrate("User", data, None);
         Ok(())
     }

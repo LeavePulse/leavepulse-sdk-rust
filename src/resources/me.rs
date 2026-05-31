@@ -32,7 +32,11 @@ impl Me {
 
     /// Re-fetch this Me and hydrate in place.
     pub async fn refresh(&self) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Get, &"/v1/me".to_string(), Channel::Platform, None).await?;
+        let data = self
+            .client
+            .transport()
+            .request(Method::Get, "/v1/me", Channel::Platform, None)
+            .await?;
         let _: Me = self.client.hydrate("Me", data, None);
         Ok(())
     }

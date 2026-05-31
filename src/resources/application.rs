@@ -5,6 +5,7 @@ use serde_json::Value;
 
 use crate::cache::DataCell;
 use crate::client::LeavePulse;
+use crate::models;
 use crate::resource;
 use crate::transport::{Channel, Method, TransportError};
 
@@ -56,36 +57,117 @@ impl Application {
     }
 
     /// server.whitelist.apply
-    pub async fn whitelist_apply(&self, server_id: String, body: Value) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Post, &format!("/v1/servers/{}/whitelist/applications", server_id), Channel::Platform, Some(body)).await?;
+    pub async fn whitelist_apply(
+        &self,
+        server_id: String,
+        body: models::WhitelistApplyRequest,
+    ) -> Result<(), TransportError> {
+        let data = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                &format!("/v1/servers/{}/whitelist/applications", server_id),
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
         let _: Application = self.client.hydrate("Application", data, None);
         Ok(())
     }
 
     /// application.set_status
-    pub async fn set_status(&self, server_id: String, body: Value) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Patch, &format!("/v1/servers/{}/whitelist/applications/{}", server_id, self.id()), Channel::Platform, Some(body)).await?;
+    pub async fn set_status(
+        &self,
+        server_id: String,
+        body: models::WhitelistStatusRequest,
+    ) -> Result<(), TransportError> {
+        let data = self
+            .client
+            .transport()
+            .request(
+                Method::Patch,
+                &format!(
+                    "/v1/servers/{}/whitelist/applications/{}",
+                    server_id,
+                    self.id()
+                ),
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
         let _: Application = self.client.hydrate("Application", data, None);
         Ok(())
     }
 
     /// application.approve
-    pub async fn approve(&self, server_id: String, body: Value) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Post, &format!("/v1/servers/{}/whitelist/applications/{}/approve", server_id, self.id()), Channel::Platform, Some(body)).await?;
+    pub async fn approve(
+        &self,
+        server_id: String,
+        body: models::WhitelistDecisionRequest,
+    ) -> Result<(), TransportError> {
+        let data = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                &format!(
+                    "/v1/servers/{}/whitelist/applications/{}/approve",
+                    server_id,
+                    self.id()
+                ),
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
         let _: Application = self.client.hydrate("Application", data, None);
         Ok(())
     }
 
     /// application.deny
-    pub async fn deny(&self, server_id: String, body: Value) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Post, &format!("/v1/servers/{}/whitelist/applications/{}/deny", server_id, self.id()), Channel::Platform, Some(body)).await?;
+    pub async fn deny(
+        &self,
+        server_id: String,
+        body: models::WhitelistDecisionRequest,
+    ) -> Result<(), TransportError> {
+        let data = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                &format!(
+                    "/v1/servers/{}/whitelist/applications/{}/deny",
+                    server_id,
+                    self.id()
+                ),
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
         let _: Application = self.client.hydrate("Application", data, None);
         Ok(())
     }
 
     /// application.resubmit
-    pub async fn resubmit(&self, server_id: String, body: Value) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Patch, &format!("/v1/servers/{}/whitelist/applications/{}/resubmit", server_id, self.id()), Channel::Platform, Some(body)).await?;
+    pub async fn resubmit(
+        &self,
+        server_id: String,
+        body: models::WhitelistApplyRequest,
+    ) -> Result<(), TransportError> {
+        let data = self
+            .client
+            .transport()
+            .request(
+                Method::Patch,
+                &format!(
+                    "/v1/servers/{}/whitelist/applications/{}/resubmit",
+                    server_id,
+                    self.id()
+                ),
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
         let _: Application = self.client.hydrate("Application", data, None);
         Ok(())
     }

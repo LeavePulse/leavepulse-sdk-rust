@@ -37,7 +37,16 @@ impl Session {
 
     /// session.revoke
     pub async fn revoke(&self) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Post, &format!("/v1/me/sessions/{}/actions/revoke", self.id()), Channel::Platform, None).await?;
+        let data = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                &format!("/v1/me/sessions/{}/actions/revoke", self.id()),
+                Channel::Platform,
+                None,
+            )
+            .await?;
         let _: Session = self.client.hydrate("Session", data, None);
         Ok(())
     }

@@ -37,7 +37,16 @@ impl Subscription {
 
     /// subscription.cancel
     pub async fn cancel(&self) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Patch, &format!("/v1/billing/subscriptions/{}/cancel", self.id()), Channel::Platform, None).await?;
+        let data = self
+            .client
+            .transport()
+            .request(
+                Method::Patch,
+                &format!("/v1/billing/subscriptions/{}/cancel", self.id()),
+                Channel::Platform,
+                None,
+            )
+            .await?;
         let _: Subscription = self.client.hydrate("Subscription", data, None);
         Ok(())
     }

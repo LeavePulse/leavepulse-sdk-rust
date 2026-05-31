@@ -5,6 +5,7 @@ use serde_json::Value;
 
 use crate::cache::DataCell;
 use crate::client::LeavePulse;
+use crate::models;
 use crate::resource;
 use crate::transport::{Channel, Method, TransportError};
 
@@ -32,7 +33,16 @@ impl Build {
 
     /// Re-fetch this Build and hydrate in place.
     pub async fn refresh(&self) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Get, &format!("/v1/builds/{}", self.id()), Channel::Platform, None).await?;
+        let data = self
+            .client
+            .transport()
+            .request(
+                Method::Get,
+                &format!("/v1/builds/{}", self.id()),
+                Channel::Platform,
+                None,
+            )
+            .await?;
         let _: Build = self.client.hydrate("Build", data, None);
         Ok(())
     }
@@ -79,56 +89,137 @@ impl Build {
 
     /// build.delete
     pub async fn delete(&self) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Delete, &format!("/v1/builds/{}", self.id()), Channel::Platform, None).await?;
+        let data = self
+            .client
+            .transport()
+            .request(
+                Method::Delete,
+                &format!("/v1/builds/{}", self.id()),
+                Channel::Platform,
+                None,
+            )
+            .await?;
         let _: Build = self.client.hydrate("Build", data, None);
         Ok(())
     }
 
     /// build.update
-    pub async fn update(&self, body: Value) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Patch, &format!("/v1/builds/{}", self.id()), Channel::Platform, Some(body)).await?;
+    pub async fn update(&self, body: models::BuildUpdateRequest) -> Result<(), TransportError> {
+        let data = self
+            .client
+            .transport()
+            .request(
+                Method::Patch,
+                &format!("/v1/builds/{}", self.id()),
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
         let _: Build = self.client.hydrate("Build", data, None);
         Ok(())
     }
 
     /// build.collaborators.add
-    pub async fn collaborators_add(&self, body: Value) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Post, &format!("/v1/builds/{}/collaborators", self.id()), Channel::Platform, Some(body)).await?;
+    pub async fn collaborators_add(
+        &self,
+        body: models::CollaboratorAddRequest,
+    ) -> Result<(), TransportError> {
+        let data = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                &format!("/v1/builds/{}/collaborators", self.id()),
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
         let _: Build = self.client.hydrate("Build", data, None);
         Ok(())
     }
 
     /// build.collaborators.remove
     pub async fn collaborators_remove(&self, user_id: String) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Delete, &format!("/v1/builds/{}/collaborators/{}", self.id(), user_id), Channel::Platform, None).await?;
+        let data = self
+            .client
+            .transport()
+            .request(
+                Method::Delete,
+                &format!("/v1/builds/{}/collaborators/{}", self.id(), user_id),
+                Channel::Platform,
+                None,
+            )
+            .await?;
         let _: Build = self.client.hydrate("Build", data, None);
         Ok(())
     }
 
     /// build.config.confirm
-    pub async fn config_confirm(&self, body: Value) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Post, &format!("/v1/builds/{}/config/confirm", self.id()), Channel::Platform, Some(body)).await?;
+    pub async fn config_confirm(
+        &self,
+        body: models::ConfigBlobConfirmRequest,
+    ) -> Result<(), TransportError> {
+        let data = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                &format!("/v1/builds/{}/config/confirm", self.id()),
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
         let _: Build = self.client.hydrate("Build", data, None);
         Ok(())
     }
 
     /// build.config.upload
-    pub async fn config_upload(&self, body: Value) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Post, &format!("/v1/builds/{}/config/upload", self.id()), Channel::Platform, Some(body)).await?;
+    pub async fn config_upload(
+        &self,
+        body: models::ConfigBlobUploadRequest,
+    ) -> Result<(), TransportError> {
+        let data = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                &format!("/v1/builds/{}/config/upload", self.id()),
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
         let _: Build = self.client.hydrate("Build", data, None);
         Ok(())
     }
 
     /// build.unshare
     pub async fn unshare(&self) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Delete, &format!("/v1/builds/{}/share", self.id()), Channel::Platform, None).await?;
+        let data = self
+            .client
+            .transport()
+            .request(
+                Method::Delete,
+                &format!("/v1/builds/{}/share", self.id()),
+                Channel::Platform,
+                None,
+            )
+            .await?;
         let _: Build = self.client.hydrate("Build", data, None);
         Ok(())
     }
 
     /// build.share
     pub async fn share(&self) -> Result<(), TransportError> {
-        let data = self.client.transport().request(Method::Post, &format!("/v1/builds/{}/share", self.id()), Channel::Platform, None).await?;
+        let data = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                &format!("/v1/builds/{}/share", self.id()),
+                Channel::Platform,
+                None,
+            )
+            .await?;
         let _: Build = self.client.hydrate("Build", data, None);
         Ok(())
     }
