@@ -839,6 +839,61 @@ pub struct DeleteStatusOverrideResponse {
     pub ok: Option<bool>,
 }
 
+/// DeviceApproveRequest
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DeviceApproveRequest {
+    pub user_code: String,
+}
+
+/// DeviceApproveResult
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DeviceApproveResult {
+    #[serde(default)]
+    pub error: Option<String>,
+    pub ok: bool,
+}
+
+/// DeviceStartRequest
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DeviceStartRequest {
+    pub client_id: String,
+    #[serde(default)]
+    pub scope: Option<Vec<String>>,
+}
+
+/// DeviceStartResult
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DeviceStartResult {
+    pub device_code: String,
+    pub expires_in: i64,
+    pub interval: i64,
+    pub user_code: String,
+    pub verification_uri: String,
+    pub verification_uri_complete: String,
+}
+
+/// DeviceTokenRequest
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DeviceTokenRequest {
+    pub device_code: String,
+}
+
+/// DeviceTokenResult
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DeviceTokenResult {
+    #[serde(default)]
+    pub access_token: Option<String>,
+    #[serde(default)]
+    pub expires_in: Option<i64>,
+    #[serde(default)]
+    pub refresh_token: Option<String>,
+    #[serde(default)]
+    pub refresh_token_expires_in: Option<i64>,
+    pub status: String,
+    #[serde(default)]
+    pub token_type: Option<String>,
+}
+
 /// DiscordLink
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DiscordLink {
@@ -1339,6 +1394,107 @@ pub struct LandingStats {
     pub players_with_profile: i64,
     pub registered_profiles: i64,
     pub total_playtime_hours: i64,
+}
+
+/// LaunchManifestInlineContent
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct LaunchManifestInlineContent {
+    #[serde(default)]
+    pub mods: Option<Vec<LaunchManifestModRef>>,
+    #[serde(default)]
+    pub resourcepacks: Option<Vec<LaunchManifestPackRef>>,
+    #[serde(rename = "type")]
+    pub r#type: String,
+}
+
+/// LaunchManifestJvm
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct LaunchManifestJvm {
+    #[serde(default)]
+    pub extra_args: Option<Vec<String>>,
+    #[serde(default)]
+    pub min_ram_mb: Option<i64>,
+    #[serde(default)]
+    pub recommended_ram_mb: Option<i64>,
+}
+
+/// LaunchManifestMinecraft
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct LaunchManifestMinecraft {
+    #[serde(default)]
+    pub loader: Option<String>,
+    #[serde(default)]
+    pub loader_version: Option<String>,
+    pub version: String,
+}
+
+/// LaunchManifestModRef
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct LaunchManifestModRef {
+    #[serde(default)]
+    pub download_url: Option<String>,
+    pub filename: String,
+    pub project_id: String,
+    pub provider: String,
+    #[serde(default)]
+    pub sha1: Option<String>,
+    #[serde(default)]
+    pub sha512: Option<String>,
+    #[serde(default)]
+    pub size: Option<i64>,
+    pub version_id: String,
+}
+
+/// LaunchManifestMrpackContent
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct LaunchManifestMrpackContent {
+    #[serde(default)]
+    pub sha256: Option<String>,
+    #[serde(default)]
+    pub sha512: Option<String>,
+    #[serde(default)]
+    pub size: Option<i64>,
+    #[serde(rename = "type")]
+    pub r#type: String,
+    pub url: String,
+}
+
+/// LaunchManifestPackRef
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct LaunchManifestPackRef {
+    #[serde(default)]
+    pub download_url: Option<String>,
+    pub filename: String,
+    #[serde(default)]
+    pub project_id: Option<String>,
+    pub provider: String,
+    #[serde(default)]
+    pub sha1: Option<String>,
+    #[serde(default)]
+    pub sha512: Option<String>,
+    #[serde(default)]
+    pub size: Option<i64>,
+    #[serde(default)]
+    pub version_id: Option<String>,
+}
+
+/// LaunchManifestServerEndpoint
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct LaunchManifestServerEndpoint {
+    pub address: String,
+    #[serde(default)]
+    pub motd: Option<String>,
+    #[serde(default)]
+    pub port: Option<i64>,
+}
+
+/// LaunchManifestWhitelist
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct LaunchManifestWhitelist {
+    #[serde(default)]
+    pub link_url: Option<String>,
+    #[serde(default)]
+    pub required: Option<bool>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -2985,6 +3141,24 @@ pub struct ServerIssuesItem {
     pub server_name: String,
     #[serde(default)]
     pub server_slug: Option<String>,
+}
+
+/// ServerLaunchManifest
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ServerLaunchManifest {
+    pub content: serde_json::Value,
+    #[serde(default)]
+    pub etag: Option<String>,
+    #[serde(default)]
+    pub jvm: Option<LaunchManifestJvm>,
+    pub minecraft: LaunchManifestMinecraft,
+    pub schema_version: i64,
+    pub server: LaunchManifestServerEndpoint,
+    pub server_id: String,
+    #[serde(default)]
+    pub updated_at: Option<String>,
+    #[serde(default)]
+    pub whitelist: Option<LaunchManifestWhitelist>,
 }
 
 /// ServerMaintenance

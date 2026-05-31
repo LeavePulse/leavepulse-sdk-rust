@@ -15,4 +15,6 @@ pub mod resources;
 
 pub use client::LeavePulse;
 pub use errors::{HttpError, HttpErrorKind, LeavePulseError, ProblemDetails};
-pub use transport::{BearerTransport, Channel, Method, RetryOptions, Transport, TransportError};
+pub use transport::{
+    BearerTransport, Channel, ConditionalOutcome, Method, RetryOptions, Transport, TransportError,
+};

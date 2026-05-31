@@ -922,6 +922,71 @@ impl AdminNs {
     }
 }
 
+/// AuthDeviceNs procedure namespace.
+pub struct AuthDeviceNs {
+    client: Arc<LeavePulse>,
+}
+
+impl AuthDeviceNs {
+    pub(crate) fn new(client: Arc<LeavePulse>) -> Self {
+        Self { client }
+    }
+
+    /// auth.device.approve
+    pub async fn approve(
+        &self,
+        body: models::DeviceApproveRequest,
+    ) -> Result<models::DeviceApproveResult, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                "/v1/auth/device/approve",
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// auth.device.start
+    pub async fn start(
+        &self,
+        body: models::DeviceStartRequest,
+    ) -> Result<models::DeviceStartResult, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                "/v1/auth/device/start",
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// auth.device.token
+    pub async fn token(
+        &self,
+        body: models::DeviceTokenRequest,
+    ) -> Result<models::DeviceTokenResult, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                "/v1/auth/device/token",
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+}
+
 /// AuthOauthNs procedure namespace.
 pub struct AuthOauthNs {
     client: Arc<LeavePulse>,
@@ -976,6 +1041,10 @@ pub struct AuthNs {
 impl AuthNs {
     pub(crate) fn new(client: Arc<LeavePulse>) -> Self {
         Self { client }
+    }
+
+    pub fn device(&self) -> AuthDeviceNs {
+        AuthDeviceNs::new(Arc::clone(&self.client))
     }
 
     pub fn oauth(&self) -> AuthOauthNs {

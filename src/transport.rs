@@ -199,3 +199,104 @@ impl Transport for BearerTransport {
         }
     }
 }
+
+/// Outcome of a conditional (`If-None-Match`) request, mirroring the launcher's
+/// `FetchOutcome`: a fresh body with its new ETag, an unchanged `304`, or a
+/// `404` (e.g. nothing published yet).
+#[derive(Debug, Clone)]
+pub enum ConditionalOutcome {
+    /// The body changed (or there was no prior ETag); `etag` is the new
+    /// validator to cache alongside it.
+    Modified { data: Value, etag: Option<String> },
+    /// Server returned `304` — reuse the cached copy.
+    NotModified { etag: Option<String> },
+    /// Server returned `404`.
+    NotFound,
+}
+
+impl BearerTransport {
+    /// Like [`Transport::request`] but for caching: sends `If-None-Match` when
+    /// `prior_etag` is given and treats `304`/`404` as outcomes rather than
+    /// errors, surfacing the response ETag. Retries 429/5xx like `request`.
+    pub async fn conditional(
+        &self,
+        method: Method,
+        path: &str,
+        channel: Channel,
+        prior_etag: Option<&str>,
+    ) -> Result<ConditionalOutcome, TransportError> {
+        let base = match channel {
+            Channel::Auth => &self.auth_base_url,
+            Channel::Platform => &self.base_url,
+        };
+        let url = format!("{base}{path}");
+        let reqwest_method = reqwest::Method::from_bytes(method.as_str().as_bytes())
+            .map_err(|e| LeavePulseError::Transport(e.into()))?;
+
+        let mut attempt = 0u32;
+        loop {
+            let mut req = self
+                .client
+                .request(reqwest_method.clone(), &url)
+                .bearer_auth(&self.token);
+            if let Some(etag) = prior_etag {
+                req = req.header("if-none-match", etag);
+            }
+            let response = req
+                .send()
+                .await
+                .map_err(|e| LeavePulseError::Transport(e.into()))?;
+            let status = response.status();
+            let etag = response
+                .headers()
+                .get("etag")
+                .and_then(|v| v.to_str().ok())
+                .map(str::to_owned);
+
+            if status.as_u16() == 404 {
+                return Ok(ConditionalOutcome::NotFound);
+            }
+            if status.as_u16() == 304 {
+                return Ok(ConditionalOutcome::NotModified { etag });
+            }
+            if status.is_success() {
+                let data = if status.as_u16() == 204 {
+                    Value::Null
+                } else {
+                    response
+                        .json()
+                        .await
+                        .map_err(|e| LeavePulseError::Transport(e.into()))?
+                };
+                return Ok(ConditionalOutcome::Modified { data, etag });
+            }
+
+            let retry_after = parse_retry_after(
+                response
+                    .headers()
+                    .get("retry-after")
+                    .and_then(|v| v.to_str().ok()),
+            );
+            let raw = response.text().await.unwrap_or_default();
+            let error = HttpError::new(status.as_u16(), method.as_str(), path, raw, retry_after);
+
+            let retriable = error.is_rate_limited() || error.is_server();
+            if retriable && attempt < self.retry.max_retries {
+                let wait = match &error.kind {
+                    HttpErrorKind::RateLimited {
+                        retry_after: Some(secs),
+                    } => Duration::from_secs_f64(secs.max(0.0)),
+                    _ => self
+                        .retry
+                        .backoff_base
+                        .saturating_mul(2u32.saturating_pow(attempt))
+                        .min(self.retry.backoff_max),
+                };
+                attempt += 1;
+                tokio::time::sleep(wait).await;
+                continue;
+            }
+            return Err(LeavePulseError::from(error));
+        }
+    }
+}
