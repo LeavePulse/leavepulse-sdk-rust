@@ -1829,7 +1829,7 @@ impl UpdatesNs {
             .request(
                 Method::Get,
                 &resource::with_query(
-                    "/updates/v1/launcher/manifest",
+                    "/v1/launcher/updates/manifest",
                     &[
                         ("channel", params.channel.map(|v| v.to_string())),
                         ("platform", params.platform.map(|v| v.to_string())),
@@ -1855,7 +1855,7 @@ impl UpdatesNs {
             .transport()
             .request(
                 Method::Put,
-                &format!("/updates/v1/launcher/manifests/{}/{}", channel, platform),
+                &format!("/v1/launcher/updates/manifests/{}/{}", channel, platform),
                 Channel::Platform,
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
@@ -1875,7 +1875,7 @@ impl UpdatesNs {
             .request(
                 Method::Post,
                 &format!(
-                    "/updates/v1/launcher/manifests/{}/{}/delete",
+                    "/v1/launcher/updates/manifests/{}/{}/delete",
                     channel, platform
                 ),
                 Channel::Platform,
@@ -1895,7 +1895,7 @@ impl UpdatesNs {
             .transport()
             .request(
                 Method::Post,
-                "/updates/v1/launcher/report",
+                "/v1/launcher/updates/report",
                 Channel::Platform,
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )

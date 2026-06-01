@@ -5306,17 +5306,6 @@ pub struct UserHeatmapParams {
     pub days: Option<i64>,
 }
 
-/// Query parameters for `updates.manifest`.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct UpdatesManifestParams {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub channel: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub platform: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub server_id: Option<String>,
-}
-
 /// Query parameters for `admin.discovery.candidates`.
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct AdminDiscoveryCandidatesParams {
@@ -5461,6 +5450,17 @@ pub struct TicketsMineParams {
 pub struct DiscordLinkSessionParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
+}
+
+/// Query parameters for `updates.manifest`.
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct UpdatesManifestParams {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub channel: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub platform: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub server_id: Option<String>,
 }
 
 /// Query parameters for `projects.stats`.
