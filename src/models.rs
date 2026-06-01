@@ -853,6 +853,22 @@ pub struct DeviceApproveResult {
     pub ok: bool,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum DevicePollStatus {
+    #[serde(rename = "approved")]
+    Approved,
+    #[serde(rename = "pending")]
+    Pending,
+    #[serde(rename = "slow_down")]
+    SlowDown,
+    #[serde(rename = "expired")]
+    Expired,
+    #[serde(rename = "denied")]
+    Denied,
+    #[serde(rename = "unknown")]
+    Unknown,
+}
+
 /// DeviceStartRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DeviceStartRequest {
@@ -889,7 +905,7 @@ pub struct DeviceTokenResult {
     pub refresh_token: Option<String>,
     #[serde(default)]
     pub refresh_token_expires_in: Option<i64>,
-    pub status: String,
+    pub status: DevicePollStatus,
     #[serde(default)]
     pub token_type: Option<String>,
 }
@@ -2197,17 +2213,6 @@ pub struct OrderList {
     pub items: Vec<Order>,
     pub limit: i64,
     pub page: i64,
-    pub total: i64,
-}
-
-/// Page[ServerSummary]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct PagePlatformApiModelsServersServerSummary {
-    pub items: Vec<ServerSummary>,
-    #[serde(default)]
-    pub page: Option<i64>,
-    #[serde(default)]
-    pub per_page: Option<i64>,
     pub total: i64,
 }
 
@@ -5159,45 +5164,11 @@ pub struct ProjectVotesListParams {
     pub limit: Option<i64>,
 }
 
-/// Query parameters for `me.projects.list`.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct MeProjectsListParams {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub page: Option<i64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub per_page: Option<i64>,
-}
-
 /// Query parameters for `project.history.list`.
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ProjectHistoryListParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub period: Option<String>,
-}
-
-/// Query parameters for `project.list`.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct ProjectListParams {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub q: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub edition: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub access: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub features: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub region: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub hosting: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub verified: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub page: Option<i64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub per_page: Option<i64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub sort: Option<String>,
 }
 
 /// Query parameters for `project.stats`.
@@ -5250,17 +5221,6 @@ pub struct ServerPlayerStatsParams {
     pub minecraft_nick: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub named_server_id: Option<i64>,
-}
-
-/// Query parameters for `server.list`.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct ServerListParams {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub page: Option<i64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub per_page: Option<i64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub role: Option<String>,
 }
 
 /// Query parameters for `server.events.list`.
@@ -5337,13 +5297,6 @@ pub struct ServerWhitelistImportsParams {
     pub page: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub per_page: Option<i64>,
-}
-
-/// Query parameters for `user.activity.list`.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct UserActivityListParams {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
 }
 
 /// Query parameters for `user.heatmap`.
@@ -5570,4 +5523,45 @@ pub struct WhitelistFormsListParams {
     pub page: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub per_page: Option<i64>,
+}
+
+/// Query parameters for `projects.projects_list`.
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct ProjectsProjectsListParams {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub page: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub per_page: Option<i64>,
+}
+
+/// Query parameters for `projects.list`.
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct ProjectsListParams {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub q: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub edition: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub access: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub features: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub region: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub hosting: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub verified: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub page: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub per_page: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sort: Option<String>,
+}
+
+/// Query parameters for `users.activity_list`.
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct UsersActivityListParams {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub limit: Option<i64>,
 }

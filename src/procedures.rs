@@ -1504,6 +1504,149 @@ impl ProjectsNs {
             .await?;
         serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
+
+    /// projects.bridge
+    pub async fn bridge(&self, server_id: i64) -> Result<models::BridgeSettings, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Get,
+                &format!("/v1/discord/servers/{}/bridge", server_id),
+                Channel::Platform,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// projects.bridge_roles
+    pub async fn bridge_roles(
+        &self,
+        server_id: i64,
+    ) -> Result<models::RoleCatalog, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Get,
+                &format!("/v1/discord/servers/{}/roles-catalog", server_id),
+                Channel::Platform,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// projects.projects_list
+    pub async fn projects_list(
+        &self,
+        params: models::ProjectsProjectsListParams,
+    ) -> Result<models::WorkspaceListResponse, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Get,
+                &resource::with_query(
+                    "/v1/me/projects",
+                    &[
+                        ("page", params.page.map(|v| v.to_string())),
+                        ("per_page", params.per_page.map(|v| v.to_string())),
+                    ],
+                ),
+                Channel::Platform,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// projects.projects_resolve
+    pub async fn projects_resolve(
+        &self,
+        project_ref: String,
+    ) -> Result<models::WorkspaceResolveResponse, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Get,
+                &format!("/v1/me/projects/resolve/{}", project_ref),
+                Channel::Platform,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// projects.list
+    pub async fn list(
+        &self,
+        params: models::ProjectsListParams,
+    ) -> Result<models::ProjectListResponse, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Get,
+                &resource::with_query(
+                    "/v1/projects",
+                    &[
+                        ("q", params.q.map(|v| v.to_string())),
+                        ("edition", params.edition.map(|v| v.to_string())),
+                        ("access", params.access.map(|v| v.to_string())),
+                        ("features", params.features.map(|v| v.to_string())),
+                        ("region", params.region.map(|v| v.to_string())),
+                        ("hosting", params.hosting.map(|v| v.to_string())),
+                        ("verified", params.verified.map(|v| v.to_string())),
+                        ("page", params.page.map(|v| v.to_string())),
+                        ("per_page", params.per_page.map(|v| v.to_string())),
+                        ("sort", params.sort.map(|v| v.to_string())),
+                    ],
+                ),
+                Channel::Platform,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// projects.create
+    pub async fn create(
+        &self,
+        body: models::ProjectCreateRequest,
+    ) -> Result<models::ProjectCreateResponse, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                "/v1/projects",
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// projects.resolve
+    pub async fn resolve(
+        &self,
+        project_ref: String,
+    ) -> Result<models::ProjectResolveResponse, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Get,
+                &format!("/v1/projects/resolve/{}", project_ref),
+                Channel::Platform,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
 }
 
 /// RbacNs procedure namespace.
@@ -1805,6 +1948,46 @@ impl UsersNs {
                         ("q", params.q.map(|v| v.to_string())),
                         ("limit", params.limit.map(|v| v.to_string())),
                     ],
+                ),
+                Channel::Platform,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// users.engagement
+    pub async fn engagement(
+        &self,
+        user_id: String,
+    ) -> Result<models::UserEngagement, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Get,
+                &format!("/v1/community/users/{}/engagement", user_id),
+                Channel::Platform,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// users.activity_list
+    pub async fn activity_list(
+        &self,
+        user_id: String,
+        params: models::UsersActivityListParams,
+    ) -> Result<models::UserRecentActivity, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Get,
+                &resource::with_query(
+                    &format!("/v1/community/users/{}/recent-activity", user_id),
+                    &[("limit", params.limit.map(|v| v.to_string()))],
                 ),
                 Channel::Platform,
                 None,
