@@ -40,7 +40,7 @@ impl Project {
             .request(
                 Method::Get,
                 &format!("/v1/projects/{}", self.id()),
-                Channel::Platform,
+                Channel::PlatformPublic,
                 None,
             )
             .await?;

@@ -1352,7 +1352,7 @@ impl DiscordLinkNs {
                     "/v1/discord/link/session",
                     &[("state", params.state.map(|v| v.to_string()))],
                 ),
-                Channel::Platform,
+                Channel::PlatformPublic,
                 None,
             )
             .await?;
@@ -1440,7 +1440,7 @@ impl PasswordNs {
             .request(
                 Method::Post,
                 "/v1/password/reset/confirm",
-                Channel::Platform,
+                Channel::PlatformPublic,
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
@@ -1458,7 +1458,7 @@ impl PasswordNs {
             .request(
                 Method::Post,
                 "/v1/password/reset/request",
-                Channel::Platform,
+                Channel::PlatformPublic,
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
@@ -1498,7 +1498,7 @@ impl ProjectsNs {
                         ("verified", params.verified.map(|v| v.to_string())),
                     ],
                 ),
-                Channel::Platform,
+                Channel::PlatformPublic,
                 None,
             )
             .await?;
@@ -1605,7 +1605,7 @@ impl ProjectsNs {
                         ("sort", params.sort.map(|v| v.to_string())),
                     ],
                 ),
-                Channel::Platform,
+                Channel::PlatformPublic,
                 None,
             )
             .await?;
@@ -1641,7 +1641,7 @@ impl ProjectsNs {
             .request(
                 Method::Get,
                 &format!("/v1/projects/resolve/{}", project_ref),
-                Channel::Platform,
+                Channel::PlatformPublic,
                 None,
             )
             .await?;
@@ -1696,7 +1696,7 @@ impl ServersNs {
             .request(
                 Method::Get,
                 &format!("/v1/servers/resolve/{}", server_ref),
-                Channel::Platform,
+                Channel::PlatformPublic,
                 None,
             )
             .await?;
@@ -1836,7 +1836,7 @@ impl UpdatesNs {
                         ("server_id", params.server_id.map(|v| v.to_string())),
                     ],
                 ),
-                Channel::Platform,
+                Channel::PlatformPublic,
                 None,
             )
             .await?;
@@ -1856,7 +1856,7 @@ impl UpdatesNs {
             .request(
                 Method::Put,
                 &format!("/v1/launcher/updates/manifests/{}/{}", channel, platform),
-                Channel::Platform,
+                Channel::PlatformPublic,
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
@@ -1878,7 +1878,7 @@ impl UpdatesNs {
                     "/v1/launcher/updates/manifests/{}/{}/delete",
                     channel, platform
                 ),
-                Channel::Platform,
+                Channel::PlatformPublic,
                 None,
             )
             .await?;
@@ -1896,7 +1896,7 @@ impl UpdatesNs {
             .request(
                 Method::Post,
                 "/v1/launcher/updates/report",
-                Channel::Platform,
+                Channel::PlatformPublic,
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
@@ -1925,7 +1925,7 @@ impl UsersNs {
             .request(
                 Method::Post,
                 "/v1/users/public-profiles",
-                Channel::Platform,
+                Channel::PlatformPublic,
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
@@ -1967,7 +1967,7 @@ impl UsersNs {
             .request(
                 Method::Get,
                 &format!("/v1/community/users/{}/engagement", user_id),
-                Channel::Platform,
+                Channel::PlatformPublic,
                 None,
             )
             .await?;
@@ -1989,7 +1989,7 @@ impl UsersNs {
                     &format!("/v1/community/users/{}/recent-activity", user_id),
                     &[("limit", params.limit.map(|v| v.to_string()))],
                 ),
-                Channel::Platform,
+                Channel::PlatformPublic,
                 None,
             )
             .await?;

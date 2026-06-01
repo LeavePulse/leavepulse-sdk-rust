@@ -46,11 +46,24 @@ impl Method {
 /// the auth-service core (`/auth`) carrying login/refresh/oauth. The adapter
 /// maps each channel to a base URL and to its own auth mechanism; the SDK never
 /// learns *how* a channel authenticates, only which one to hit.
+///
+/// `PlatformPublic` is the BFF too, but for routes the contract marks as public
+/// (`exclude_from_auth`): the generator selects it for operations with no
+/// `security` block. Adapters must not attach a credential — a stale bearer
+/// would turn an otherwise-open route into a 401.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum Channel {
     #[default]
     Platform,
+    PlatformPublic,
     Auth,
+}
+
+impl Channel {
+    /// Whether a credential should be attached on this channel.
+    fn authenticated(self) -> bool {
+        !matches!(self, Channel::PlatformPublic)
+    }
 }
 
 /// Anything that can dispatch a request and return decoded JSON.
@@ -137,7 +150,7 @@ impl Transport for BearerTransport {
     ) -> Result<Value, TransportError> {
         let base = match channel {
             Channel::Auth => &self.auth_base_url,
-            Channel::Platform => &self.base_url,
+            Channel::Platform | Channel::PlatformPublic => &self.base_url,
         };
         let url = format!("{base}{path}");
         let reqwest_method = reqwest::Method::from_bytes(method.as_str().as_bytes())
@@ -145,10 +158,10 @@ impl Transport for BearerTransport {
 
         let mut attempt = 0u32;
         loop {
-            let mut req = self
-                .client
-                .request(reqwest_method.clone(), &url)
-                .bearer_auth(&self.token);
+            let mut req = self.client.request(reqwest_method.clone(), &url);
+            if channel.authenticated() {
+                req = req.bearer_auth(&self.token);
+            }
             if let Some(body) = &body {
                 req = req.json(body);
             }
@@ -227,7 +240,7 @@ impl BearerTransport {
     ) -> Result<ConditionalOutcome, TransportError> {
         let base = match channel {
             Channel::Auth => &self.auth_base_url,
-            Channel::Platform => &self.base_url,
+            Channel::Platform | Channel::PlatformPublic => &self.base_url,
         };
         let url = format!("{base}{path}");
         let reqwest_method = reqwest::Method::from_bytes(method.as_str().as_bytes())
@@ -235,10 +248,10 @@ impl BearerTransport {
 
         let mut attempt = 0u32;
         loop {
-            let mut req = self
-                .client
-                .request(reqwest_method.clone(), &url)
-                .bearer_auth(&self.token);
+            let mut req = self.client.request(reqwest_method.clone(), &url);
+            if channel.authenticated() {
+                req = req.bearer_auth(&self.token);
+            }
             if let Some(etag) = prior_etag {
                 req = req.header("if-none-match", etag);
             }

@@ -39,7 +39,7 @@ impl User {
             .request(
                 Method::Get,
                 &format!("/v1/users/{}/public-profile", self.id()),
-                Channel::Platform,
+                Channel::PlatformPublic,
                 None,
             )
             .await?;

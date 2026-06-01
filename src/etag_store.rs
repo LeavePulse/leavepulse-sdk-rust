@@ -37,7 +37,7 @@ pub trait EtagStore: Send + Sync {
 pub fn default_cache_key(method: Method, path: &str, channel: Channel) -> String {
     let chan = match channel {
         Channel::Auth => "auth",
-        Channel::Platform => "platform",
+        Channel::Platform | Channel::PlatformPublic => "platform",
     };
     format!("{chan} {} {path}", method.as_str())
 }
