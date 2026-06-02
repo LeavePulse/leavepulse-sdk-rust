@@ -152,46 +152,6 @@ impl Project {
         Ok(())
     }
 
-    /// project.bridge.update
-    pub async fn bridge_update(
-        &self,
-        server_id: String,
-        body: models::BridgeSettingsUpdateRequest,
-    ) -> Result<(), TransportError> {
-        let data = self
-            .client
-            .transport()
-            .request(
-                Method::Patch,
-                &format!("/v1/discord/servers/{}/bridge", server_id),
-                Channel::Platform,
-                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
-            )
-            .await?;
-        let _: Project = self.client.hydrate("Project", data, None);
-        Ok(())
-    }
-
-    /// project.bridge.import
-    pub async fn bridge_import(
-        &self,
-        server_id: String,
-        body: models::ImportPullRequest,
-    ) -> Result<(), TransportError> {
-        let data = self
-            .client
-            .transport()
-            .request(
-                Method::Post,
-                &format!("/v1/discord/servers/{}/import-pull", server_id),
-                Channel::Platform,
-                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
-            )
-            .await?;
-        let _: Project = self.client.hydrate("Project", data, None);
-        Ok(())
-    }
-
     /// project.change_slug
     pub async fn change_slug(
         &self,

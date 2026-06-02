@@ -1520,6 +1520,44 @@ impl ProjectsNs {
         serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
+    /// projects.bridge_update
+    pub async fn bridge_update(
+        &self,
+        server_id: i64,
+        body: models::BridgeSettingsUpdateRequest,
+    ) -> Result<models::BridgeSettings, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Patch,
+                &format!("/v1/discord/servers/{}/bridge", server_id),
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// projects.bridge_import
+    pub async fn bridge_import(
+        &self,
+        server_id: i64,
+        body: models::ImportPullRequest,
+    ) -> Result<models::ImportPull, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                &format!("/v1/discord/servers/{}/import-pull", server_id),
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
     /// projects.bridge_roles
     pub async fn bridge_roles(
         &self,

@@ -1675,6 +1675,13 @@ pub struct LogoutResponse {
     pub status: String,
 }
 
+/// ManifestComponent
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ManifestComponent {
+    pub path: String,
+    pub sha256: String,
+}
+
 /// MeResponse
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MeResponse {
@@ -4061,6 +4068,8 @@ pub struct UpdateManifest {
     pub artifact_id: String,
     pub channel: String,
     #[serde(default)]
+    pub components: Option<serde_json::Value>,
+    #[serde(default)]
     pub download_url: Option<String>,
     #[serde(default)]
     pub download_urls: Option<Vec<String>>,
@@ -4082,6 +4091,8 @@ pub struct UpdateManifest {
 pub struct UpdateManifestUpsert {
     #[serde(default)]
     pub artifact_id: Option<String>,
+    #[serde(default)]
+    pub components: Option<serde_json::Value>,
     #[serde(default)]
     pub download_url: Option<String>,
     #[serde(default)]
