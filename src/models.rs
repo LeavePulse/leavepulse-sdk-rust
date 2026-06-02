@@ -469,16 +469,16 @@ pub struct BridgeSettings {
     #[serde(default)]
     pub mc_to_discord_channel_id: Option<String>,
     #[serde(default)]
-    pub mc_to_discord_chat_routing: Option<serde_json::Value>,
+    pub mc_to_discord_chat_routing: Option<std::collections::HashMap<String, serde_json::Value>>,
     pub mc_to_discord_enabled: bool,
     #[serde(default)]
-    pub mc_to_discord_notifications: Option<serde_json::Value>,
+    pub mc_to_discord_notifications: Option<std::collections::HashMap<String, serde_json::Value>>,
     pub mc_to_discord_use_webhook: bool,
     #[serde(default)]
-    pub minecraft_chat_filter: Option<serde_json::Value>,
+    pub minecraft_chat_filter: Option<std::collections::HashMap<String, serde_json::Value>>,
     pub nickname_sync_enabled: bool,
     #[serde(default)]
-    pub status_notifications: Option<serde_json::Value>,
+    pub status_notifications: Option<std::collections::HashMap<String, serde_json::Value>>,
 }
 
 /// BridgeSettingsUpdateRequest
@@ -501,19 +501,19 @@ pub struct BridgeSettingsUpdateRequest {
     #[serde(default)]
     pub mc_to_discord_channel_id: Option<String>,
     #[serde(default)]
-    pub mc_to_discord_chat_routing: Option<serde_json::Value>,
+    pub mc_to_discord_chat_routing: Option<std::collections::HashMap<String, serde_json::Value>>,
     #[serde(default)]
     pub mc_to_discord_enabled: Option<bool>,
     #[serde(default)]
-    pub mc_to_discord_notifications: Option<serde_json::Value>,
+    pub mc_to_discord_notifications: Option<std::collections::HashMap<String, serde_json::Value>>,
     #[serde(default)]
     pub mc_to_discord_use_webhook: Option<bool>,
     #[serde(default)]
-    pub minecraft_chat_filter: Option<serde_json::Value>,
+    pub minecraft_chat_filter: Option<std::collections::HashMap<String, serde_json::Value>>,
     #[serde(default)]
     pub nickname_sync_enabled: Option<bool>,
     #[serde(default)]
-    pub status_notifications: Option<serde_json::Value>,
+    pub status_notifications: Option<std::collections::HashMap<String, serde_json::Value>>,
 }
 
 /// Build
@@ -635,7 +635,7 @@ pub struct CheckoutRequest {
     #[serde(default)]
     pub cancel_url: Option<String>,
     #[serde(default)]
-    pub context: Option<serde_json::Value>,
+    pub context: Option<std::collections::HashMap<String, serde_json::Value>>,
     #[serde(default)]
     pub create_subscription: Option<bool>,
     #[serde(default)]
@@ -1036,20 +1036,20 @@ pub struct FilterCount {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct FilterStats {
     #[serde(default)]
-    pub access: Option<serde_json::Value>,
+    pub access: Option<std::collections::HashMap<String, i64>>,
     #[serde(default)]
-    pub editions: Option<serde_json::Value>,
+    pub editions: Option<std::collections::HashMap<String, i64>>,
     #[serde(default)]
-    pub features: Option<serde_json::Value>,
+    pub features: Option<std::collections::HashMap<String, i64>>,
     #[serde(default)]
-    pub hosting: Option<serde_json::Value>,
+    pub hosting: Option<std::collections::HashMap<String, i64>>,
     #[serde(default)]
-    pub regions: Option<serde_json::Value>,
+    pub regions: Option<std::collections::HashMap<String, i64>>,
     #[serde(default)]
-    pub roles: Option<serde_json::Value>,
+    pub roles: Option<std::collections::HashMap<String, i64>>,
     pub total: i64,
     #[serde(default)]
-    pub verified: Option<serde_json::Value>,
+    pub verified: Option<std::collections::HashMap<String, i64>>,
 }
 
 /// ForcePingResult
@@ -1190,7 +1190,7 @@ pub struct ImportPull {
     #[serde(default)]
     pub channel_id: Option<String>,
     #[serde(default)]
-    pub entries: Option<Vec<serde_json::Value>>,
+    pub entries: Option<Vec<std::collections::HashMap<String, serde_json::Value>>>,
     #[serde(default)]
     pub fetched_at: Option<String>,
     pub guild_id: String,
@@ -1204,7 +1204,7 @@ pub struct ImportPull {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ImportPullRequest {
     #[serde(default)]
-    pub annotations: Option<serde_json::Value>,
+    pub annotations: Option<std::collections::HashMap<String, serde_json::Value>>,
     #[serde(default)]
     pub before_message_id: Option<String>,
     pub channel_id: String,
@@ -1985,15 +1985,15 @@ pub struct MyComment {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MyPlayerStats {
     #[serde(default)]
-    pub accounts: Option<Vec<serde_json::Value>>,
+    pub accounts: Option<Vec<std::collections::HashMap<String, serde_json::Value>>>,
     #[serde(default)]
-    pub daily_activity: Option<Vec<serde_json::Value>>,
+    pub daily_activity: Option<Vec<std::collections::HashMap<String, serde_json::Value>>>,
     #[serde(default)]
     pub estimated: Option<bool>,
     #[serde(default)]
-    pub events_breakdown: Option<serde_json::Value>,
+    pub events_breakdown: Option<std::collections::HashMap<String, i64>>,
     #[serde(default)]
-    pub servers: Option<Vec<serde_json::Value>>,
+    pub servers: Option<Vec<std::collections::HashMap<String, serde_json::Value>>>,
     #[serde(default)]
     pub source: Option<String>,
     pub total_playtime_seconds: i64,
@@ -2194,7 +2194,7 @@ pub struct Order {
     pub expires_at: Option<String>,
     pub external_ref: String,
     #[serde(default)]
-    pub extra: Option<serde_json::Value>,
+    pub extra: Option<std::collections::HashMap<String, serde_json::Value>>,
     pub id: String,
     #[serde(default)]
     pub idempotency_key: Option<String>,
@@ -2405,7 +2405,7 @@ pub struct PlayerSearchResult {
 pub struct PlayerStats {
     pub found: bool,
     #[serde(default)]
-    pub per_server_seconds: Option<serde_json::Value>,
+    pub per_server_seconds: Option<std::collections::HashMap<String, i64>>,
     pub server_playtime_seconds: i64,
     #[serde(default)]
     pub source: Option<String>,
@@ -2458,7 +2458,7 @@ pub struct Product {
     #[serde(default)]
     pub description: Option<String>,
     #[serde(default)]
-    pub extra: Option<serde_json::Value>,
+    pub extra: Option<std::collections::HashMap<String, serde_json::Value>>,
     pub geo_source: String,
     pub id: String,
     pub interval: String,
@@ -2536,11 +2536,11 @@ pub struct ProfileOwnershipSummary {
     #[serde(default)]
     pub project_count: Option<i64>,
     #[serde(default)]
-    pub projects: Option<Vec<serde_json::Value>>,
+    pub projects: Option<Vec<std::collections::HashMap<String, serde_json::Value>>>,
     #[serde(default)]
     pub server_count: Option<i64>,
     #[serde(default)]
-    pub servers: Option<Vec<serde_json::Value>>,
+    pub servers: Option<Vec<std::collections::HashMap<String, serde_json::Value>>>,
 }
 
 /// ProfilePrivacyUpdate
@@ -3120,7 +3120,7 @@ pub struct ServerEventPoint {
     pub collected_at: String,
     pub event_type: String,
     #[serde(default)]
-    pub extra: Option<serde_json::Value>,
+    pub extra: Option<std::collections::HashMap<String, serde_json::Value>>,
     #[serde(default)]
     pub online: Option<i64>,
     #[serde(default)]
@@ -3405,7 +3405,7 @@ pub struct ServerTelemetry {
     #[serde(default)]
     pub collected_at: Option<String>,
     #[serde(default)]
-    pub latest: Option<serde_json::Value>,
+    pub latest: Option<std::collections::HashMap<String, serde_json::Value>>,
     #[serde(default)]
     pub metrics: Option<Vec<ServerTelemetryMetric>>,
     pub period: String,
@@ -3553,7 +3553,7 @@ pub struct ShareLink {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SocialLinkVerification {
     #[serde(default)]
-    pub metadata: Option<serde_json::Value>,
+    pub metadata: Option<std::collections::HashMap<String, String>>,
     pub platform: String,
     #[serde(default)]
     pub url: Option<String>,
@@ -3639,7 +3639,7 @@ pub struct Subscription {
     pub canceled_at: Option<String>,
     pub created_at: String,
     #[serde(default)]
-    pub extra: Option<serde_json::Value>,
+    pub extra: Option<std::collections::HashMap<String, serde_json::Value>>,
     pub id: String,
     #[serde(default)]
     pub last_charge_at: Option<String>,
@@ -4068,7 +4068,7 @@ pub struct UpdateManifest {
     pub artifact_id: String,
     pub channel: String,
     #[serde(default)]
-    pub components: Option<serde_json::Value>,
+    pub components: Option<std::collections::HashMap<String, ManifestComponent>>,
     #[serde(default)]
     pub download_url: Option<String>,
     #[serde(default)]
@@ -4092,7 +4092,7 @@ pub struct UpdateManifestUpsert {
     #[serde(default)]
     pub artifact_id: Option<String>,
     #[serde(default)]
-    pub components: Option<serde_json::Value>,
+    pub components: Option<std::collections::HashMap<String, ManifestComponent>>,
     #[serde(default)]
     pub download_url: Option<String>,
     #[serde(default)]
@@ -4447,7 +4447,7 @@ pub struct WhitelistApplication {
     #[serde(default)]
     pub minecraft_uuid: Option<String>,
     #[serde(default)]
-    pub payload: Option<serde_json::Value>,
+    pub payload: Option<std::collections::HashMap<String, String>>,
     #[serde(default)]
     pub review_reason: Option<String>,
     #[serde(default)]
