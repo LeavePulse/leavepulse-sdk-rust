@@ -89,11 +89,11 @@ pub struct AdminForceCreateRequest {
     #[serde(default)]
     pub is_verified: Option<bool>,
     pub name: String,
-    pub owner_id: i64,
+    pub owner_id: Snowflake,
     #[serde(default)]
-    pub parent_id: Option<i64>,
+    pub parent_id: Option<Snowflake>,
     #[serde(default)]
-    pub project_id: Option<i64>,
+    pub project_id: Option<Snowflake>,
     pub server_role: ServerRole,
 }
 
@@ -168,27 +168,29 @@ pub struct AdminMinecraftAccountUpdateRequest {
 /// AdminProject
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AdminProject {
+    pub created_at: String,
     #[serde(default)]
-    pub creator_user_id: Option<i64>,
+    pub creator_user_id: Option<Snowflake>,
     #[serde(default)]
-    pub display_server_id: Option<i64>,
-    pub id: i64,
+    pub display_server_id: Option<Snowflake>,
+    pub id: Snowflake,
     #[serde(default)]
     pub lifecycle_state: Option<LifecycleState>,
     pub name: String,
     #[serde(default)]
-    pub online_server_id: Option<i64>,
+    pub online_server_id: Option<Snowflake>,
     pub online_strategy: OnlineStrategy,
     #[serde(default)]
-    pub owner_id: Option<i64>,
+    pub owner_id: Option<Snowflake>,
     #[serde(default)]
     pub public_server_count: Option<i64>,
     #[serde(default)]
-    pub root_server_id: Option<i64>,
+    pub root_server_id: Option<Snowflake>,
     #[serde(default)]
     pub server_count: Option<i64>,
     #[serde(default)]
     pub slug: Option<String>,
+    pub updated_at: String,
     #[serde(default)]
     pub verified_plugin_rollout_mode: Option<RolloutMode>,
     #[serde(default)]
@@ -263,6 +265,7 @@ pub struct AdminServerListResponse {
 /// AdminServerSummary
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AdminServerSummary {
+    pub created_at: String,
     #[serde(default)]
     pub creator_user_id: Option<String>,
     pub id: String,
@@ -279,6 +282,7 @@ pub struct AdminServerSummary {
     #[serde(default)]
     pub project_id: Option<String>,
     pub server_role: ServerRole,
+    pub updated_at: String,
     #[serde(default)]
     pub verified_plugin_compatibility: Option<String>,
     #[serde(default)]
@@ -301,11 +305,11 @@ pub struct AdminServerUpdateRequest {
     #[serde(default)]
     pub is_verified: Option<serde_json::Value>,
     #[serde(default)]
-    pub owner_id: Option<i64>,
+    pub owner_id: Option<Snowflake>,
     #[serde(default)]
-    pub parent_id: Option<i64>,
+    pub parent_id: Option<Snowflake>,
     #[serde(default)]
-    pub project_id: Option<i64>,
+    pub project_id: Option<Snowflake>,
     #[serde(default)]
     pub server_role: Option<serde_json::Value>,
 }
@@ -326,7 +330,7 @@ pub struct AdminSetProjectRolloutModeRequest {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AdminTransferOwnershipRequest {
     #[serde(default)]
-    pub owner_id: Option<i64>,
+    pub owner_id: Option<Snowflake>,
 }
 
 /// AdminUserDetail
@@ -431,7 +435,7 @@ pub struct AvatarUrlRequest {
 /// BatchPublicProfilesRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct BatchPublicProfilesRequest {
-    pub user_ids: Vec<i64>,
+    pub user_ids: Vec<Snowflake>,
 }
 
 /// BatchPublicProfilesResponse
@@ -444,7 +448,7 @@ pub struct BatchPublicProfilesResponse {
 /// BatchResolveRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct BatchResolveRequest {
-    pub user_ids: Vec<i64>,
+    pub user_ids: Vec<Snowflake>,
 }
 
 /// BatchResolveResponse
@@ -690,7 +694,7 @@ pub struct Comment {
     pub created_at: String,
     #[serde(default)]
     pub edited_at: Option<String>,
-    pub id: String,
+    pub id: Snowflake,
     #[serde(default)]
     pub likes: Option<i64>,
     #[serde(default)]
@@ -702,7 +706,13 @@ pub struct Comment {
 /// CommentAuthor
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CommentAuthor {
-    pub id: String,
+    #[serde(default)]
+    pub avatar_url: Option<String>,
+    pub id: Snowflake,
+    #[serde(default)]
+    pub slug: Option<String>,
+    #[serde(default)]
+    pub username: Option<String>,
 }
 
 /// CommentCreateRequest
@@ -714,7 +724,7 @@ pub struct CommentCreateRequest {
 /// CommentLikeResult
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CommentLikeResult {
-    pub comment_id: String,
+    pub comment_id: Snowflake,
     pub liked: bool,
     pub likes: i64,
 }
@@ -736,7 +746,7 @@ pub struct CommentReply {
     pub created_at: String,
     #[serde(default)]
     pub edited_at: Option<String>,
-    pub id: String,
+    pub id: Snowflake,
     #[serde(default)]
     pub translation: Option<TextTranslation>,
 }
@@ -744,7 +754,7 @@ pub struct CommentReply {
 /// CompleteLinkRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CompleteLinkRequest {
-    pub project_id: i64,
+    pub project_id: Snowflake,
     pub state: String,
 }
 
@@ -752,7 +762,7 @@ pub struct CompleteLinkRequest {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CompleteLinkResult {
     pub guild_id: String,
-    pub project_id: i64,
+    pub project_id: Snowflake,
     pub status: LinkResultStatus,
 }
 
@@ -787,21 +797,17 @@ pub struct ConfigBlobUploadRequest {
 /// CreateLinkTokenRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CreateLinkTokenRequest {
-    pub project_id: i64,
+    pub project_id: Snowflake,
 }
 
-/// CreatePlannedServerRequest
+/// CreateProjectServerRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct CreatePlannedServerRequest {
+pub struct CreateProjectServerRequest {
     pub address: String,
     #[serde(default)]
     pub description: Option<String>,
     #[serde(default)]
     pub name: Option<String>,
-    #[serde(default)]
-    pub owner_id: Option<i64>,
-    #[serde(default)]
-    pub project_id: Option<i64>,
 }
 
 /// CreateStatusOverrideRequest
@@ -812,6 +818,38 @@ pub struct CreateStatusOverrideRequest {
     #[serde(default)]
     pub note: Option<String>,
     pub starts_at: String,
+}
+
+/// DashboardAccount
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DashboardAccount {
+    #[serde(default)]
+    pub nick: Option<String>,
+    #[serde(rename = "type")]
+    #[serde(default)]
+    pub r#type: Option<String>,
+    #[serde(default)]
+    pub uuid: Option<String>,
+}
+
+/// DashboardDailyActivityPoint
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DashboardDailyActivityPoint {
+    #[serde(default)]
+    pub count: Option<i64>,
+    pub date: String,
+}
+
+/// DashboardServerItem
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DashboardServerItem {
+    #[serde(default)]
+    pub activity: Option<i64>,
+    #[serde(default)]
+    pub last_seen: Option<String>,
+    #[serde(default)]
+    pub playtime_seconds: Option<i64>,
+    pub server_id: Snowflake,
 }
 
 /// DeleteAck
@@ -829,7 +867,7 @@ pub struct DeleteBuildResult {
 /// DeleteCommentResult
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DeleteCommentResult {
-    pub comment_id: String,
+    pub comment_id: Snowflake,
 }
 
 /// DeleteStatusOverrideResponse
@@ -920,7 +958,7 @@ pub struct DiscordLink {
     pub invite_url: Option<String>,
     #[serde(default)]
     pub member_count: Option<i64>,
-    pub server_id: i64,
+    pub server_id: Snowflake,
     pub verified: bool,
     #[serde(default)]
     pub verified_at: Option<String>,
@@ -955,7 +993,7 @@ pub struct DiscordRoleTarget {
     #[serde(default)]
     pub desired_discord_user_ids: Option<Vec<String>>,
     pub discord_role_id: String,
-    pub role_id: i64,
+    pub role_id: Snowflake,
     pub role_key: String,
     pub role_name: String,
 }
@@ -965,7 +1003,7 @@ pub struct DiscordRoleTarget {
 pub struct DiscordRoleTargets {
     #[serde(default)]
     pub items: Option<Vec<DiscordRoleTarget>>,
-    pub project_id: i64,
+    pub project_id: Snowflake,
 }
 
 /// DiscordVerifyRequest
@@ -975,10 +1013,26 @@ pub struct DiscordVerifyRequest {
     pub invite_url: Option<String>,
 }
 
+/// DiscoveryApproveResult
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DiscoveryApproveResult {
+    pub candidate_id: i64,
+    #[serde(default)]
+    pub server_id: Option<i64>,
+    pub status: String,
+}
+
 /// DiscoveryCandidateEditRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DiscoveryCandidateEditRequest {
     pub edits: serde_json::Value,
+}
+
+/// DiscoveryIgnoreResult
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DiscoveryIgnoreResult {
+    pub candidate_id: i64,
+    pub status: String,
 }
 
 /// DnsVerification
@@ -1101,7 +1155,7 @@ pub struct GatewayToken {
     pub roles: Option<Vec<String>>,
     #[serde(default)]
     pub scope: Option<Vec<String>>,
-    pub server_id: i64,
+    pub server_id: Snowflake,
     pub session_id: String,
     pub token: String,
     pub token_type: String,
@@ -1526,7 +1580,7 @@ pub enum LifecycleState {
 /// LikedCommentIds
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LikedCommentIds {
-    pub comment_ids: Vec<String>,
+    pub comment_ids: Vec<Snowflake>,
 }
 
 /// LinkCompletionRequest
@@ -1535,8 +1589,8 @@ pub struct LinkCompletionRequest {
     pub code: String,
     pub minecraft_nick: String,
     pub minecraft_uuid: String,
-    pub project_id: i64,
-    pub server_id: i64,
+    pub project_id: Snowflake,
+    pub server_id: Snowflake,
 }
 
 /// LinkCompletionResponse
@@ -1546,7 +1600,7 @@ pub struct LinkCompletionResponse {
     pub account: Option<LinkedMinecraftAccount>,
     pub status: String,
     #[serde(default)]
-    pub user_id: Option<i64>,
+    pub user_id: Option<Snowflake>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -1563,7 +1617,7 @@ pub enum LinkResultStatus {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LinkSession {
     #[serde(default)]
-    pub already_linked_project_id: Option<i64>,
+    pub already_linked_project_id: Option<Snowflake>,
     pub expires_at: String,
     pub guild_id: String,
     #[serde(default)]
@@ -1596,15 +1650,15 @@ pub struct LinkTokenResult {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LinkedMinecraftAccount {
     pub account_type: MinecraftAccountType,
-    pub id: i64,
+    pub id: Snowflake,
     #[serde(default)]
-    pub identity_scope_id: Option<i64>,
+    pub identity_scope_id: Option<Snowflake>,
     pub identity_scope_type: MinecraftIdentityScopeType,
     pub link_source: MinecraftLinkSource,
     pub minecraft_nick: String,
     pub minecraft_uuid: String,
     #[serde(default)]
-    pub proof_server_id: Option<i64>,
+    pub proof_server_id: Option<Snowflake>,
     pub verification_status: MinecraftVerificationStatus,
 }
 
@@ -1646,7 +1700,7 @@ pub struct LiveStatus {
     pub online_state: OnlineState,
     #[serde(default)]
     pub players: Option<Vec<String>>,
-    pub server_id: i64,
+    pub server_id: Snowflake,
     #[serde(default)]
     pub source: Option<TrustState>,
     #[serde(default)]
@@ -1691,7 +1745,7 @@ pub struct MeResponse {
     pub minecraft_accounts: Option<Vec<MinecraftAccount>>,
     #[serde(default)]
     pub roles: Option<Vec<String>>,
-    pub user_id: i64,
+    pub user_id: Snowflake,
     #[serde(default)]
     pub username: Option<String>,
 }
@@ -1798,10 +1852,10 @@ pub struct MinecraftGroupTarget {
     #[serde(default)]
     pub desired_minecraft_uuids: Option<Vec<String>>,
     pub luckperms_group: String,
-    pub role_id: i64,
+    pub role_id: Snowflake,
     pub role_key: String,
     pub role_name: String,
-    pub server_id: i64,
+    pub server_id: Snowflake,
 }
 
 /// MinecraftGroupTargets
@@ -1809,8 +1863,8 @@ pub struct MinecraftGroupTarget {
 pub struct MinecraftGroupTargets {
     #[serde(default)]
     pub items: Option<Vec<MinecraftGroupTarget>>,
-    pub project_id: i64,
-    pub server_id: i64,
+    pub project_id: Snowflake,
+    pub server_id: Snowflake,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -1862,7 +1916,7 @@ pub struct MinecraftLinkCodeRequest {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MinecraftLinkCodeResponse {
     pub account: MinecraftCandidateAccount,
-    pub challenge_id: i64,
+    pub challenge_id: Snowflake,
     pub code: String,
     pub expires_in: i64,
     pub status: String,
@@ -1892,7 +1946,7 @@ pub struct MinecraftOfficialLinkStart {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MinecraftPendingChallenge {
     pub account_type: MinecraftAccountType,
-    pub challenge_id: i64,
+    pub challenge_id: Snowflake,
     pub code: String,
     pub expires_at: String,
     pub expires_in: i64,
@@ -1929,7 +1983,7 @@ pub enum MinecraftUuidType {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MinecraftVerificationAccount {
     pub account_type: MinecraftAccountType,
-    pub id: i64,
+    pub id: Snowflake,
     #[serde(default)]
     pub minecraft_nick: Option<String>,
     #[serde(default)]
@@ -1979,6 +2033,24 @@ pub struct MyComment {
     pub can_reply_to_comments: Option<bool>,
     #[serde(default)]
     pub comment: Option<Comment>,
+}
+
+/// MyDashboardStats
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct MyDashboardStats {
+    #[serde(default)]
+    pub accounts: Option<Vec<DashboardAccount>>,
+    #[serde(default)]
+    pub daily_activity: Option<Vec<DashboardDailyActivityPoint>>,
+    #[serde(default)]
+    pub estimated: Option<bool>,
+    #[serde(default)]
+    pub events_breakdown: Option<std::collections::HashMap<String, i64>>,
+    #[serde(default)]
+    pub servers: Option<Vec<DashboardServerItem>>,
+    #[serde(default)]
+    pub source: Option<String>,
+    pub total_playtime_seconds: i64,
 }
 
 /// MyPlayerStats
@@ -2161,6 +2233,12 @@ pub struct OAuthTotpChallengeResponse {
 pub struct OAuthTotpConfirmRequest {
     pub challenge_id: String,
     pub totp_code: String,
+}
+
+/// OAuthUnlinkResult
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct OAuthUnlinkResult {
+    pub status: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -2353,7 +2431,7 @@ pub struct PlatformPermsRow {
     pub max_role_weight: i64,
     #[serde(default)]
     pub roles: Option<Vec<String>>,
-    pub user_id: i64,
+    pub user_id: Snowflake,
     pub version: i64,
 }
 
@@ -2394,7 +2472,7 @@ pub struct PlayerSearchPage {
 pub struct PlayerSearchResult {
     pub last_seen_at: String,
     #[serde(default)]
-    pub last_server_id: Option<i64>,
+    pub last_server_id: Option<Snowflake>,
     pub total_playtime_seconds: i64,
     pub username: String,
     pub uuid: String,
@@ -2584,15 +2662,16 @@ pub struct ProfileUpdateRequest {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Project {
     pub catalog_mode: String,
+    pub created_at: String,
     pub display_server: ServerSummary,
-    pub display_server_id: i64,
+    pub display_server_id: Snowflake,
     #[serde(default)]
     pub freshness_state: Option<FreshnessState>,
     #[serde(default)]
     pub game_editions: Option<Vec<String>>,
     #[serde(default)]
     pub hearts: Option<i64>,
-    pub id: i64,
+    pub id: Snowflake,
     #[serde(default)]
     pub last_status_at: Option<String>,
     #[serde(default)]
@@ -2603,14 +2682,14 @@ pub struct Project {
     #[serde(default)]
     pub online_reason: Option<String>,
     #[serde(default)]
-    pub online_server_id: Option<i64>,
+    pub online_server_id: Option<Snowflake>,
     #[serde(default)]
     pub online_source: Option<TrustState>,
     #[serde(default)]
     pub online_state: Option<OnlineState>,
     pub online_strategy: OnlineStrategy,
     #[serde(default)]
-    pub owner_id: Option<i64>,
+    pub owner_id: Option<Snowflake>,
     #[serde(default)]
     pub public_entrypoint: Option<String>,
     #[serde(default)]
@@ -2633,6 +2712,7 @@ pub struct Project {
     pub slug: Option<String>,
     #[serde(default)]
     pub trust_state: Option<TrustState>,
+    pub updated_at: String,
     #[serde(default)]
     pub uptime_24h_percentage: Option<f64>,
     #[serde(default)]
@@ -2656,7 +2736,7 @@ pub struct ProjectCreateRequest {
 /// ProjectCreateResponse
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ProjectCreateResponse {
-    pub id: i64,
+    pub id: Snowflake,
     #[serde(default)]
     pub lifecycle_state: Option<LifecycleState>,
     pub name: String,
@@ -2679,7 +2759,7 @@ pub struct ProjectDetail {
 pub struct ProjectEngagement {
     pub comments: i64,
     pub hearts: i64,
-    pub project_id: String,
+    pub project_id: Snowflake,
     pub thumbs: i64,
 }
 
@@ -2687,7 +2767,7 @@ pub struct ProjectEngagement {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ProjectEngagementStatus {
     pub hearted: bool,
-    pub project_id: String,
+    pub project_id: Snowflake,
     pub thumbed: bool,
 }
 
@@ -2716,7 +2796,7 @@ pub struct ProjectFilterStats {
 pub struct ProjectHeartResult {
     pub hearted: bool,
     pub hearts: i64,
-    pub project_id: String,
+    pub project_id: Snowflake,
 }
 
 /// ProjectListResponse
@@ -2728,10 +2808,32 @@ pub struct ProjectListResponse {
     pub total: i64,
 }
 
+/// ProjectLiveStatus
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ProjectLiveStatus {
+    #[serde(default)]
+    pub collected_at: Option<String>,
+    pub freshness_state: FreshnessState,
+    #[serde(default)]
+    pub items: Option<Vec<LiveStatus>>,
+    #[serde(default)]
+    pub max_players: Option<i64>,
+    #[serde(default)]
+    pub online: Option<i64>,
+    #[serde(default)]
+    pub online_reason: Option<String>,
+    #[serde(default)]
+    pub online_server_id: Option<Snowflake>,
+    #[serde(default)]
+    pub online_source: Option<String>,
+    pub online_state: OnlineState,
+    pub project_id: Snowflake,
+}
+
 /// ProjectResolveResponse
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ProjectResolveResponse {
-    pub project_id: i64,
+    pub project_id: Snowflake,
     #[serde(default)]
     pub slug: Option<String>,
 }
@@ -2765,7 +2867,7 @@ pub struct ProjectStats {
 /// ProjectThumbResult
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ProjectThumbResult {
-    pub project_id: String,
+    pub project_id: Snowflake,
     pub thumbed: bool,
     pub thumbs: i64,
 }
@@ -2812,7 +2914,7 @@ pub struct PublicProfile {
     pub slug: Option<String>,
     #[serde(default)]
     pub status: Option<String>,
-    pub user_id: i64,
+    pub user_id: Snowflake,
     #[serde(default)]
     pub username: Option<String>,
 }
@@ -2827,7 +2929,7 @@ pub struct PublicProfileCard {
     pub slug: Option<String>,
     #[serde(default)]
     pub status: Option<String>,
-    pub user_id: i64,
+    pub user_id: Snowflake,
     #[serde(default)]
     pub username: Option<String>,
 }
@@ -2897,7 +2999,7 @@ pub struct PublicTeamMember {
     pub is_owner: Option<bool>,
     #[serde(default)]
     pub roles: Option<Vec<String>>,
-    pub user_id: i64,
+    pub user_id: Snowflake,
 }
 
 /// RecentActivityItem
@@ -2906,7 +3008,7 @@ pub struct RecentActivityItem {
     pub created_at: String,
     #[serde(default)]
     pub preview: Option<String>,
-    pub project_id: String,
+    pub project_id: Snowflake,
     #[serde(rename = "type")]
     pub r#type: ActivityType,
 }
@@ -2914,7 +3016,7 @@ pub struct RecentActivityItem {
 /// RecentVotes
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RecentVotes {
-    pub project_id: String,
+    pub project_id: Snowflake,
     pub votes: Vec<VoteItem>,
 }
 
@@ -2942,7 +3044,7 @@ pub struct ReportUserRequest {
 /// ReportUserResult
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ReportUserResult {
-    pub id: String,
+    pub id: Snowflake,
     pub status: String,
 }
 
@@ -3046,13 +3148,14 @@ pub struct ServerBotUpdateRequest {
 /// ServerCard
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServerCard {
+    pub created_at: String,
     #[serde(default)]
     pub favicon_url: Option<String>,
     #[serde(default)]
     pub game_edition: Option<GameEdition>,
     #[serde(default)]
     pub icon_url: Option<String>,
-    pub id: i64,
+    pub id: Snowflake,
     pub ip_or_domain: String,
     #[serde(default)]
     pub is_verified: Option<bool>,
@@ -3064,14 +3167,15 @@ pub struct ServerCard {
     pub maintenance_enabled: Option<bool>,
     pub name: String,
     #[serde(default)]
-    pub parent_id: Option<i64>,
+    pub parent_id: Option<Snowflake>,
     #[serde(default)]
-    pub project_id: Option<i64>,
+    pub project_id: Option<Snowflake>,
     pub role: ServerRole,
     #[serde(default)]
     pub show_in_public: Option<bool>,
     #[serde(default)]
     pub slug: Option<String>,
+    pub updated_at: String,
 }
 
 /// ServerChangeAddressRequest
@@ -3091,27 +3195,29 @@ pub struct ServerChangeSlugRequest {
 pub struct ServerDetail {
     #[serde(default)]
     pub bedrock_port: Option<i64>,
+    pub created_at: String,
     #[serde(default)]
     pub game_edition: Option<GameEdition>,
-    pub id: i64,
+    pub id: Snowflake,
     pub ip_or_domain: String,
     #[serde(default)]
     pub is_verified: Option<bool>,
     #[serde(default)]
-    pub parent_id: Option<i64>,
+    pub parent_id: Option<Snowflake>,
     #[serde(default)]
     pub ping_ip_or_domain: Option<String>,
     #[serde(default)]
     pub ping_port: Option<i64>,
     #[serde(default)]
-    pub project_id: Option<i64>,
+    pub project_id: Option<Snowflake>,
     #[serde(default)]
     pub project_online_strategy: Option<OnlineStrategy>,
     #[serde(default)]
     pub proxy_type: Option<String>,
     pub role: ServerRole,
+    pub updated_at: String,
     #[serde(default)]
-    pub verification_source: Option<TrustState>,
+    pub verification_source: Option<VerificationSource>,
 }
 
 /// ServerEventPoint
@@ -3149,7 +3255,7 @@ pub struct ServerIssuesItem {
     pub ip_or_domain: String,
     #[serde(default)]
     pub issues: Option<Vec<ServerServiceIssue>>,
-    pub server_id: i64,
+    pub server_id: Snowflake,
     pub server_name: String,
     #[serde(default)]
     pub server_slug: Option<String>,
@@ -3197,7 +3303,7 @@ pub struct ServerMediaSummary {
     #[serde(default)]
     pub icon_url: Option<String>,
     pub icon_version: i64,
-    pub server_id: i64,
+    pub server_id: Snowflake,
 }
 
 /// ServerMotdSummary
@@ -3219,7 +3325,7 @@ pub struct ServerMotdUpdateRequest {
 pub struct ServerOwnership {
     pub can_edit: bool,
     pub is_owner: bool,
-    pub server_id: i64,
+    pub server_id: Snowflake,
 }
 
 /// ServerRenameRequest
@@ -3245,9 +3351,9 @@ pub enum ServerRole {
 /// ServerRoot
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServerRoot {
-    pub project_id: i64,
-    pub root_server_id: i64,
-    pub server_id: i64,
+    pub project_id: Snowflake,
+    pub root_server_id: Snowflake,
+    pub server_id: Snowflake,
 }
 
 /// ServerServiceIssue
@@ -3278,7 +3384,7 @@ pub struct ServerSetDescriptionRequest {
 /// ServerSetParentRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServerSetParentRequest {
-    pub parent_id: i64,
+    pub parent_id: Snowflake,
 }
 
 /// ServerSetPingPortRequest
@@ -3349,27 +3455,33 @@ pub struct ServerStats {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServerSubservers {
     #[serde(default)]
-    pub subserver_ids: Option<Vec<i64>>,
+    pub subserver_ids: Option<Vec<Snowflake>>,
 }
 
 /// ServerSummary
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServerSummary {
+    pub created_at: String,
     #[serde(default)]
     pub favicon_url: Option<String>,
     #[serde(default)]
     pub game_edition: Option<GameEdition>,
     #[serde(default)]
     pub icon_url: Option<String>,
-    pub id: i64,
+    pub id: Snowflake,
     pub ip_or_domain: String,
     #[serde(default)]
     pub is_verified: Option<bool>,
     #[serde(default)]
-    pub parent_id: Option<i64>,
+    pub motd: Option<String>,
     #[serde(default)]
-    pub project_id: Option<i64>,
+    pub parent_id: Option<Snowflake>,
+    #[serde(default)]
+    pub project_id: Option<Snowflake>,
     pub role: ServerRole,
+    pub updated_at: String,
+    #[serde(default)]
+    pub verification_source: Option<VerificationSource>,
 }
 
 /// ServerTeamManage
@@ -3378,13 +3490,13 @@ pub struct ServerTeamManage {
     pub enabled: bool,
     #[serde(default)]
     pub members: Option<Vec<TeamMemberItem>>,
-    pub project_id: i64,
+    pub project_id: Snowflake,
     #[serde(default)]
     pub project_servers: Option<Vec<TeamScopeServer>>,
     #[serde(default)]
     pub roles: Option<Vec<TeamRoleItem>>,
-    pub root_server_id: i64,
-    pub server_id: i64,
+    pub root_server_id: Snowflake,
+    pub server_id: Snowflake,
 }
 
 /// ServerTeamPublic
@@ -3392,11 +3504,11 @@ pub struct ServerTeamManage {
 pub struct ServerTeamPublic {
     pub enabled: bool,
     #[serde(default)]
-    pub inherited_from_server_id: Option<i64>,
+    pub inherited_from_server_id: Option<Snowflake>,
     #[serde(default)]
     pub members: Option<Vec<PublicTeamMember>>,
-    pub project_id: i64,
-    pub server_id: i64,
+    pub project_id: Snowflake,
+    pub server_id: Snowflake,
 }
 
 /// ServerTelemetry
@@ -3429,6 +3541,8 @@ pub struct ServerTelemetryMetric {
 /// ServerTranslation
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServerTranslation {
+    #[serde(default)]
+    pub created_at: Option<String>,
     #[serde(default)]
     pub engine: Option<String>,
     pub field: String,
@@ -3549,6 +3663,8 @@ pub struct ShareLink {
     pub share_token: String,
 }
 
+pub type Snowflake = i64;
+
 /// SocialLinkVerification
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SocialLinkVerification {
@@ -3572,7 +3688,7 @@ pub struct SocialLinkVerifyRequest {
 pub struct SocialLinks {
     #[serde(default)]
     pub instagram_url: Option<String>,
-    pub server_id: i64,
+    pub server_id: Snowflake,
     #[serde(default)]
     pub telegram_url: Option<String>,
     #[serde(default)]
@@ -3618,7 +3734,7 @@ pub struct StatusOverrideItem {
     pub mode: String,
     #[serde(default)]
     pub note: Option<String>,
-    pub server_id: i64,
+    pub server_id: Snowflake,
     pub starts_at: String,
     #[serde(default)]
     pub updated_at: Option<String>,
@@ -3687,7 +3803,8 @@ pub struct TeamMemberDeleteResponse {
 /// TeamMemberItem
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TeamMemberItem {
-    pub id: i64,
+    pub created_at: String,
+    pub id: Snowflake,
     pub is_owner: bool,
     pub is_public: bool,
     #[serde(default)]
@@ -3697,7 +3814,8 @@ pub struct TeamMemberItem {
     #[serde(default)]
     pub role_ids: Option<Vec<String>>,
     pub sort_order: i64,
-    pub user_id: i64,
+    pub updated_at: String,
+    pub user_id: Snowflake,
 }
 
 /// TeamMemberRoleAssignment
@@ -3770,11 +3888,12 @@ pub struct TeamRoleDeleteResponse {
 pub struct TeamRoleItem {
     #[serde(default)]
     pub color: Option<String>,
+    pub created_at: String,
     #[serde(default)]
     pub discord_role_id: Option<String>,
     #[serde(default)]
     pub icon: Option<String>,
-    pub id: i64,
+    pub id: Snowflake,
     #[serde(default)]
     pub is_public: Option<bool>,
     pub key: String,
@@ -3791,6 +3910,7 @@ pub struct TeamRoleItem {
     pub position: Option<i64>,
     #[serde(default)]
     pub sort_order: Option<i64>,
+    pub updated_at: String,
 }
 
 /// TeamRoleUpdateRequest
@@ -3821,11 +3941,13 @@ pub struct TeamRoleUpdateRequest {
 /// TeamScopeServer
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TeamScopeServer {
-    pub id: i64,
+    pub created_at: String,
+    pub id: Snowflake,
     pub name: String,
     pub server_role: ServerRole,
     #[serde(default)]
     pub slug: Option<String>,
+    pub updated_at: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -3876,7 +3998,7 @@ pub struct TicketCreateRequest {
     pub minecraft_uuid: Option<String>,
     #[serde(default)]
     pub priority: Option<TicketPriority>,
-    pub server_id: String,
+    pub server_id: Snowflake,
     #[serde(default)]
     pub source: Option<TicketSource>,
     pub subject: String,
@@ -3885,7 +4007,7 @@ pub struct TicketCreateRequest {
 /// TicketDetail
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TicketDetail {
-    pub creator_id: String,
+    pub creator_id: Snowflake,
     #[serde(default)]
     pub messages: Option<Vec<TicketMessage>>,
     pub summary: TicketSummary,
@@ -3903,11 +4025,11 @@ pub struct TicketList {
 /// TicketMessage
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TicketMessage {
-    pub author_id: String,
+    pub author_id: Snowflake,
     pub author_type: TicketAuthorType,
     pub content: String,
     pub created_at: String,
-    pub id: String,
+    pub id: Snowflake,
     pub source: TicketSource,
 }
 
@@ -3973,9 +4095,9 @@ pub struct TicketStatusUpdateRequest {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TicketSummary {
     pub created_at: String,
-    pub id: String,
+    pub id: Snowflake,
     pub priority: TicketPriority,
-    pub server_id: String,
+    pub server_id: Snowflake,
     pub status: TicketStatus,
     pub subject: String,
     pub updated_at: String,
@@ -4046,9 +4168,9 @@ pub enum TrustState {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct UnlinkedMinecraftAccount {
     pub account_type: String,
-    pub id: i64,
+    pub id: Snowflake,
     #[serde(default)]
-    pub identity_scope_id: Option<i64>,
+    pub identity_scope_id: Option<Snowflake>,
     pub identity_scope_type: String,
     pub link_source: String,
     #[serde(default)]
@@ -4056,7 +4178,7 @@ pub struct UnlinkedMinecraftAccount {
     #[serde(default)]
     pub minecraft_uuid: Option<String>,
     #[serde(default)]
-    pub proof_server_id: Option<i64>,
+    pub proof_server_id: Option<Snowflake>,
     #[serde(default)]
     pub uuid_type: Option<String>,
     pub verification_status: String,
@@ -4131,7 +4253,7 @@ pub struct UpdateReportInput {
     #[serde(default)]
     pub platform: Option<String>,
     #[serde(default)]
-    pub server_id: Option<i64>,
+    pub server_id: Option<Snowflake>,
     #[serde(default)]
     pub status: Option<String>,
     #[serde(default)]
@@ -4166,7 +4288,7 @@ pub struct UserEngagement {
 /// UserEngagementTopProject
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct UserEngagementTopProject {
-    pub project_id: String,
+    pub project_id: Snowflake,
     pub votes: i64,
 }
 
@@ -4202,7 +4324,7 @@ pub struct UserProfile {
     pub email: Option<String>,
     #[serde(default)]
     pub email_verified: Option<bool>,
-    pub id: i64,
+    pub id: Snowflake,
     #[serde(default)]
     pub privacy: Option<MeProfilePrivacy>,
     #[serde(default)]
@@ -4332,20 +4454,30 @@ pub struct VerificationCheckRequest {
 pub struct VerificationServerSummary {
     #[serde(default)]
     pub game_edition: Option<GameEdition>,
-    pub id: i64,
+    pub id: Snowflake,
     pub ip_or_domain: String,
     pub is_verified: bool,
     #[serde(default)]
-    pub owner_id: Option<i64>,
+    pub owner_id: Option<Snowflake>,
     #[serde(default)]
-    pub project_id: Option<i64>,
+    pub project_id: Option<Snowflake>,
     pub role: ServerRole,
     #[serde(default)]
     pub verification_level: Option<i64>,
     #[serde(default)]
-    pub verification_source: Option<TrustState>,
+    pub verification_source: Option<VerificationSource>,
     #[serde(default)]
     pub verified_at: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum VerificationSource {
+    #[serde(rename = "plugin")]
+    Plugin,
+    #[serde(rename = "motd")]
+    Motd,
+    #[serde(rename = "unknown")]
+    Unknown,
 }
 
 /// VerificationStartRequest
@@ -4353,7 +4485,7 @@ pub struct VerificationServerSummary {
 pub struct VerificationStartRequest {
     pub address: String,
     #[serde(default)]
-    pub project_id: Option<i64>,
+    pub project_id: Option<Snowflake>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -4373,7 +4505,13 @@ pub enum VerificationStatus {
 /// VoteItem
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct VoteItem {
-    pub user_id: String,
+    #[serde(default)]
+    pub avatar_url: Option<String>,
+    #[serde(default)]
+    pub slug: Option<String>,
+    pub user_id: Snowflake,
+    #[serde(default)]
+    pub username: Option<String>,
     pub voted_at: String,
 }
 
@@ -4388,7 +4526,7 @@ pub struct VotingLinks {
     pub leavepulse_url: Option<String>,
     #[serde(default)]
     pub monicore_url: Option<String>,
-    pub server_id: i64,
+    pub server_id: Snowflake,
 }
 
 /// VotingLinksUpdateRequest
@@ -4436,8 +4574,8 @@ pub struct WhitelistApplication {
     #[serde(default)]
     pub discord_name: Option<String>,
     #[serde(default)]
-    pub form_id: Option<i64>,
-    pub id: i64,
+    pub form_id: Option<Snowflake>,
+    pub id: Snowflake,
     #[serde(default)]
     pub minecraft_account_type: Option<MinecraftAccountType>,
     #[serde(default)]
@@ -4452,11 +4590,12 @@ pub struct WhitelistApplication {
     pub review_reason: Option<String>,
     #[serde(default)]
     pub reviewed_at: Option<String>,
-    pub server_id: i64,
+    pub server_id: Snowflake,
     pub status: WhitelistApplicationStatus,
     #[serde(default)]
     pub status_alias: Option<String>,
-    pub user_id: i64,
+    pub updated_at: String,
+    pub user_id: Snowflake,
 }
 
 /// WhitelistApplicationList
@@ -4494,7 +4633,7 @@ pub struct WhitelistApplyRequest {
     #[serde(default)]
     pub answers: Option<serde_json::Value>,
     #[serde(default)]
-    pub binding_id: Option<i64>,
+    pub binding_id: Option<Snowflake>,
     pub minecraft_account_type: String,
     #[serde(default)]
     pub minecraft_nick: Option<String>,
@@ -4505,6 +4644,7 @@ pub struct WhitelistApplyRequest {
 /// WhitelistBindingDetail
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WhitelistBindingDetail {
+    pub created_at: String,
     #[serde(default)]
     pub discord_membership_mode: Option<DiscordMembershipMode>,
     #[serde(default)]
@@ -4527,6 +4667,7 @@ pub struct WhitelistBindingDetail {
     pub server_id: String,
     #[serde(default)]
     pub target_server_ids: Option<Vec<String>>,
+    pub updated_at: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -4575,7 +4716,7 @@ pub struct WhitelistBindingWriteRequest {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WhitelistConfig {
     #[serde(default)]
-    pub binding_server_id: Option<i64>,
+    pub binding_server_id: Option<Snowflake>,
     pub enabled: bool,
     pub enforcement_mode: EnforcementMode,
     #[serde(default)]
@@ -4583,12 +4724,12 @@ pub struct WhitelistConfig {
     #[serde(default)]
     pub form_fields: Option<Vec<WhitelistFormField>>,
     #[serde(default)]
-    pub form_id: Option<i64>,
+    pub form_id: Option<Snowflake>,
     #[serde(default)]
     pub form_name: Option<String>,
     pub restrict_chat: bool,
     pub scope_type: TeamScopeType,
-    pub server_id: i64,
+    pub server_id: Snowflake,
 }
 
 /// WhitelistDecisionRequest
@@ -4608,16 +4749,17 @@ pub struct WhitelistDirectAddRequest {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WhitelistDirectEntry {
     #[serde(default)]
-    pub added_by_user_id: Option<i64>,
+    pub added_by_user_id: Option<Snowflake>,
     pub created_at: String,
-    pub id: i64,
+    pub id: Snowflake,
     #[serde(default)]
     pub minecraft_account_type: Option<MinecraftAccountType>,
     #[serde(default)]
     pub minecraft_nick: Option<String>,
     #[serde(default)]
     pub minecraft_uuid: Option<String>,
-    pub server_id: i64,
+    pub server_id: Snowflake,
+    pub updated_at: String,
 }
 
 /// WhitelistDirectEntryPage
@@ -4640,6 +4782,8 @@ pub struct WhitelistDirectRemoval {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WhitelistEntry {
     #[serde(default)]
+    pub created_at: Option<String>,
+    #[serde(default)]
     pub discord_name: Option<String>,
     #[serde(default)]
     pub minecraft_account_type: Option<MinecraftAccountType>,
@@ -4648,7 +4792,9 @@ pub struct WhitelistEntry {
     #[serde(default)]
     pub minecraft_uuid: Option<String>,
     #[serde(default)]
-    pub user_id: Option<i64>,
+    pub updated_at: Option<String>,
+    #[serde(default)]
+    pub user_id: Option<Snowflake>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -4669,14 +4815,16 @@ pub enum WhitelistFieldType {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WhitelistFormCard {
     pub auto_approve_enabled: bool,
+    pub created_at: String,
     #[serde(default)]
     pub description: Option<String>,
-    pub id: i64,
+    pub id: Snowflake,
     pub name: String,
     #[serde(default)]
-    pub project_id: Option<i64>,
+    pub project_id: Option<Snowflake>,
     pub require_discord: bool,
     pub require_minecraft_nick: bool,
+    pub updated_at: String,
 }
 
 /// WhitelistFormCreateRequest
@@ -4694,7 +4842,7 @@ pub struct WhitelistFormCreateRequest {
     pub import_mapping: Option<serde_json::Value>,
     pub name: String,
     #[serde(default)]
-    pub project_id: Option<i64>,
+    pub project_id: Option<Snowflake>,
     #[serde(default)]
     pub require_discord: Option<bool>,
     #[serde(default)]
@@ -4752,7 +4900,7 @@ pub struct WhitelistImportJob {
     pub batches_expected: Option<i64>,
     #[serde(default)]
     pub batches_received: Option<i64>,
-    pub binding_id: i64,
+    pub binding_id: Snowflake,
     #[serde(default)]
     pub completed_at: Option<String>,
     pub conflict_policy: String,
@@ -4767,16 +4915,17 @@ pub struct WhitelistImportJob {
     pub error_reason: Option<String>,
     #[serde(default)]
     pub expires_at: Option<String>,
-    pub id: i64,
+    pub id: Snowflake,
     pub include_history: bool,
     #[serde(default)]
     pub payload: Option<serde_json::Value>,
-    pub server_id: i64,
+    pub server_id: Snowflake,
     pub source: String,
     #[serde(default)]
     pub started_at: Option<String>,
     pub status: String,
     pub token: String,
+    pub updated_at: String,
 }
 
 /// WhitelistImportJobPage
@@ -4795,7 +4944,7 @@ pub struct WhitelistImportJobPage {
 /// WhitelistImportRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WhitelistImportRequest {
-    pub binding_id: i64,
+    pub binding_id: Snowflake,
     #[serde(default)]
     pub conflict_policy: Option<String>,
     #[serde(default)]
@@ -4819,7 +4968,7 @@ pub struct WhitelistImportRequest {
 pub struct WhitelistMinecraftPullRequest {
     #[serde(default)]
     pub batch_size: Option<i64>,
-    pub binding_id: i64,
+    pub binding_id: Snowflake,
     #[serde(default)]
     pub conflict_policy: Option<String>,
     #[serde(default)]
@@ -4897,19 +5046,20 @@ pub struct Workspace {
     #[serde(default)]
     pub can_verify: Option<bool>,
     pub catalog_mode: String,
+    pub created_at: String,
     #[serde(default)]
-    pub creator_user_id: Option<i64>,
+    pub creator_user_id: Option<Snowflake>,
     #[serde(default)]
     pub display_server: Option<ServerSummary>,
     #[serde(default)]
-    pub display_server_id: Option<i64>,
+    pub display_server_id: Option<Snowflake>,
     #[serde(default)]
     pub freshness_state: Option<FreshnessState>,
     #[serde(default)]
     pub game_editions: Option<Vec<String>>,
     #[serde(default)]
     pub hearts: Option<i64>,
-    pub id: i64,
+    pub id: Snowflake,
     #[serde(default)]
     pub last_status_at: Option<String>,
     #[serde(default)]
@@ -4922,14 +5072,14 @@ pub struct Workspace {
     #[serde(default)]
     pub online_reason: Option<String>,
     #[serde(default)]
-    pub online_server_id: Option<i64>,
+    pub online_server_id: Option<Snowflake>,
     #[serde(default)]
     pub online_source: Option<TrustState>,
     #[serde(default)]
     pub online_state: Option<OnlineState>,
     pub online_strategy: OnlineStrategy,
     #[serde(default)]
-    pub owner_id: Option<i64>,
+    pub owner_id: Option<Snowflake>,
     #[serde(default)]
     pub public_entrypoint: Option<String>,
     #[serde(default)]
@@ -4941,13 +5091,14 @@ pub struct Workspace {
     #[serde(default)]
     pub regions: Option<Vec<String>>,
     #[serde(default)]
-    pub root_server_id: Option<i64>,
+    pub root_server_id: Option<Snowflake>,
     #[serde(default)]
     pub server_count: Option<i64>,
     #[serde(default)]
     pub slug: Option<String>,
     #[serde(default)]
     pub trust_state: Option<TrustState>,
+    pub updated_at: String,
     #[serde(default)]
     pub user_permissions: Option<Vec<String>>,
     #[serde(default)]
@@ -4995,7 +5146,7 @@ pub struct WorkspaceRenameRequest {
 pub struct WorkspaceResolveResponse {
     #[serde(default)]
     pub slug: Option<String>,
-    pub workspace_id: i64,
+    pub workspace_id: Snowflake,
 }
 
 /// WorkspaceSetOnlineStrategyRequest
@@ -5109,7 +5260,7 @@ pub struct CommentReplyParams {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct MeMinecraftStateParams {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub project_id: Option<String>,
+    pub project_id: Option<i64>,
 }
 
 /// Query parameters for `me.stats`.
@@ -5193,7 +5344,7 @@ pub struct ProjectStatsParams {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ProjectTeamSyncTargetsParams {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub role_id: Option<String>,
+    pub role_id: Option<i64>,
 }
 
 /// Query parameters for `project.comments.create`.
@@ -5225,7 +5376,7 @@ pub struct ServerTicketsListParams {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ServerPlayerStatsParams {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub user_id: Option<String>,
+    pub user_id: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub minecraft_uuid: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5267,7 +5418,7 @@ pub struct ServerStatsParams {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ServerTeamSyncTargetsParams {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub role_id: Option<String>,
+    pub role_id: Option<i64>,
 }
 
 /// Query parameters for `server.telemetry`.
@@ -5335,11 +5486,11 @@ pub struct AdminDiscoveryCandidatesParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub min_sources: Option<String>,
+    pub min_sources: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub min_mc_online: Option<String>,
+    pub min_mc_online: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub min_discord_members: Option<String>,
+    pub min_discord_members: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sort: Option<String>,
 }
@@ -5350,7 +5501,7 @@ pub struct AdminDiscoveryApproveParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub show_in_public: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub server_id: Option<String>,
+    pub server_id: Option<i64>,
 }
 
 /// Query parameters for `admin.discovery.ignore`.
@@ -5471,7 +5622,7 @@ pub struct UpdatesManifestParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub platform: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub server_id: Option<String>,
+    pub server_id: Option<i64>,
 }
 
 /// Query parameters for `projects.stats`.
@@ -5490,7 +5641,7 @@ pub struct ProjectsStatsParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hosting: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub verified: Option<String>,
+    pub verified: Option<bool>,
 }
 
 /// Query parameters for `stats.filter`.
@@ -5509,7 +5660,7 @@ pub struct StatsFilterParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hosting: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub verified: Option<String>,
+    pub verified: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub role: Option<String>,
 }
@@ -5527,7 +5678,7 @@ pub struct UsersSearchParams {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct WhitelistFormsListParams {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub project_id: Option<String>,
+    pub project_id: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub search: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5561,7 +5712,7 @@ pub struct ProjectsListParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hosting: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub verified: Option<String>,
+    pub verified: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub page: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]

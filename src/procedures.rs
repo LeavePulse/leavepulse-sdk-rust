@@ -74,8 +74,9 @@ impl AdminDiscoveryNs {
         &self,
         candidate_id: i64,
         params: models::AdminDiscoveryApproveParams,
-    ) -> Result<Value, TransportError> {
-        self.client
+    ) -> Result<models::DiscoveryApproveResult, TransportError> {
+        let value = self
+            .client
             .transport()
             .request(
                 Method::Post,
@@ -95,7 +96,8 @@ impl AdminDiscoveryNs {
                 Channel::Platform,
                 None,
             )
-            .await
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// admin.discovery.ignore
@@ -103,8 +105,9 @@ impl AdminDiscoveryNs {
         &self,
         candidate_id: i64,
         params: models::AdminDiscoveryIgnoreParams,
-    ) -> Result<Value, TransportError> {
-        self.client
+    ) -> Result<models::DiscoveryIgnoreResult, TransportError> {
+        let value = self
+            .client
             .transport()
             .request(
                 Method::Post,
@@ -118,7 +121,8 @@ impl AdminDiscoveryNs {
                 Channel::Platform,
                 None,
             )
-            .await
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// admin.discovery.observations
@@ -997,6 +1001,40 @@ impl AuthOauthNs {
         Self { client }
     }
 
+    /// auth.oauth.captcha_confirm
+    pub async fn captcha_confirm(
+        &self,
+        body: models::OAuthCaptchaConfirmRequest,
+    ) -> Result<Value, TransportError> {
+        self.client
+            .transport()
+            .request(
+                Method::Post,
+                "/auth/oauth/captcha/confirm",
+                Channel::Auth,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await
+    }
+
+    /// auth.oauth.totp_confirm
+    pub async fn totp_confirm(
+        &self,
+        body: models::OAuthTotpConfirmRequest,
+    ) -> Result<models::LoginResponse, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                "/auth/oauth/totp/confirm",
+                Channel::Auth,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
     /// auth.oauth.callback
     pub async fn callback(
         &self,
@@ -1393,6 +1431,58 @@ impl DiscordNs {
     }
 }
 
+/// MonitoringMeNs procedure namespace.
+pub struct MonitoringMeNs {
+    client: Arc<LeavePulse>,
+}
+
+impl MonitoringMeNs {
+    pub(crate) fn new(client: Arc<LeavePulse>) -> Self {
+        Self { client }
+    }
+
+    /// monitoring.me.stats
+    pub async fn stats(&self) -> Result<models::MyDashboardStats, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Get,
+                "/v1/monitoring/me/stats",
+                Channel::Platform,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+}
+
+/// MonitoringMeStatsNs procedure namespace.
+pub struct MonitoringMeStatsNs {
+    client: Arc<LeavePulse>,
+}
+
+impl MonitoringMeStatsNs {
+    pub(crate) fn new(client: Arc<LeavePulse>) -> Self {
+        Self { client }
+    }
+
+    /// monitoring.me.stats.unverified
+    pub async fn unverified(&self) -> Result<models::MyDashboardStats, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Get,
+                "/v1/monitoring/me/stats/unverified",
+                Channel::Platform,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+}
+
 /// MonitoringNs procedure namespace.
 pub struct MonitoringNs {
     client: Arc<LeavePulse>,
@@ -1401,6 +1491,14 @@ pub struct MonitoringNs {
 impl MonitoringNs {
     pub(crate) fn new(client: Arc<LeavePulse>) -> Self {
         Self { client }
+    }
+
+    pub fn me(&self) -> MonitoringMeNs {
+        MonitoringMeNs::new(Arc::clone(&self.client))
+    }
+
+    pub fn me_stats(&self) -> MonitoringMeStatsNs {
+        MonitoringMeStatsNs::new(Arc::clone(&self.client))
     }
 
     /// monitoring.landing
@@ -1995,10 +2093,7 @@ impl UsersNs {
     }
 
     /// users.engagement
-    pub async fn engagement(
-        &self,
-        user_id: String,
-    ) -> Result<models::UserEngagement, TransportError> {
+    pub async fn engagement(&self, user_id: i64) -> Result<models::UserEngagement, TransportError> {
         let value = self
             .client
             .transport()
@@ -2015,7 +2110,7 @@ impl UsersNs {
     /// users.activity_list
     pub async fn activity_list(
         &self,
-        user_id: String,
+        user_id: i64,
         params: models::UsersActivityListParams,
     ) -> Result<models::UserRecentActivity, TransportError> {
         let value = self

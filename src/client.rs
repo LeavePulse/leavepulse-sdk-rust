@@ -97,6 +97,15 @@ impl FromCell for Me {
     }
 }
 
+impl FromCell for Order {
+    fn from_cell(data: DataCell, client: Arc<LeavePulse>) -> Self {
+        Order::new(data, client)
+    }
+    fn type_name() -> &'static str {
+        "Order"
+    }
+}
+
 impl FromCell for Product {
     fn from_cell(data: DataCell, client: Arc<LeavePulse>) -> Self {
         Product::new(data, client)
@@ -176,10 +185,6 @@ impl LeavePulse {
 
     pub(crate) fn transport(&self) -> &dyn Transport {
         self.transport.as_ref()
-    }
-
-    pub fn order(self: &Arc<Self>) -> Order {
-        Order::new(Arc::clone(self))
     }
 
     pub fn admin(self: &Arc<Self>) -> AdminNs {
@@ -278,6 +283,19 @@ impl LeavePulse {
             .request(Method::Get, "/v1/me", Channel::Platform, None)
             .await?;
         Ok(self.hydrate::<Me>("Me", data, None))
+    }
+
+    pub async fn order(self: &Arc<Self>, id: i64) -> Result<Order, TransportError> {
+        let data = self
+            .transport
+            .request(
+                Method::Get,
+                &format!("/v1/billing/orders/{}", id),
+                Channel::Platform,
+                None,
+            )
+            .await?;
+        Ok(self.hydrate::<Order>("Order", data, None))
     }
 
     pub async fn project(self: &Arc<Self>, id: i64) -> Result<Project, TransportError> {

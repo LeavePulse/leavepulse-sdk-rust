@@ -7,6 +7,7 @@ pub mod cache;
 pub mod errors;
 pub mod etag_store;
 pub mod resource;
+pub mod snowflake;
 pub mod transport;
 
 pub mod client;
@@ -19,6 +20,7 @@ pub use errors::{HttpError, HttpErrorKind, LeavePulseError, ProblemDetails};
 pub use etag_store::{
     default_cache_key, fetch_cached, EtagEntry, EtagStore, FileEtagStore, MemoryEtagStore,
 };
+pub use snowflake::Snowflake;
 pub use transport::{
     BearerTransport, Channel, ConditionalOutcome, Method, RetryOptions, Transport, TransportError,
 };
