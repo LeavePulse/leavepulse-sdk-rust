@@ -131,6 +131,13 @@ pub struct AdminMinecraftAccountCreateRequest {
     pub minecraft_uuid: Option<String>,
 }
 
+/// AdminMinecraftAccountDeleteResult
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct AdminMinecraftAccountDeleteResult {
+    pub account_id: String,
+    pub status: String,
+}
+
 /// AdminMinecraftAccountDetailed
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AdminMinecraftAccountDetailed {
@@ -160,6 +167,14 @@ pub struct AdminMinecraftAccountDetailed {
 /// AdminMinecraftAccountUpdateRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AdminMinecraftAccountUpdateRequest {
+    pub minecraft_nick: String,
+    #[serde(default)]
+    pub minecraft_uuid: Option<String>,
+}
+
+/// AdminMinecraftAccountWriteRequest
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct AdminMinecraftAccountWriteRequest {
     pub minecraft_nick: String,
     #[serde(default)]
     pub minecraft_uuid: Option<String>,
@@ -1025,7 +1040,7 @@ pub struct DiscoveryApproveResult {
 /// DiscoveryCandidateEditRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DiscoveryCandidateEditRequest {
-    pub edits: serde_json::Value,
+    pub edits: std::collections::HashMap<String, serde_json::Value>,
 }
 
 /// DiscoveryIgnoreResult
@@ -1736,6 +1751,14 @@ pub struct ManifestComponent {
     pub sha256: String,
 }
 
+/// ManifestDelta
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ManifestDelta {
+    pub patch_path: String,
+    pub patch_sha256: String,
+    pub result_sha256: String,
+}
+
 /// MeResponse
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MeResponse {
@@ -1975,6 +1998,10 @@ pub enum MinecraftUuidType {
     Mojang,
     #[serde(rename = "offline")]
     Offline,
+    #[serde(rename = "xuid")]
+    Xuid,
+    #[serde(rename = "floodgate")]
+    Floodgate,
     #[serde(rename = "unknown")]
     Unknown,
 }
@@ -2239,6 +2266,16 @@ pub struct OAuthTotpConfirmRequest {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct OAuthUnlinkResult {
     pub status: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum OnlineSource {
+    #[serde(rename = "proxy")]
+    Proxy,
+    #[serde(rename = "aggregate")]
+    Aggregate,
+    #[serde(rename = "unknown")]
+    Unknown,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -2608,17 +2645,62 @@ pub struct ProfileMostPlayedServer {
     pub server_id: String,
 }
 
+/// ProfileOwnedProject
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ProfileOwnedProject {
+    #[serde(default)]
+    pub display_server: Option<ProfileOwnedProjectDisplayServer>,
+    pub id: Snowflake,
+    pub name: String,
+    #[serde(default)]
+    pub public_entrypoint: Option<String>,
+    #[serde(default)]
+    pub slug: Option<String>,
+}
+
+/// ProfileOwnedProjectDisplayServer
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ProfileOwnedProjectDisplayServer {
+    #[serde(default)]
+    pub favicon_url: Option<String>,
+    #[serde(default)]
+    pub icon_url: Option<String>,
+    #[serde(default)]
+    pub ip_or_domain: Option<String>,
+}
+
+/// ProfileOwnedServer
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ProfileOwnedServer {
+    #[serde(default)]
+    pub canonical_project_id: Option<Snowflake>,
+    #[serde(default)]
+    pub canonical_project_slug: Option<String>,
+    #[serde(default)]
+    pub favicon_url: Option<String>,
+    #[serde(default)]
+    pub icon_url: Option<String>,
+    pub id: Snowflake,
+    #[serde(default)]
+    pub ip_or_domain: Option<String>,
+    pub name: String,
+    #[serde(default)]
+    pub public_profile_kind: Option<String>,
+    #[serde(default)]
+    pub slug: Option<String>,
+}
+
 /// ProfileOwnershipSummary
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ProfileOwnershipSummary {
     #[serde(default)]
     pub project_count: Option<i64>,
     #[serde(default)]
-    pub projects: Option<Vec<std::collections::HashMap<String, serde_json::Value>>>,
+    pub projects: Option<Vec<ProfileOwnedProject>>,
     #[serde(default)]
     pub server_count: Option<i64>,
     #[serde(default)]
-    pub servers: Option<Vec<std::collections::HashMap<String, serde_json::Value>>>,
+    pub servers: Option<Vec<ProfileOwnedServer>>,
 }
 
 /// ProfilePrivacyUpdate
@@ -2684,7 +2766,7 @@ pub struct Project {
     #[serde(default)]
     pub online_server_id: Option<Snowflake>,
     #[serde(default)]
-    pub online_source: Option<TrustState>,
+    pub online_source: Option<OnlineSource>,
     #[serde(default)]
     pub online_state: Option<OnlineState>,
     pub online_strategy: OnlineStrategy,
@@ -2870,6 +2952,96 @@ pub struct ProjectThumbResult {
     pub project_id: Snowflake,
     pub thumbed: bool,
     pub thumbs: i64,
+}
+
+/// ProjectWhitelistApplicationPreview
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ProjectWhitelistApplicationPreview {
+    #[serde(default)]
+    pub application_url: Option<String>,
+    #[serde(default)]
+    pub auto_approved: Option<bool>,
+    #[serde(default)]
+    pub binding_id: Option<Snowflake>,
+    #[serde(default)]
+    pub created_at: Option<String>,
+    #[serde(default)]
+    pub discord_name: Option<String>,
+    #[serde(default)]
+    pub form_id: Option<Snowflake>,
+    pub id: Snowflake,
+    #[serde(default)]
+    pub minecraft_account_type: Option<String>,
+    #[serde(default)]
+    pub minecraft_identity_state: Option<String>,
+    #[serde(default)]
+    pub minecraft_nick: Option<String>,
+    #[serde(default)]
+    pub minecraft_uuid: Option<String>,
+    #[serde(default)]
+    pub payload: Option<std::collections::HashMap<String, serde_json::Value>>,
+    #[serde(default)]
+    pub review_reason: Option<String>,
+    #[serde(default)]
+    pub reviewed_at: Option<String>,
+    #[serde(default)]
+    pub server_id: Option<Snowflake>,
+    pub status: String,
+    #[serde(default)]
+    pub status_alias: Option<String>,
+    #[serde(default)]
+    pub updated_at: Option<String>,
+    #[serde(default)]
+    pub user_id: Option<Snowflake>,
+}
+
+/// ProjectWhitelistBindingPreview
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ProjectWhitelistBindingPreview {
+    #[serde(default)]
+    pub created_at: Option<String>,
+    #[serde(default)]
+    pub discord_membership_mode: Option<String>,
+    #[serde(default)]
+    pub enabled: Option<bool>,
+    pub enforcement_mode: String,
+    #[serde(default)]
+    pub form_id: Option<Snowflake>,
+    #[serde(default)]
+    pub granted_role_ids: Option<Vec<Snowflake>>,
+    pub id: Snowflake,
+    #[serde(default)]
+    pub mode: Option<String>,
+    #[serde(default)]
+    pub notification_settings: Option<std::collections::HashMap<String, serde_json::Value>>,
+    #[serde(default)]
+    pub project_id: Option<Snowflake>,
+    #[serde(default)]
+    pub restrict_chat: Option<bool>,
+    pub scope_type: String,
+    pub server_id: Snowflake,
+    #[serde(default)]
+    pub target_server_ids: Option<Vec<Snowflake>>,
+    #[serde(default)]
+    pub updated_at: Option<String>,
+}
+
+/// ProjectWhitelistConfigItem
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ProjectWhitelistConfigItem {
+    #[serde(default)]
+    pub application: Option<ProjectWhitelistApplicationPreview>,
+    pub apply_server_id: Snowflake,
+    pub binding: ProjectWhitelistBindingPreview,
+    #[serde(default)]
+    pub enforcement_servers: Option<Vec<WhitelistTargetServerRef>>,
+    #[serde(default)]
+    pub form: Option<WhitelistFormCard>,
+    #[serde(default)]
+    pub grant_target_servers: Option<Vec<WhitelistTargetServerRef>>,
+    pub project_id: Snowflake,
+    #[serde(default)]
+    pub proof_entry: Option<WhitelistProofEntry>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -3178,6 +3350,17 @@ pub struct ServerCard {
     pub updated_at: String,
 }
 
+/// ServerCardTranslations
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ServerCardTranslations {
+    #[serde(default)]
+    pub description: Option<TextTranslation>,
+    #[serde(default)]
+    pub maintenance_message: Option<TextTranslation>,
+    #[serde(default)]
+    pub motd: Option<TextTranslation>,
+}
+
 /// ServerChangeAddressRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServerChangeAddressRequest {
@@ -3247,6 +3430,14 @@ pub struct ServerEvents {
     pub page: i64,
     pub period: String,
     pub total: i64,
+}
+
+/// ServerHostRiskEvidence
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ServerHostRiskEvidence {
+    pub filename: String,
+    #[serde(default)]
+    pub payload: Option<std::collections::HashMap<String, serde_json::Value>>,
 }
 
 /// ServerIssuesItem
@@ -3463,6 +3654,8 @@ pub struct ServerSubservers {
 pub struct ServerSummary {
     pub created_at: String,
     #[serde(default)]
+    pub description: Option<String>,
+    #[serde(default)]
     pub favicon_url: Option<String>,
     #[serde(default)]
     pub game_edition: Option<GameEdition>,
@@ -3475,10 +3668,18 @@ pub struct ServerSummary {
     #[serde(default)]
     pub motd: Option<String>,
     #[serde(default)]
+    pub name: Option<String>,
+    #[serde(default)]
     pub parent_id: Option<Snowflake>,
     #[serde(default)]
     pub project_id: Option<Snowflake>,
     pub role: ServerRole,
+    #[serde(default)]
+    pub show_description: Option<bool>,
+    #[serde(default)]
+    pub slug: Option<String>,
+    #[serde(default)]
+    pub translations: Option<ServerCardTranslations>,
     pub updated_at: String,
     #[serde(default)]
     pub verification_source: Option<VerificationSource>,
@@ -3531,7 +3732,7 @@ pub struct ServerTelemetryMetric {
     pub avg: f64,
     pub cadence_hint_seconds: i64,
     pub key: String,
-    pub kind: String,
+    pub kind: TelemetryMetricKind,
     pub last: f64,
     pub max: f64,
     pub min: f64,
@@ -3574,6 +3775,23 @@ pub struct ServerTranslationUpsertRequest {
 pub struct ServerTranslations {
     #[serde(default)]
     pub items: Option<Vec<ServerTranslation>>,
+}
+
+/// ServerWhitelistPublicConfig
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ServerWhitelistPublicConfig {
+    #[serde(default)]
+    pub application: Option<WhitelistApplication>,
+    #[serde(default)]
+    pub binding: Option<WhitelistBindingDetail>,
+    #[serde(default)]
+    pub enforcement_servers: Option<Vec<WhitelistTargetServerRef>>,
+    #[serde(default)]
+    pub form: Option<WhitelistFormDetail>,
+    #[serde(default)]
+    pub grant_target_servers: Option<Vec<WhitelistTargetServerRef>>,
+    #[serde(default)]
+    pub proof_entry: Option<WhitelistProofEntry>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -3697,6 +3915,8 @@ pub struct SocialLinks {
     pub twitch_url: Option<String>,
     #[serde(default)]
     pub twitter_url: Option<String>,
+    #[serde(default)]
+    pub verified_data: Option<std::collections::HashMap<String, SocialLinkVerification>>,
     #[serde(default)]
     pub website_url: Option<String>,
     #[serde(default)]
@@ -3956,8 +4176,30 @@ pub enum TeamScopeType {
     Project,
     #[serde(rename = "server")]
     Server,
+    #[serde(rename = "network_all")]
+    NetworkAll,
+    #[serde(rename = "network_selected")]
+    NetworkSelected,
     #[serde(rename = "whitelist_policy")]
     WhitelistPolicy,
+    #[serde(rename = "unknown")]
+    Unknown,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum TelemetryMetricKind {
+    #[serde(rename = "hot")]
+    Hot,
+    #[serde(rename = "warm")]
+    Warm,
+    #[serde(rename = "cold")]
+    Cold,
+    #[serde(rename = "static")]
+    Static,
+    #[serde(rename = "event")]
+    Event,
+    #[serde(rename = "other")]
+    Other,
     #[serde(rename = "unknown")]
     Unknown,
 }
@@ -4192,6 +4434,9 @@ pub struct UpdateManifest {
     #[serde(default)]
     pub components: Option<std::collections::HashMap<String, ManifestComponent>>,
     #[serde(default)]
+    pub deltas:
+        Option<std::collections::HashMap<String, std::collections::HashMap<String, ManifestDelta>>>,
+    #[serde(default)]
     pub download_url: Option<String>,
     #[serde(default)]
     pub download_urls: Option<Vec<String>>,
@@ -4215,6 +4460,9 @@ pub struct UpdateManifestUpsert {
     pub artifact_id: Option<String>,
     #[serde(default)]
     pub components: Option<std::collections::HashMap<String, ManifestComponent>>,
+    #[serde(default)]
+    pub deltas:
+        Option<std::collections::HashMap<String, std::collections::HashMap<String, ManifestDelta>>>,
     #[serde(default)]
     pub download_url: Option<String>,
     #[serde(default)]
@@ -4453,15 +4701,24 @@ pub struct VerificationCheckRequest {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct VerificationServerSummary {
     #[serde(default)]
+    pub favicon_url: Option<String>,
+    #[serde(default)]
     pub game_edition: Option<GameEdition>,
+    #[serde(default)]
+    pub icon_url: Option<String>,
     pub id: Snowflake,
     pub ip_or_domain: String,
     pub is_verified: bool,
+    pub name: String,
     #[serde(default)]
     pub owner_id: Option<Snowflake>,
     #[serde(default)]
     pub project_id: Option<Snowflake>,
+    pub proxy_type: String,
     pub role: ServerRole,
+    pub server_role: ServerRole,
+    #[serde(default)]
+    pub slug: Option<String>,
     #[serde(default)]
     pub verification_level: Option<i64>,
     #[serde(default)]
@@ -4631,7 +4888,7 @@ pub enum WhitelistApplicationStatus {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WhitelistApplyRequest {
     #[serde(default)]
-    pub answers: Option<serde_json::Value>,
+    pub answers: Option<std::collections::HashMap<String, serde_json::Value>>,
     #[serde(default)]
     pub binding_id: Option<Snowflake>,
     pub minecraft_account_type: String,
@@ -4651,22 +4908,22 @@ pub struct WhitelistBindingDetail {
     pub enabled: Option<bool>,
     pub enforcement_mode: EnforcementMode,
     #[serde(default)]
-    pub form_id: Option<String>,
+    pub form_id: Option<Snowflake>,
     #[serde(default)]
-    pub granted_role_ids: Option<Vec<String>>,
-    pub id: String,
+    pub granted_role_ids: Option<Vec<Snowflake>>,
+    pub id: Snowflake,
     #[serde(default)]
     pub mode: Option<WhitelistBindingMode>,
     #[serde(default)]
     pub notification_settings: Option<WhitelistNotificationSettings>,
     #[serde(default)]
-    pub project_id: Option<String>,
+    pub project_id: Option<Snowflake>,
     #[serde(default)]
     pub restrict_chat: Option<bool>,
     pub scope_type: TeamScopeType,
-    pub server_id: String,
+    pub server_id: Snowflake,
     #[serde(default)]
-    pub target_server_ids: Option<Vec<String>>,
+    pub target_server_ids: Option<Vec<Snowflake>>,
     pub updated_at: String,
 }
 
@@ -4797,10 +5054,28 @@ pub struct WhitelistEntry {
     pub user_id: Option<Snowflake>,
 }
 
+/// WhitelistFieldConfig
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct WhitelistFieldConfig {
+    pub field_type: String,
+    #[serde(default)]
+    pub help_text: Option<String>,
+    pub key: String,
+    pub label: String,
+    #[serde(default)]
+    pub order: Option<i64>,
+    #[serde(default)]
+    pub required: Option<bool>,
+    #[serde(default)]
+    pub rules: Option<std::collections::HashMap<String, serde_json::Value>>,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum WhitelistFieldType {
     #[serde(rename = "text")]
     Text,
+    #[serde(rename = "textarea")]
+    Textarea,
     #[serde(rename = "number")]
     Number,
     #[serde(rename = "boolean")]
@@ -4833,13 +5108,13 @@ pub struct WhitelistFormCreateRequest {
     #[serde(default)]
     pub auto_approve_enabled: Option<bool>,
     #[serde(default)]
-    pub auto_approve_rules: Option<serde_json::Value>,
+    pub auto_approve_rules: Option<std::collections::HashMap<String, serde_json::Value>>,
     #[serde(default)]
     pub description: Option<String>,
     #[serde(default)]
-    pub fields: Option<serde_json::Value>,
+    pub fields: Option<Vec<WhitelistFieldConfig>>,
     #[serde(default)]
-    pub import_mapping: Option<serde_json::Value>,
+    pub import_mapping: Option<std::collections::HashMap<String, serde_json::Value>>,
     pub name: String,
     #[serde(default)]
     pub project_id: Option<Snowflake>,
@@ -4852,9 +5127,12 @@ pub struct WhitelistFormCreateRequest {
 /// WhitelistFormDetail
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WhitelistFormDetail {
-    pub auto_approve_rules: serde_json::Value,
-    pub fields: serde_json::Value,
-    pub import_mapping: serde_json::Value,
+    #[serde(default)]
+    pub auto_approve_rules: Option<std::collections::HashMap<String, serde_json::Value>>,
+    #[serde(default)]
+    pub fields: Option<Vec<WhitelistFieldConfig>>,
+    #[serde(default)]
+    pub import_mapping: Option<std::collections::HashMap<String, serde_json::Value>>,
     pub summary: WhitelistFormCard,
 }
 
@@ -4872,7 +5150,8 @@ pub struct WhitelistFormField {
 /// WhitelistFormImportMappingRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WhitelistFormImportMappingRequest {
-    pub import_mapping: serde_json::Value,
+    #[serde(default)]
+    pub import_mapping: Option<std::collections::HashMap<String, serde_json::Value>>,
 }
 
 /// WhitelistFormPage
@@ -4885,10 +5164,33 @@ pub struct WhitelistFormPage {
     pub total: i64,
 }
 
+/// WhitelistFormPatch
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct WhitelistFormPatch {
+    #[serde(default)]
+    pub auto_approve_enabled: Option<bool>,
+    #[serde(default)]
+    pub auto_approve_rules: Option<std::collections::HashMap<String, serde_json::Value>>,
+    #[serde(default)]
+    pub description: Option<String>,
+    #[serde(default)]
+    pub fields: Option<Vec<WhitelistFieldConfig>>,
+    #[serde(default)]
+    pub import_mapping: Option<std::collections::HashMap<String, serde_json::Value>>,
+    #[serde(default)]
+    pub name: Option<String>,
+    #[serde(default)]
+    pub project_id: Option<Snowflake>,
+    #[serde(default)]
+    pub require_discord: Option<bool>,
+    #[serde(default)]
+    pub require_minecraft_nick: Option<bool>,
+}
+
 /// WhitelistFormUpdateRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WhitelistFormUpdateRequest {
-    pub patch: serde_json::Value,
+    pub patch: WhitelistFormPatch,
 }
 
 /// WhitelistImportJob
@@ -4941,6 +5243,24 @@ pub struct WhitelistImportJobPage {
     pub total: Option<i64>,
 }
 
+/// WhitelistImportOptions
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct WhitelistImportOptions {
+    #[serde(default)]
+    pub entries: Option<Vec<std::collections::HashMap<String, serde_json::Value>>>,
+    #[serde(default)]
+    pub field_priority: Option<std::collections::HashMap<String, Vec<String>>>,
+    #[serde(default)]
+    pub manual_overrides:
+        Option<std::collections::HashMap<String, std::collections::HashMap<String, String>>>,
+    #[serde(default)]
+    pub payload: Option<std::collections::HashMap<String, serde_json::Value>>,
+    #[serde(default)]
+    pub source_priority: Option<Vec<String>>,
+    #[serde(default)]
+    pub sources: Option<Vec<std::collections::HashMap<String, serde_json::Value>>>,
+}
+
 /// WhitelistImportRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WhitelistImportRequest {
@@ -4958,7 +5278,7 @@ pub struct WhitelistImportRequest {
     #[serde(default)]
     pub include_history: Option<bool>,
     #[serde(default)]
-    pub options: Option<serde_json::Value>,
+    pub options: Option<WhitelistImportOptions>,
     #[serde(default)]
     pub source: Option<String>,
 }
@@ -5013,6 +5333,19 @@ pub struct WhitelistNotificationSettings {
     pub version: Option<i64>,
 }
 
+/// WhitelistProofEntry
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct WhitelistProofEntry {
+    #[serde(default)]
+    pub entry_hint_kind: Option<String>,
+    #[serde(default)]
+    pub entry_server_id: Option<Snowflake>,
+    #[serde(default)]
+    pub preferred_command_root: Option<String>,
+    #[serde(default)]
+    pub scope: Option<String>,
+}
+
 /// WhitelistStaffNotificationSettings
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WhitelistStaffNotificationSettings {
@@ -5034,6 +5367,14 @@ pub struct WhitelistStatusRequest {
     #[serde(default)]
     pub reason: Option<String>,
     pub status: String,
+}
+
+/// WhitelistTargetServerRef
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct WhitelistTargetServerRef {
+    #[serde(default)]
+    pub entry_server_id: Option<Snowflake>,
+    pub server_id: Snowflake,
 }
 
 /// Workspace
@@ -5074,7 +5415,7 @@ pub struct Workspace {
     #[serde(default)]
     pub online_server_id: Option<Snowflake>,
     #[serde(default)]
-    pub online_source: Option<TrustState>,
+    pub online_source: Option<OnlineSource>,
     #[serde(default)]
     pub online_state: Option<OnlineState>,
     pub online_strategy: OnlineStrategy,
@@ -5224,13 +5565,23 @@ pub struct MeProfilePrivacy {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct UsersProfilePrivacy {
     #[serde(default)]
-    pub hide_discord: Option<bool>,
+    pub show_activity_stats: Option<bool>,
     #[serde(default)]
-    pub hide_email: Option<bool>,
+    pub show_bio: Option<bool>,
     #[serde(default)]
-    pub hide_minecraft_accounts: Option<bool>,
+    pub show_join_date: Option<bool>,
     #[serde(default)]
-    pub hide_ownership: Option<bool>,
+    pub show_linked_accounts: Option<bool>,
+    #[serde(default)]
+    pub show_ownership: Option<bool>,
+    #[serde(default)]
+    pub show_status: Option<bool>,
+    #[serde(default)]
+    pub show_streak: Option<bool>,
+    #[serde(default)]
+    pub show_top_server: Option<bool>,
+    #[serde(default)]
+    pub show_user_id: Option<bool>,
 }
 
 /// Query parameters for `binding.entries.list`.
@@ -5428,6 +5779,15 @@ pub struct ServerTelemetryParams {
     pub period: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source: Option<String>,
+}
+
+/// Query parameters for `server.whitelist.public`.
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct ServerWhitelistPublicParams {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub binding_id: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub locale: Option<String>,
 }
 
 /// Query parameters for `server.whitelist.applications`.

@@ -190,7 +190,7 @@ impl AdminOverridesNs {
         &self,
         server_id: i64,
         params: models::AdminOverridesListParams,
-    ) -> Result<models::StatusOverrideItem, TransportError> {
+    ) -> Result<Vec<models::StatusOverrideItem>, TransportError> {
         let value = self
             .client
             .transport()
@@ -810,6 +810,70 @@ impl AdminUsersNs {
         serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
+    /// admin.users.create_offline_minecraft
+    pub async fn create_offline_minecraft(
+        &self,
+        user_id: i64,
+        body: models::AdminMinecraftAccountWriteRequest,
+    ) -> Result<models::AdminMinecraftAccount, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                &format!("/v1/admin/users/{}/minecraft-accounts/offline", user_id),
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// admin.users.delete_minecraft
+    pub async fn delete_minecraft(
+        &self,
+        user_id: i64,
+        account_id: i64,
+    ) -> Result<models::AdminMinecraftAccountDeleteResult, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Delete,
+                &format!(
+                    "/v1/admin/users/{}/minecraft-accounts/{}",
+                    user_id, account_id
+                ),
+                Channel::Platform,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// admin.users.update_minecraft
+    pub async fn update_minecraft(
+        &self,
+        user_id: i64,
+        account_id: i64,
+        body: models::AdminMinecraftAccountWriteRequest,
+    ) -> Result<models::AdminMinecraftAccount, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Patch,
+                &format!(
+                    "/v1/admin/users/{}/minecraft-accounts/{}",
+                    user_id, account_id
+                ),
+                Channel::Platform,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
     /// admin.users.roles
     pub async fn roles(&self, user_id: i64) -> Result<models::UserRolesResponse, TransportError> {
         let value = self
@@ -1152,6 +1216,16 @@ impl AuthNs {
             .await?;
         serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
+
+    /// auth.session
+    pub async fn session(&self) -> Result<models::LoginResponse, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(Method::Post, "/auth/session", Channel::Auth, None)
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
 }
 
 /// BillingOrdersNs procedure namespace.
@@ -1200,7 +1274,7 @@ impl BillingProductsNs {
     }
 
     /// billing.products.list
-    pub async fn list(&self) -> Result<models::Product, TransportError> {
+    pub async fn list(&self) -> Result<Vec<models::Product>, TransportError> {
         let value = self
             .client
             .transport()
