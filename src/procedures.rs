@@ -1406,6 +1406,21 @@ impl BuildsNs {
         serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
+    /// builds.preview
+    pub async fn preview(&self, share_token: String) -> Result<models::Build, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Get,
+                &format!("/v1/builds/preview/{}", share_token),
+                Channel::PlatformPublic,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
     /// builds.shared_with_me
     pub async fn shared_with_me(&self) -> Result<models::BuildList, TransportError> {
         let value = self
@@ -1810,6 +1825,7 @@ impl ProjectsNs {
                         ("region", params.region.map(|v| v.to_string())),
                         ("hosting", params.hosting.map(|v| v.to_string())),
                         ("verified", params.verified.map(|v| v.to_string())),
+                        ("has_build", params.has_build.map(|v| v.to_string())),
                         ("page", params.page.map(|v| v.to_string())),
                         ("per_page", params.per_page.map(|v| v.to_string())),
                         ("sort", params.sort.map(|v| v.to_string())),

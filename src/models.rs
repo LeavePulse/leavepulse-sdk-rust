@@ -6074,6 +6074,8 @@ pub struct ProjectsListParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verified: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub has_build: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub page: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub per_page: Option<i64>,
