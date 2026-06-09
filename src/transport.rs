@@ -312,4 +312,80 @@ impl BearerTransport {
             return Err(LeavePulseError::from(error));
         }
     }
+
+    /// Like [`Transport::request`] but sends an `If-Match` header for optimistic
+    /// concurrency on writes. A precondition failure surfaces as the usual
+    /// `Conflict` (409) `HttpError`, so callers can prompt the user to sync.
+    pub async fn request_with_if_match(
+        &self,
+        method: Method,
+        path: &str,
+        channel: Channel,
+        body: Option<Value>,
+        if_match: Option<&str>,
+    ) -> Result<Value, TransportError> {
+        let base = match channel {
+            Channel::Auth => &self.auth_base_url,
+            Channel::Platform | Channel::PlatformPublic => &self.base_url,
+        };
+        let url = format!("{base}{path}");
+        let reqwest_method = reqwest::Method::from_bytes(method.as_str().as_bytes())
+            .map_err(|e| LeavePulseError::Transport(e.into()))?;
+
+        let mut attempt = 0u32;
+        loop {
+            let mut req = self.client.request(reqwest_method.clone(), &url);
+            if channel.authenticated() {
+                req = req.bearer_auth(&self.token);
+            }
+            if let Some(etag) = if_match {
+                req = req.header("if-match", etag);
+            }
+            if let Some(body) = &body {
+                req = req.json(body);
+            }
+            let response = req
+                .send()
+                .await
+                .map_err(|e| LeavePulseError::Transport(e.into()))?;
+            let status = response.status();
+
+            if status.is_success() {
+                if status.as_u16() == 204 {
+                    return Ok(Value::Null);
+                }
+                return response
+                    .json()
+                    .await
+                    .map_err(|e| LeavePulseError::Transport(e.into()));
+            }
+
+            let retry_after = parse_retry_after(
+                response
+                    .headers()
+                    .get("retry-after")
+                    .and_then(|v| v.to_str().ok()),
+            );
+            let raw = response.text().await.unwrap_or_default();
+            let error = HttpError::new(status.as_u16(), method.as_str(), path, raw, retry_after);
+
+            let retriable = error.is_rate_limited() || error.is_server();
+            if retriable && attempt < self.retry.max_retries {
+                let wait = match &error.kind {
+                    HttpErrorKind::RateLimited {
+                        retry_after: Some(secs),
+                    } => Duration::from_secs_f64(secs.max(0.0)),
+                    _ => self
+                        .retry
+                        .backoff_base
+                        .saturating_mul(2u32.saturating_pow(attempt))
+                        .min(self.retry.backoff_max),
+                };
+                attempt += 1;
+                tokio::time::sleep(wait).await;
+                continue;
+            }
+            return Err(LeavePulseError::from(error));
+        }
+    }
 }
