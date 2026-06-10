@@ -955,7 +955,7 @@ impl Server {
     pub async fn events_list(
         &self,
         params: models::ServerEventsListParams,
-    ) -> Result<Vec<models::ServerEvents>, TransportError> {
+    ) -> Result<models::ServerEvents, TransportError> {
         let value = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),
@@ -1011,7 +1011,7 @@ impl Server {
     }
 
     /// server.icons.list
-    pub async fn icons_list(&self) -> Result<Vec<models::IconHistory>, TransportError> {
+    pub async fn icons_list(&self) -> Result<models::IconHistory, TransportError> {
         let value = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),
@@ -1176,7 +1176,7 @@ impl Server {
     pub async fn team_sync_targets(
         &self,
         params: models::ServerTeamSyncTargetsParams,
-    ) -> Result<Vec<models::MinecraftGroupTargets>, TransportError> {
+    ) -> Result<models::MinecraftGroupTargets, TransportError> {
         let value = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),
@@ -1227,9 +1227,7 @@ impl Server {
     }
 
     /// server.translations.list
-    pub async fn translations_list(
-        &self,
-    ) -> Result<Vec<models::ServerTranslations>, TransportError> {
+    pub async fn translations_list(&self) -> Result<models::ServerTranslations, TransportError> {
         let value = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),
@@ -1267,7 +1265,7 @@ impl Server {
     pub async fn whitelist_applications(
         &self,
         params: models::ServerWhitelistApplicationsParams,
-    ) -> Result<Vec<models::WhitelistApplicationList>, TransportError> {
+    ) -> Result<models::WhitelistApplicationList, TransportError> {
         let value = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),
@@ -1303,7 +1301,7 @@ impl Server {
     pub async fn whitelist_direct(
         &self,
         params: models::ServerWhitelistDirectParams,
-    ) -> Result<Vec<models::WhitelistDirectEntryPage>, TransportError> {
+    ) -> Result<models::WhitelistDirectEntryPage, TransportError> {
         let value = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),
@@ -1325,7 +1323,7 @@ impl Server {
     pub async fn whitelist_imports(
         &self,
         params: models::ServerWhitelistImportsParams,
-    ) -> Result<Vec<models::WhitelistImportJobPage>, TransportError> {
+    ) -> Result<models::WhitelistImportJobPage, TransportError> {
         let value = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),

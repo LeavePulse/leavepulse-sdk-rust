@@ -260,7 +260,7 @@ impl AdminPlayersNs {
     pub async fn search(
         &self,
         params: models::AdminPlayersSearchParams,
-    ) -> Result<Vec<models::PlayerSearchPage>, TransportError> {
+    ) -> Result<models::PlayerSearchPage, TransportError> {
         let value = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),
@@ -294,7 +294,7 @@ impl AdminProjectsNs {
     pub async fn list(
         &self,
         params: models::AdminProjectsListParams,
-    ) -> Result<Vec<models::AdminProjectListResponse>, TransportError> {
+    ) -> Result<models::AdminProjectListResponse, TransportError> {
         let value = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),
@@ -444,7 +444,7 @@ impl AdminRolesNs {
     }
 
     /// admin.roles.list
-    pub async fn list(&self) -> Result<Vec<models::AdminRoleListResponse>, TransportError> {
+    pub async fn list(&self) -> Result<models::AdminRoleListResponse, TransportError> {
         let value = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),
@@ -526,7 +526,7 @@ impl AdminServersNs {
     pub async fn list(
         &self,
         params: models::AdminServersListParams,
-    ) -> Result<Vec<models::AdminServerListResponse>, TransportError> {
+    ) -> Result<models::AdminServerListResponse, TransportError> {
         let value = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),
@@ -654,7 +654,7 @@ impl AdminSystemNs {
     }
 
     /// admin.system.health
-    pub async fn health(&self) -> Result<Vec<models::ServicesHealthResponse>, TransportError> {
+    pub async fn health(&self) -> Result<models::ServicesHealthResponse, TransportError> {
         let value = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),
@@ -681,7 +681,7 @@ impl AdminUsersNs {
     pub async fn list(
         &self,
         params: models::AdminUsersListParams,
-    ) -> Result<Vec<models::AdminUserListResponse>, TransportError> {
+    ) -> Result<models::AdminUserListResponse, TransportError> {
         let value = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),
@@ -720,7 +720,7 @@ impl AdminUsersNs {
     pub async fn search(
         &self,
         params: models::AdminUsersSearchParams,
-    ) -> Result<Vec<models::AdminUserListResponse>, TransportError> {
+    ) -> Result<models::AdminUserListResponse, TransportError> {
         let value = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),
@@ -1215,7 +1215,7 @@ impl BillingOrdersNs {
     pub async fn list(
         &self,
         params: models::BillingOrdersListParams,
-    ) -> Result<Vec<models::OrderList>, TransportError> {
+    ) -> Result<models::OrderList, TransportError> {
         let value = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),
@@ -1272,7 +1272,7 @@ impl BillingSubscriptionsNs {
     pub async fn list(
         &self,
         params: models::BillingSubscriptionsListParams,
-    ) -> Result<Vec<models::SubscriptionList>, TransportError> {
+    ) -> Result<models::SubscriptionList, TransportError> {
         let value = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),
@@ -1392,7 +1392,7 @@ impl BuildsNs {
     }
 
     /// builds.shared_with_me
-    pub async fn shared_with_me(&self) -> Result<Vec<models::BuildList>, TransportError> {
+    pub async fn shared_with_me(&self) -> Result<models::BuildList, TransportError> {
         let value = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),
@@ -1721,7 +1721,7 @@ impl ProjectsNs {
     pub async fn projects_list(
         &self,
         params: models::ProjectsProjectsListParams,
-    ) -> Result<Vec<models::WorkspaceListResponse>, TransportError> {
+    ) -> Result<models::WorkspaceListResponse, TransportError> {
         let value = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),
@@ -1759,7 +1759,7 @@ impl ProjectsNs {
     pub async fn list(
         &self,
         params: models::ProjectsListParams,
-    ) -> Result<Vec<models::ProjectListResponse>, TransportError> {
+    ) -> Result<models::ProjectListResponse, TransportError> {
         let value = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),
@@ -1835,7 +1835,7 @@ impl RbacNs {
     pub async fn batch_resolve(
         &self,
         body: models::BatchResolveRequest,
-    ) -> Result<Vec<models::BatchResolveResponse>, TransportError> {
+    ) -> Result<models::BatchResolveResponse, TransportError> {
         let value = self
             .client
             .transport()
@@ -1958,7 +1958,7 @@ impl TicketsNs {
     pub async fn mine(
         &self,
         params: models::TicketsMineParams,
-    ) -> Result<Vec<models::TicketList>, TransportError> {
+    ) -> Result<models::TicketList, TransportError> {
         let value = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),
@@ -2085,7 +2085,7 @@ impl UsersNs {
     pub async fn batch(
         &self,
         body: models::BatchPublicProfilesRequest,
-    ) -> Result<Vec<models::BatchPublicProfilesResponse>, TransportError> {
+    ) -> Result<models::BatchPublicProfilesResponse, TransportError> {
         let value = self
             .client
             .transport()
@@ -2103,7 +2103,7 @@ impl UsersNs {
     pub async fn search(
         &self,
         params: models::UsersSearchParams,
-    ) -> Result<Vec<models::BatchPublicProfilesResponse>, TransportError> {
+    ) -> Result<models::BatchPublicProfilesResponse, TransportError> {
         let value = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),
@@ -2139,7 +2139,7 @@ impl UsersNs {
         &self,
         user_id: i64,
         params: models::UsersActivityListParams,
-    ) -> Result<Vec<models::UserRecentActivity>, TransportError> {
+    ) -> Result<models::UserRecentActivity, TransportError> {
         let value = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),
@@ -2315,7 +2315,7 @@ impl WhitelistFormsNs {
     pub async fn list(
         &self,
         params: models::WhitelistFormsListParams,
-    ) -> Result<Vec<models::WhitelistFormPage>, TransportError> {
+    ) -> Result<models::WhitelistFormPage, TransportError> {
         let value = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),

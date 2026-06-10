@@ -458,7 +458,7 @@ impl Project {
     }
 
     /// project.live
-    pub async fn live(&self) -> Result<Vec<models::ProjectLiveStatus>, TransportError> {
+    pub async fn live(&self) -> Result<models::ProjectLiveStatus, TransportError> {
         let value = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),
@@ -508,7 +508,7 @@ impl Project {
     pub async fn team_sync_targets(
         &self,
         params: models::ProjectTeamSyncTargetsParams,
-    ) -> Result<Vec<models::DiscordRoleTargets>, TransportError> {
+    ) -> Result<models::DiscordRoleTargets, TransportError> {
         let value = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),

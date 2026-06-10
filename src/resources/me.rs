@@ -247,7 +247,7 @@ impl Me {
     pub async fn minecraft_state(
         &self,
         params: models::MeMinecraftStateParams,
-    ) -> Result<Vec<models::MinecraftVerificationState>, TransportError> {
+    ) -> Result<models::MinecraftVerificationState, TransportError> {
         let value = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),
@@ -568,7 +568,7 @@ impl Me {
     pub async fn servers_issues(
         &self,
         params: models::MeServersIssuesParams,
-    ) -> Result<Vec<models::MyServerIssuesPage>, TransportError> {
+    ) -> Result<models::MyServerIssuesPage, TransportError> {
         let value = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),
