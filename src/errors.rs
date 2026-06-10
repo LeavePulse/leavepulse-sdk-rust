@@ -20,7 +20,7 @@ pub struct ProblemDetails {
     /// Human-readable explanation specific to this occurrence.
     pub detail: Option<String>,
     pub instance: Option<String>,
-    /// Stable machine-readable error code (e.g. `whitelist.not_found`).
+    /// Stable machine-readable error code, UPPER_SNAKE (e.g. `RESOURCE_NOT_FOUND`).
     pub code: Option<String>,
     pub timestamp: Option<String>,
     /// Correlation id for support / log lookup.
@@ -28,7 +28,8 @@ pub struct ProblemDetails {
     pub request_id: Option<String>,
     /// Originating service name.
     pub service: Option<String>,
-    /// Extra structured context, including per-field validation errors.
+    /// Extra structured context. For validation failures it holds
+    /// `{ "errors": [{ "key", "message", "source" }], "path" }`.
     pub details: Option<Value>,
 }
 
@@ -40,6 +41,86 @@ impl ProblemDetails {
         }
         serde_json::from_str(raw).ok()
     }
+}
+
+/// A single per-field validation failure, normalized from the backend's
+/// `details.errors` array (Litestar's `{ key, message, source }` shape).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct FieldError {
+    /// The offending field path (e.g. `email`, `body.address.city`).
+    pub field: String,
+    /// Human-readable validation message.
+    pub message: String,
+    /// Where it came from: `body` | `query` | `path` | …
+    pub source: Option<String>,
+}
+
+/// Extract normalized per-field validation errors from a problem's `details`.
+/// The backend reports them as `details.errors = [{ key, message, source }]`;
+/// legacy/other shapes (`details.fields` object, pydantic `{ loc, msg }`) are
+/// tolerated.
+pub fn field_errors_of(problem: Option<&ProblemDetails>) -> Vec<FieldError> {
+    let Some(details) = problem
+        .and_then(|p| p.details.as_ref())
+        .and_then(Value::as_object)
+    else {
+        return Vec::new();
+    };
+
+    let from_entry = |entry: &Value| -> Option<FieldError> {
+        let obj = entry.as_object()?;
+        let loc = obj
+            .get("key")
+            .or_else(|| obj.get("field"))
+            .or_else(|| obj.get("path"))
+            .or_else(|| obj.get("loc"));
+        let field = match loc {
+            Some(Value::Array(parts)) => parts
+                .iter()
+                .map(|p| {
+                    p.as_str()
+                        .map(str::to_owned)
+                        .unwrap_or_else(|| p.to_string())
+                })
+                .collect::<Vec<_>>()
+                .join("."),
+            Some(Value::String(s)) => s.clone(),
+            Some(other) => other.to_string(),
+            None => String::new(),
+        };
+        let message = obj
+            .get("message")
+            .or_else(|| obj.get("msg"))
+            .or_else(|| obj.get("detail"))
+            .and_then(Value::as_str)
+            .unwrap_or_default()
+            .to_owned();
+        if field.is_empty() && message.is_empty() {
+            return None;
+        }
+        let source = obj.get("source").and_then(Value::as_str).map(str::to_owned);
+        Some(FieldError {
+            field,
+            message,
+            source,
+        })
+    };
+
+    if let Some(Value::Array(errors)) = details.get("errors") {
+        return errors.iter().filter_map(from_entry).collect();
+    }
+    // Legacy `details.fields = { email: "msg" }` object shape.
+    if let Some(Value::Object(fields)) = details.get("fields") {
+        return fields
+            .iter()
+            .map(|(field, msg)| FieldError {
+                field: field.clone(),
+                message: msg.as_str().unwrap_or_default().to_owned(),
+                source: None,
+            })
+            .collect();
+    }
+    Vec::new()
 }
 
 /// The status-derived category of an [`HttpError`].
@@ -55,6 +136,9 @@ pub enum HttpErrorKind {
     NotFound,
     /// 409 — state conflict (e.g. duplicate, already-exists).
     Conflict,
+    /// 422 — semantic validation failure (the backend's primary validation
+    /// status, carrying `details.errors`).
+    Validation,
     /// 429 — rate limited; `retry_after` is the server-advised wait (s).
     RateLimited { retry_after: Option<f64> },
     /// 5xx — the server failed to fulfil a valid request.
@@ -71,6 +155,7 @@ impl HttpErrorKind {
             403 => Self::Forbidden,
             404 => Self::NotFound,
             409 => Self::Conflict,
+            422 => Self::Validation,
             429 => Self::RateLimited { retry_after },
             s if s >= 500 => Self::Server,
             _ => Self::Other,
@@ -115,22 +200,28 @@ impl HttpError {
         self.problem.as_ref().and_then(|p| p.code.as_deref())
     }
 
+    /// Whether the server's stable error code matches `code` — a transport-
+    /// agnostic check that survives status remapping (`err.is_code("SESSION_EXPIRED")`).
+    pub fn is_code(&self, code: &str) -> bool {
+        self.code() == Some(code)
+    }
+
     /// Correlation id for support, when present.
     pub fn request_id(&self) -> Option<&str> {
         self.problem.as_ref().and_then(|p| p.request_id.as_deref())
     }
 
-    /// Per-field validation errors (400), when the backend reported them.
-    pub fn fields(&self) -> Option<&serde_json::Map<String, Value>> {
-        let details = self.problem.as_ref()?.details.as_ref()?.as_object()?;
-        details
-            .get("fields")
-            .or_else(|| details.get("errors"))
-            .and_then(Value::as_object)
+    /// Normalized per-field validation errors, when the backend reported them
+    /// (populated for 400/422 validation failures).
+    pub fn field_errors(&self) -> Vec<FieldError> {
+        field_errors_of(self.problem.as_ref())
     }
 
     pub fn is_bad_request(&self) -> bool {
         self.kind == HttpErrorKind::BadRequest
+    }
+    pub fn is_validation(&self) -> bool {
+        self.kind == HttpErrorKind::Validation
     }
     pub fn is_unauthorized(&self) -> bool {
         self.kind == HttpErrorKind::Unauthorized
@@ -201,5 +292,67 @@ impl LeavePulseError {
             LeavePulseError::Http(h) => Some(h),
             _ => None,
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// The backend's real validation body: 422 + `details.errors` array of
+    /// `{key, message, source}`. The SDK must classify it as `Validation` and
+    /// normalize the field errors.
+    #[test]
+    fn parses_backend_validation_422() {
+        let raw = r#"{
+            "type": "urn:platform-api:error:validation_failed",
+            "title": "Request validation failed",
+            "status": 422,
+            "detail": "Request validation failed",
+            "code": "VALIDATION_FAILED",
+            "request_id": "abc-123",
+            "details": {
+                "errors": [
+                    {"key": "email", "message": "value is not a valid email", "source": "body"},
+                    {"key": "age", "message": "must be >= 0", "source": "body"}
+                ],
+                "path": null
+            },
+            "service": "platform-api"
+        }"#;
+        let err = HttpError::new(422, "POST", "/v1/users", raw.to_owned(), None);
+        assert!(err.is_validation(), "422 → Validation kind");
+        assert_eq!(err.code(), Some("VALIDATION_FAILED"));
+        assert!(err.is_code("VALIDATION_FAILED"));
+        assert_eq!(err.request_id(), Some("abc-123"));
+
+        let fields = err.field_errors();
+        assert_eq!(fields.len(), 2);
+        assert_eq!(fields[0].field, "email");
+        assert_eq!(fields[0].message, "value is not a valid email");
+        assert_eq!(fields[0].source.as_deref(), Some("body"));
+        assert_eq!(fields[1].field, "age");
+    }
+
+    /// A legacy `details.fields = { field: "msg" }` object is still tolerated.
+    #[test]
+    fn tolerates_legacy_fields_object() {
+        let raw =
+            r#"{"status":400,"code":"INVALID_INPUT","details":{"fields":{"name":"required"}}}"#;
+        let err = HttpError::new(400, "POST", "/x", raw.to_owned(), None);
+        let fields = err.field_errors();
+        assert_eq!(fields.len(), 1);
+        assert_eq!(fields[0].field, "name");
+        assert_eq!(fields[0].message, "required");
+    }
+
+    /// A non-validation error yields no field errors and the right kind.
+    #[test]
+    fn classifies_not_found_without_fields() {
+        let raw = r#"{"status":404,"code":"RESOURCE_NOT_FOUND","detail":"gone"}"#;
+        let err = HttpError::new(404, "GET", "/x", raw.to_owned(), None);
+        assert!(err.is_not_found());
+        assert!(err.is_code("RESOURCE_NOT_FOUND"));
+        assert!(err.field_errors().is_empty());
     }
 }

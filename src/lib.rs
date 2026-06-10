@@ -16,7 +16,9 @@ pub mod procedures;
 pub mod resources;
 
 pub use client::LeavePulse;
-pub use errors::{HttpError, HttpErrorKind, LeavePulseError, ProblemDetails};
+pub use errors::{
+    field_errors_of, FieldError, HttpError, HttpErrorKind, LeavePulseError, ProblemDetails,
+};
 pub use etag_store::{
     default_cache_key, fetch_cached, fetch_cached_or_throw, EtagEntry, EtagStore, FileEtagStore,
     MemoryEtagStore,
