@@ -4,6 +4,7 @@ use std::sync::Arc;
 use serde_json::Value;
 
 use crate::cache::{DataCell, IdentityMap};
+use crate::etag_store::{EtagStore, MemoryEtagStore};
 use crate::procedures::AdminNs;
 use crate::procedures::AuthNs;
 use crate::procedures::BillingNs;
@@ -172,19 +173,35 @@ impl FromCell for User {
 /// The LeavePulse SDK client.
 pub struct LeavePulse {
     transport: Box<dyn Transport>,
+    etag_store: Box<dyn EtagStore>,
     cache: IdentityMap,
 }
 
 impl LeavePulse {
+    /// Build a client with the default in-memory ETag store.
     pub fn new(transport: Box<dyn Transport>) -> Arc<Self> {
+        Self::with_etag_store(transport, Box::new(MemoryEtagStore::new()))
+    }
+
+    /// Build a client with a custom ETag store (e.g. a persistent
+    /// `FileEtagStore` for desktop apps so 304s survive restarts).
+    pub fn with_etag_store(
+        transport: Box<dyn Transport>,
+        etag_store: Box<dyn EtagStore>,
+    ) -> Arc<Self> {
         Arc::new(Self {
             transport,
+            etag_store,
             cache: IdentityMap::new(),
         })
     }
 
     pub(crate) fn transport(&self) -> &dyn Transport {
         self.transport.as_ref()
+    }
+
+    pub(crate) fn etag_store(&self) -> &dyn EtagStore {
+        self.etag_store.as_ref()
     }
 
     pub fn admin(self: &Arc<Self>) -> AdminNs {

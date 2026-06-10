@@ -147,4 +147,27 @@ impl Binding {
         let _: Binding = self.client.hydrate("Binding", data, None);
         Ok(())
     }
+
+    /// binding.entries.list
+    pub async fn entries_list(
+        &self,
+        binding_id: String,
+        params: models::BindingEntriesListParams,
+    ) -> Result<models::WhitelistDirectEntryPage, TransportError> {
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &resource::with_query(
+                &format!("/v1/whitelist/bindings/{}/direct/entries", binding_id),
+                &[
+                    ("page", params.page.map(|v| v.to_string())),
+                    ("per_page", params.per_page.map(|v| v.to_string())),
+                ],
+            ),
+            Channel::Platform,
+        )
+        .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
 }

@@ -223,4 +223,30 @@ impl Build {
         let _: Build = self.client.hydrate("Build", data, None);
         Ok(())
     }
+
+    /// build.collaborators.list
+    pub async fn collaborators_list(&self) -> Result<models::CollaboratorList, TransportError> {
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &format!("/v1/builds/{}/collaborators", self.id()),
+            Channel::Platform,
+        )
+        .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// build.config.url
+    pub async fn config_url(&self) -> Result<models::ConfigBlobRef, TransportError> {
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &format!("/v1/builds/{}/config", self.id()),
+            Channel::Platform,
+        )
+        .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
 }

@@ -7,6 +7,7 @@ use crate::cache::DataCell;
 use crate::client::LeavePulse;
 use crate::models;
 use crate::resource;
+use crate::resources::Ticket;
 use crate::transport::{Channel, Method, TransportError};
 
 /// Server resource.
@@ -874,5 +875,481 @@ impl Server {
             .await?;
         let _: Server = self.client.hydrate("Server", data, None);
         Ok(())
+    }
+
+    /// server.tickets.list
+    pub async fn tickets_list(
+        &self,
+        params: models::ServerTicketsListParams,
+    ) -> Result<Ticket, TransportError> {
+        let data = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &resource::with_query(
+                &format!("/v1/community/tickets/server/{}", self.id()),
+                &[
+                    ("page", params.page.map(|v| v.to_string())),
+                    ("limit", params.limit.map(|v| v.to_string())),
+                    ("status", params.status.map(|v| v.to_string())),
+                ],
+            ),
+            Channel::Platform,
+        )
+        .await?;
+        Ok(self.client.hydrate::<Ticket>("Ticket", data, Some("items")))
+    }
+
+    /// server.player_stats
+    pub async fn player_stats(
+        &self,
+        params: models::ServerPlayerStatsParams,
+    ) -> Result<models::PlayerStats, TransportError> {
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &resource::with_query(
+                &format!("/v1/monitoring/servers/{}/player-stats", self.id()),
+                &[
+                    ("user_id", params.user_id.map(|v| v.to_string())),
+                    (
+                        "minecraft_uuid",
+                        params.minecraft_uuid.map(|v| v.to_string()),
+                    ),
+                    (
+                        "minecraft_nick",
+                        params.minecraft_nick.map(|v| v.to_string()),
+                    ),
+                    (
+                        "named_server_id",
+                        params.named_server_id.map(|v| v.to_string()),
+                    ),
+                ],
+            ),
+            Channel::Platform,
+        )
+        .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// server.bot
+    pub async fn bot(&self) -> Result<models::ServerBot, TransportError> {
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &format!("/v1/servers/{}/bot", self.id()),
+            Channel::Platform,
+        )
+        .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// server.events.list
+    pub async fn events_list(
+        &self,
+        params: models::ServerEventsListParams,
+    ) -> Result<models::ServerEvents, TransportError> {
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &resource::with_query(
+                &format!("/v1/servers/{}/events", self.id()),
+                &[
+                    ("period", params.period.map(|v| v.to_string())),
+                    ("limit", params.limit.map(|v| v.to_string())),
+                    ("page", params.page.map(|v| v.to_string())),
+                    ("event_types", params.event_types.map(|v| v.to_string())),
+                    ("player", params.player.map(|v| v.to_string())),
+                ],
+            ),
+            Channel::Platform,
+        )
+        .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// server.history.list
+    pub async fn history_list(
+        &self,
+        params: models::ServerHistoryListParams,
+    ) -> Result<models::HistoryResponse, TransportError> {
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &resource::with_query(
+                &format!("/v1/servers/{}/history", self.id()),
+                &[("period", params.period.map(|v| v.to_string()))],
+            ),
+            Channel::Platform,
+        )
+        .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// server.host_risk_evidence
+    pub async fn host_risk_evidence(
+        &self,
+    ) -> Result<models::ServerHostRiskEvidence, TransportError> {
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &format!("/v1/servers/{}/host-risk/evidence", self.id()),
+            Channel::Platform,
+        )
+        .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// server.icons.list
+    pub async fn icons_list(&self) -> Result<models::IconHistory, TransportError> {
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &format!("/v1/servers/{}/icons/history", self.id()),
+            Channel::Platform,
+        )
+        .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// server.voting
+    pub async fn voting(&self) -> Result<models::VotingLinks, TransportError> {
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &format!("/v1/servers/{}/integrations/voting", self.id()),
+            Channel::Platform,
+        )
+        .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// server.launch_manifest
+    pub async fn launch_manifest(&self) -> Result<models::ServerLaunchManifest, TransportError> {
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &format!("/v1/servers/{}/launch-manifest", self.id()),
+            Channel::PlatformPublic,
+        )
+        .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// server.live
+    pub async fn live(&self) -> Result<models::LiveStatus, TransportError> {
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &format!("/v1/servers/{}/live", self.id()),
+            Channel::Platform,
+        )
+        .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// server.maintenance
+    pub async fn maintenance(&self) -> Result<models::ServerMaintenance, TransportError> {
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &format!("/v1/servers/{}/maintenance", self.id()),
+            Channel::Platform,
+        )
+        .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// server.ownership
+    pub async fn ownership(&self) -> Result<models::ServerOwnership, TransportError> {
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &format!("/v1/servers/{}/ownership", self.id()),
+            Channel::Platform,
+        )
+        .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// server.root
+    pub async fn root(&self) -> Result<models::ServerRoot, TransportError> {
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &format!("/v1/servers/{}/root", self.id()),
+            Channel::Platform,
+        )
+        .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// server.discord
+    pub async fn discord(&self) -> Result<models::DiscordLink, TransportError> {
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &format!("/v1/servers/{}/social/discord", self.id()),
+            Channel::Platform,
+        )
+        .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// server.social
+    pub async fn social(&self) -> Result<models::SocialLinks, TransportError> {
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &format!("/v1/servers/{}/social/links", self.id()),
+            Channel::Platform,
+        )
+        .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// server.stats
+    pub async fn stats(
+        &self,
+        params: models::ServerStatsParams,
+    ) -> Result<models::ServerStats, TransportError> {
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &resource::with_query(
+                &format!("/v1/servers/{}/stats", self.id()),
+                &[("period", params.period.map(|v| v.to_string()))],
+            ),
+            Channel::Platform,
+        )
+        .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// server.subservers.list
+    pub async fn subservers_list(&self) -> Result<models::ServerSubservers, TransportError> {
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &format!("/v1/servers/{}/subservers", self.id()),
+            Channel::Platform,
+        )
+        .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// server.team
+    pub async fn team(&self) -> Result<models::ServerTeamPublic, TransportError> {
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &format!("/v1/servers/{}/team", self.id()),
+            Channel::Platform,
+        )
+        .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// server.team_sync.targets
+    pub async fn team_sync_targets(
+        &self,
+        params: models::ServerTeamSyncTargetsParams,
+    ) -> Result<models::MinecraftGroupTargets, TransportError> {
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &resource::with_query(
+                &format!("/v1/servers/{}/team-sync/minecraft-targets", self.id()),
+                &[("role_id", params.role_id.map(|v| v.to_string()))],
+            ),
+            Channel::Platform,
+        )
+        .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// server.team.manage
+    pub async fn team_manage(&self) -> Result<models::ServerTeamManage, TransportError> {
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &format!("/v1/servers/{}/team/manage", self.id()),
+            Channel::Platform,
+        )
+        .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// server.telemetry
+    pub async fn telemetry(
+        &self,
+        params: models::ServerTelemetryParams,
+    ) -> Result<models::ServerTelemetry, TransportError> {
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &resource::with_query(
+                &format!("/v1/servers/{}/telemetry", self.id()),
+                &[
+                    ("period", params.period.map(|v| v.to_string())),
+                    ("source", params.source.map(|v| v.to_string())),
+                ],
+            ),
+            Channel::Platform,
+        )
+        .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// server.translations.list
+    pub async fn translations_list(&self) -> Result<models::ServerTranslations, TransportError> {
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &format!("/v1/servers/{}/translations", self.id()),
+            Channel::Platform,
+        )
+        .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// server.whitelist.public
+    pub async fn whitelist_public(
+        &self,
+        params: models::ServerWhitelistPublicParams,
+    ) -> Result<models::ServerWhitelistPublicConfig, TransportError> {
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &resource::with_query(
+                &format!("/v1/servers/{}/whitelist", self.id()),
+                &[
+                    ("binding_id", params.binding_id.map(|v| v.to_string())),
+                    ("locale", params.locale.map(|v| v.to_string())),
+                ],
+            ),
+            Channel::Platform,
+        )
+        .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// server.whitelist.applications
+    pub async fn whitelist_applications(
+        &self,
+        params: models::ServerWhitelistApplicationsParams,
+    ) -> Result<models::WhitelistApplicationList, TransportError> {
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &resource::with_query(
+                &format!("/v1/servers/{}/whitelist/applications", self.id()),
+                &[
+                    ("status", params.status.map(|v| v.to_string())),
+                    ("page", params.page.map(|v| v.to_string())),
+                    ("per_page", params.per_page.map(|v| v.to_string())),
+                ],
+            ),
+            Channel::Platform,
+        )
+        .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// server.whitelist
+    pub async fn whitelist(&self) -> Result<models::WhitelistConfig, TransportError> {
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &format!("/v1/servers/{}/whitelist/config", self.id()),
+            Channel::Platform,
+        )
+        .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// server.whitelist.direct
+    pub async fn whitelist_direct(
+        &self,
+        params: models::ServerWhitelistDirectParams,
+    ) -> Result<models::WhitelistDirectEntryPage, TransportError> {
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &resource::with_query(
+                &format!("/v1/servers/{}/whitelist/direct", self.id()),
+                &[
+                    ("page", params.page.map(|v| v.to_string())),
+                    ("per_page", params.per_page.map(|v| v.to_string())),
+                ],
+            ),
+            Channel::Platform,
+        )
+        .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// server.whitelist.imports
+    pub async fn whitelist_imports(
+        &self,
+        params: models::ServerWhitelistImportsParams,
+    ) -> Result<models::WhitelistImportJobPage, TransportError> {
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &resource::with_query(
+                &format!("/v1/servers/{}/whitelist/imports", self.id()),
+                &[
+                    ("status", params.status.map(|v| v.to_string())),
+                    ("page", params.page.map(|v| v.to_string())),
+                    ("per_page", params.per_page.map(|v| v.to_string())),
+                ],
+            ),
+            Channel::Platform,
+        )
+        .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// server.whitelist.import
+    pub async fn whitelist_import(
+        &self,
+        job_id: String,
+    ) -> Result<models::WhitelistImportJob, TransportError> {
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &format!("/v1/servers/{}/whitelist/imports/{}", self.id(), job_id),
+            Channel::Platform,
+        )
+        .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 }

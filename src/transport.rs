@@ -76,6 +76,18 @@ pub trait Transport: Send + Sync {
         channel: Channel,
         body: Option<Value>,
     ) -> Result<Value, TransportError>;
+
+    /// Conditional GET for the ETag cache: sends `If-None-Match` when
+    /// `prior_etag` is given and treats `304`/`404` as outcomes rather than
+    /// errors. Lives on the trait so the generated client (which holds a
+    /// `Box<dyn Transport>`) can reach it; `fetch_cached` dispatches through it.
+    async fn conditional(
+        &self,
+        method: Method,
+        path: &str,
+        channel: Channel,
+        prior_etag: Option<&str>,
+    ) -> Result<ConditionalOutcome, TransportError>;
 }
 
 /// Tuning for a transport's automatic retry behaviour.
@@ -211,6 +223,17 @@ impl Transport for BearerTransport {
             return Err(LeavePulseError::from(error));
         }
     }
+
+    async fn conditional(
+        &self,
+        method: Method,
+        path: &str,
+        channel: Channel,
+        prior_etag: Option<&str>,
+    ) -> Result<ConditionalOutcome, TransportError> {
+        // Disambiguate from this trait method: call the inherent one.
+        BearerTransport::conditional(self, method, path, channel, prior_etag).await
+    }
 }
 
 /// Outcome of a conditional (`If-None-Match`) request, mirroring the launcher's
@@ -228,9 +251,13 @@ pub enum ConditionalOutcome {
 }
 
 impl BearerTransport {
-    /// Like [`Transport::request`] but for caching: sends `If-None-Match` when
-    /// `prior_etag` is given and treats `304`/`404` as outcomes rather than
-    /// errors, surfacing the response ETag. Retries 429/5xx like `request`.
+    /// Conditional GET: sends `If-None-Match` when `prior_etag` is given and
+    /// treats `304`/`404` as outcomes rather than errors, surfacing the response
+    /// ETag. Retries 429/5xx like `request`. Kept as an inherent method so
+    /// callers holding a concrete `BearerTransport` and wanting the
+    /// `ConditionalOutcome` variant (e.g. the launcher's launch-manifest fetch,
+    /// which must observe `NotModified`) reach it directly; the `Transport`
+    /// trait method delegates here for `Box<dyn Transport>` callers.
     pub async fn conditional(
         &self,
         method: Method,

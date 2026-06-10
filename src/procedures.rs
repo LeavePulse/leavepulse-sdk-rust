@@ -23,33 +23,32 @@ impl AdminDiscoveryNs {
         &self,
         params: models::AdminDiscoveryCandidatesParams,
     ) -> Result<Value, TransportError> {
-        self.client
-            .transport()
-            .request(
-                Method::Get,
-                &resource::with_query(
-                    "/v1/admin/discovery/candidates",
-                    &[
-                        ("page", params.page.map(|v| v.to_string())),
-                        ("limit", params.limit.map(|v| v.to_string())),
-                        ("status", params.status.map(|v| v.to_string())),
-                        ("search", params.search.map(|v| v.to_string())),
-                        ("source", params.source.map(|v| v.to_string())),
-                        ("edition", params.edition.map(|v| v.to_string())),
-                        ("region", params.region.map(|v| v.to_string())),
-                        ("min_sources", params.min_sources.map(|v| v.to_string())),
-                        ("min_mc_online", params.min_mc_online.map(|v| v.to_string())),
-                        (
-                            "min_discord_members",
-                            params.min_discord_members.map(|v| v.to_string()),
-                        ),
-                        ("sort", params.sort.map(|v| v.to_string())),
-                    ],
-                ),
-                Channel::Platform,
-                None,
-            )
-            .await
+        crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &resource::with_query(
+                "/v1/admin/discovery/candidates",
+                &[
+                    ("page", params.page.map(|v| v.to_string())),
+                    ("limit", params.limit.map(|v| v.to_string())),
+                    ("status", params.status.map(|v| v.to_string())),
+                    ("search", params.search.map(|v| v.to_string())),
+                    ("source", params.source.map(|v| v.to_string())),
+                    ("edition", params.edition.map(|v| v.to_string())),
+                    ("region", params.region.map(|v| v.to_string())),
+                    ("min_sources", params.min_sources.map(|v| v.to_string())),
+                    ("min_mc_online", params.min_mc_online.map(|v| v.to_string())),
+                    (
+                        "min_discord_members",
+                        params.min_discord_members.map(|v| v.to_string()),
+                    ),
+                    ("sort", params.sort.map(|v| v.to_string())),
+                ],
+            ),
+            Channel::Platform,
+        )
+        .await
     }
 
     /// admin.discovery.edit
@@ -131,47 +130,44 @@ impl AdminDiscoveryNs {
         candidate_id: i64,
         params: models::AdminDiscoveryObservationsParams,
     ) -> Result<Value, TransportError> {
-        self.client
-            .transport()
-            .request(
-                Method::Get,
-                &resource::with_query(
-                    &format!(
-                        "/v1/admin/discovery/candidates/{}/observations",
-                        candidate_id
-                    ),
-                    &[("limit", params.limit.map(|v| v.to_string()))],
+        crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &resource::with_query(
+                &format!(
+                    "/v1/admin/discovery/candidates/{}/observations",
+                    candidate_id
                 ),
-                Channel::Platform,
-                None,
-            )
-            .await
+                &[("limit", params.limit.map(|v| v.to_string()))],
+            ),
+            Channel::Platform,
+        )
+        .await
     }
 
     /// admin.discovery.preview
     pub async fn preview(&self, candidate_id: i64) -> Result<Value, TransportError> {
-        self.client
-            .transport()
-            .request(
-                Method::Get,
-                &format!("/v1/admin/discovery/candidates/{}/preview", candidate_id),
-                Channel::Platform,
-                None,
-            )
-            .await
+        crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &format!("/v1/admin/discovery/candidates/{}/preview", candidate_id),
+            Channel::Platform,
+        )
+        .await
     }
 
     /// admin.discovery.sources
     pub async fn sources(&self) -> Result<Value, TransportError> {
-        self.client
-            .transport()
-            .request(
-                Method::Get,
-                "/v1/admin/discovery/sources",
-                Channel::Platform,
-                None,
-            )
-            .await
+        crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            "/v1/admin/discovery/sources",
+            Channel::Platform,
+        )
+        .await
     }
 }
 
@@ -191,22 +187,20 @@ impl AdminOverridesNs {
         server_id: i64,
         params: models::AdminOverridesListParams,
     ) -> Result<Vec<models::StatusOverrideItem>, TransportError> {
-        let value = self
-            .client
-            .transport()
-            .request(
-                Method::Get,
-                &resource::with_query(
-                    &format!("/v1/admin/servers/{}/status-overrides", server_id),
-                    &[
-                        ("start", params.start.map(|v| v.to_string())),
-                        ("end", params.end.map(|v| v.to_string())),
-                    ],
-                ),
-                Channel::Platform,
-                None,
-            )
-            .await?;
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &resource::with_query(
+                &format!("/v1/admin/servers/{}/status-overrides", server_id),
+                &[
+                    ("start", params.start.map(|v| v.to_string())),
+                    ("end", params.end.map(|v| v.to_string())),
+                ],
+            ),
+            Channel::Platform,
+        )
+        .await?;
         serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
@@ -267,23 +261,21 @@ impl AdminPlayersNs {
         &self,
         params: models::AdminPlayersSearchParams,
     ) -> Result<models::PlayerSearchPage, TransportError> {
-        let value = self
-            .client
-            .transport()
-            .request(
-                Method::Get,
-                &resource::with_query(
-                    "/v1/admin/players",
-                    &[
-                        ("q", params.q.map(|v| v.to_string())),
-                        ("page", params.page.map(|v| v.to_string())),
-                        ("per_page", params.per_page.map(|v| v.to_string())),
-                    ],
-                ),
-                Channel::Platform,
-                None,
-            )
-            .await?;
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &resource::with_query(
+                "/v1/admin/players",
+                &[
+                    ("q", params.q.map(|v| v.to_string())),
+                    ("page", params.page.map(|v| v.to_string())),
+                    ("per_page", params.per_page.map(|v| v.to_string())),
+                ],
+            ),
+            Channel::Platform,
+        )
+        .await?;
         serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 }
@@ -303,23 +295,21 @@ impl AdminProjectsNs {
         &self,
         params: models::AdminProjectsListParams,
     ) -> Result<models::AdminProjectListResponse, TransportError> {
-        let value = self
-            .client
-            .transport()
-            .request(
-                Method::Get,
-                &resource::with_query(
-                    "/v1/admin/projects",
-                    &[
-                        ("q", params.q.map(|v| v.to_string())),
-                        ("page", params.page.map(|v| v.to_string())),
-                        ("per_page", params.per_page.map(|v| v.to_string())),
-                    ],
-                ),
-                Channel::Platform,
-                None,
-            )
-            .await?;
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &resource::with_query(
+                "/v1/admin/projects",
+                &[
+                    ("q", params.q.map(|v| v.to_string())),
+                    ("page", params.page.map(|v| v.to_string())),
+                    ("per_page", params.per_page.map(|v| v.to_string())),
+                ],
+            ),
+            Channel::Platform,
+        )
+        .await?;
         serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
@@ -455,11 +445,14 @@ impl AdminRolesNs {
 
     /// admin.roles.list
     pub async fn list(&self) -> Result<models::AdminRoleListResponse, TransportError> {
-        let value = self
-            .client
-            .transport()
-            .request(Method::Get, "/v1/admin/roles", Channel::Platform, None)
-            .await?;
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            "/v1/admin/roles",
+            Channel::Platform,
+        )
+        .await?;
         serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
@@ -534,23 +527,21 @@ impl AdminServersNs {
         &self,
         params: models::AdminServersListParams,
     ) -> Result<models::AdminServerListResponse, TransportError> {
-        let value = self
-            .client
-            .transport()
-            .request(
-                Method::Get,
-                &resource::with_query(
-                    "/v1/admin/servers",
-                    &[
-                        ("page", params.page.map(|v| v.to_string())),
-                        ("per_page", params.per_page.map(|v| v.to_string())),
-                        ("q", params.q.map(|v| v.to_string())),
-                    ],
-                ),
-                Channel::Platform,
-                None,
-            )
-            .await?;
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &resource::with_query(
+                "/v1/admin/servers",
+                &[
+                    ("page", params.page.map(|v| v.to_string())),
+                    ("per_page", params.per_page.map(|v| v.to_string())),
+                    ("q", params.q.map(|v| v.to_string())),
+                ],
+            ),
+            Channel::Platform,
+        )
+        .await?;
         serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
@@ -574,16 +565,14 @@ impl AdminServersNs {
 
     /// admin.servers.stats
     pub async fn stats(&self) -> Result<models::GlobalServerStats, TransportError> {
-        let value = self
-            .client
-            .transport()
-            .request(
-                Method::Get,
-                "/v1/admin/servers/stats",
-                Channel::Platform,
-                None,
-            )
-            .await?;
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            "/v1/admin/servers/stats",
+            Channel::Platform,
+        )
+        .await?;
         serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
@@ -666,16 +655,14 @@ impl AdminSystemNs {
 
     /// admin.system.health
     pub async fn health(&self) -> Result<models::ServicesHealthResponse, TransportError> {
-        let value = self
-            .client
-            .transport()
-            .request(
-                Method::Get,
-                "/v1/admin/system/services-health",
-                Channel::Platform,
-                None,
-            )
-            .await?;
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            "/v1/admin/system/services-health",
+            Channel::Platform,
+        )
+        .await?;
         serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 }
@@ -695,23 +682,21 @@ impl AdminUsersNs {
         &self,
         params: models::AdminUsersListParams,
     ) -> Result<models::AdminUserListResponse, TransportError> {
-        let value = self
-            .client
-            .transport()
-            .request(
-                Method::Get,
-                &resource::with_query(
-                    "/v1/admin/users",
-                    &[
-                        ("page", params.page.map(|v| v.to_string())),
-                        ("per_page", params.per_page.map(|v| v.to_string())),
-                        ("q", params.q.map(|v| v.to_string())),
-                    ],
-                ),
-                Channel::Platform,
-                None,
-            )
-            .await?;
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &resource::with_query(
+                "/v1/admin/users",
+                &[
+                    ("page", params.page.map(|v| v.to_string())),
+                    ("per_page", params.per_page.map(|v| v.to_string())),
+                    ("q", params.q.map(|v| v.to_string())),
+                ],
+            ),
+            Channel::Platform,
+        )
+        .await?;
         serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
@@ -720,16 +705,14 @@ impl AdminUsersNs {
         &self,
         uuid: String,
     ) -> Result<models::AdminUserDetail, TransportError> {
-        let value = self
-            .client
-            .transport()
-            .request(
-                Method::Get,
-                &format!("/v1/admin/users/by-minecraft-uuid/{}", uuid),
-                Channel::Platform,
-                None,
-            )
-            .await?;
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &format!("/v1/admin/users/by-minecraft-uuid/{}", uuid),
+            Channel::Platform,
+        )
+        .await?;
         serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
@@ -738,37 +721,33 @@ impl AdminUsersNs {
         &self,
         params: models::AdminUsersSearchParams,
     ) -> Result<models::AdminUserListResponse, TransportError> {
-        let value = self
-            .client
-            .transport()
-            .request(
-                Method::Get,
-                &resource::with_query(
-                    "/v1/admin/users/search",
-                    &[
-                        ("q", params.q.map(|v| v.to_string())),
-                        ("limit", params.limit.map(|v| v.to_string())),
-                    ],
-                ),
-                Channel::Platform,
-                None,
-            )
-            .await?;
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &resource::with_query(
+                "/v1/admin/users/search",
+                &[
+                    ("q", params.q.map(|v| v.to_string())),
+                    ("limit", params.limit.map(|v| v.to_string())),
+                ],
+            ),
+            Channel::Platform,
+        )
+        .await?;
         serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// admin.users.get
     pub async fn get(&self, user_id: i64) -> Result<models::AdminUserDetail, TransportError> {
-        let value = self
-            .client
-            .transport()
-            .request(
-                Method::Get,
-                &format!("/v1/admin/users/{}", user_id),
-                Channel::Platform,
-                None,
-            )
-            .await?;
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &format!("/v1/admin/users/{}", user_id),
+            Channel::Platform,
+        )
+        .await?;
         serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
@@ -876,16 +855,14 @@ impl AdminUsersNs {
 
     /// admin.users.roles
     pub async fn roles(&self, user_id: i64) -> Result<models::UserRolesResponse, TransportError> {
-        let value = self
-            .client
-            .transport()
-            .request(
-                Method::Get,
-                &format!("/v1/admin/users/{}/roles", user_id),
-                Channel::Platform,
-                None,
-            )
-            .await?;
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &format!("/v1/admin/users/{}/roles", user_id),
+            Channel::Platform,
+        )
+        .await?;
         serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
@@ -929,16 +906,14 @@ impl AdminUsersNs {
 
     /// admin.users.sessions
     pub async fn sessions(&self, user_id: i64) -> Result<models::SessionList, TransportError> {
-        let value = self
-            .client
-            .transport()
-            .request(
-                Method::Get,
-                &format!("/v1/admin/users/{}/sessions", user_id),
-                Channel::Platform,
-                None,
-            )
-            .await?;
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &format!("/v1/admin/users/{}/sessions", user_id),
+            Channel::Platform,
+        )
+        .await?;
         serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 }
@@ -1121,16 +1096,14 @@ impl AuthOauthNs {
         &self,
         provider: String,
     ) -> Result<models::OAuthStartResponse, TransportError> {
-        let value = self
-            .client
-            .transport()
-            .request(
-                Method::Get,
-                &format!("/auth/oauth/{}/start", provider),
-                Channel::Auth,
-                None,
-            )
-            .await?;
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &format!("/auth/oauth/{}/start", provider),
+            Channel::Auth,
+        )
+        .await?;
         serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 }
@@ -1243,22 +1216,20 @@ impl BillingOrdersNs {
         &self,
         params: models::BillingOrdersListParams,
     ) -> Result<models::OrderList, TransportError> {
-        let value = self
-            .client
-            .transport()
-            .request(
-                Method::Get,
-                &resource::with_query(
-                    "/v1/billing/orders",
-                    &[
-                        ("page", params.page.map(|v| v.to_string())),
-                        ("limit", params.limit.map(|v| v.to_string())),
-                    ],
-                ),
-                Channel::Platform,
-                None,
-            )
-            .await?;
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &resource::with_query(
+                "/v1/billing/orders",
+                &[
+                    ("page", params.page.map(|v| v.to_string())),
+                    ("limit", params.limit.map(|v| v.to_string())),
+                ],
+            ),
+            Channel::Platform,
+        )
+        .await?;
         serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 }
@@ -1275,11 +1246,14 @@ impl BillingProductsNs {
 
     /// billing.products.list
     pub async fn list(&self) -> Result<Vec<models::Product>, TransportError> {
-        let value = self
-            .client
-            .transport()
-            .request(Method::Get, "/v1/billing/products", Channel::Platform, None)
-            .await?;
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            "/v1/billing/products",
+            Channel::Platform,
+        )
+        .await?;
         serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 }
@@ -1299,22 +1273,20 @@ impl BillingSubscriptionsNs {
         &self,
         params: models::BillingSubscriptionsListParams,
     ) -> Result<models::SubscriptionList, TransportError> {
-        let value = self
-            .client
-            .transport()
-            .request(
-                Method::Get,
-                &resource::with_query(
-                    "/v1/billing/subscriptions",
-                    &[
-                        ("page", params.page.map(|v| v.to_string())),
-                        ("limit", params.limit.map(|v| v.to_string())),
-                    ],
-                ),
-                Channel::Platform,
-                None,
-            )
-            .await?;
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &resource::with_query(
+                "/v1/billing/subscriptions",
+                &[
+                    ("page", params.page.map(|v| v.to_string())),
+                    ("limit", params.limit.map(|v| v.to_string())),
+                ],
+            ),
+            Channel::Platform,
+        )
+        .await?;
         serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 }
@@ -1408,31 +1380,27 @@ impl BuildsNs {
 
     /// builds.preview
     pub async fn preview(&self, share_token: String) -> Result<models::Build, TransportError> {
-        let value = self
-            .client
-            .transport()
-            .request(
-                Method::Get,
-                &format!("/v1/builds/preview/{}", share_token),
-                Channel::PlatformPublic,
-                None,
-            )
-            .await?;
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &format!("/v1/builds/preview/{}", share_token),
+            Channel::PlatformPublic,
+        )
+        .await?;
         serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// builds.shared_with_me
     pub async fn shared_with_me(&self) -> Result<models::BuildList, TransportError> {
-        let value = self
-            .client
-            .transport()
-            .request(
-                Method::Get,
-                "/v1/builds/shared-with-me",
-                Channel::Platform,
-                None,
-            )
-            .await?;
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            "/v1/builds/shared-with-me",
+            Channel::Platform,
+        )
+        .await?;
         serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 }
@@ -1470,19 +1438,17 @@ impl DiscordLinkNs {
         &self,
         params: models::DiscordLinkSessionParams,
     ) -> Result<models::LinkSession, TransportError> {
-        let value = self
-            .client
-            .transport()
-            .request(
-                Method::Get,
-                &resource::with_query(
-                    "/v1/discord/link/session",
-                    &[("state", params.state.map(|v| v.to_string()))],
-                ),
-                Channel::PlatformPublic,
-                None,
-            )
-            .await?;
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &resource::with_query(
+                "/v1/discord/link/session",
+                &[("state", params.state.map(|v| v.to_string()))],
+            ),
+            Channel::PlatformPublic,
+        )
+        .await?;
         serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
@@ -1532,16 +1498,14 @@ impl MonitoringMeNs {
 
     /// monitoring.me.stats
     pub async fn stats(&self) -> Result<models::MyDashboardStats, TransportError> {
-        let value = self
-            .client
-            .transport()
-            .request(
-                Method::Get,
-                "/v1/monitoring/me/stats",
-                Channel::Platform,
-                None,
-            )
-            .await?;
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            "/v1/monitoring/me/stats",
+            Channel::Platform,
+        )
+        .await?;
         serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 }
@@ -1558,16 +1522,14 @@ impl MonitoringMeStatsNs {
 
     /// monitoring.me.stats.unverified
     pub async fn unverified(&self) -> Result<models::MyDashboardStats, TransportError> {
-        let value = self
-            .client
-            .transport()
-            .request(
-                Method::Get,
-                "/v1/monitoring/me/stats/unverified",
-                Channel::Platform,
-                None,
-            )
-            .await?;
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            "/v1/monitoring/me/stats/unverified",
+            Channel::Platform,
+        )
+        .await?;
         serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 }
@@ -1592,16 +1554,14 @@ impl MonitoringNs {
 
     /// monitoring.landing
     pub async fn landing(&self) -> Result<models::LandingStats, TransportError> {
-        let value = self
-            .client
-            .transport()
-            .request(
-                Method::Get,
-                "/v1/monitoring/landing",
-                Channel::Platform,
-                None,
-            )
-            .await?;
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            "/v1/monitoring/landing",
+            Channel::Platform,
+        )
+        .await?;
         serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 }
@@ -1668,42 +1628,38 @@ impl ProjectsNs {
         &self,
         params: models::ProjectsStatsParams,
     ) -> Result<models::ProjectFilterStats, TransportError> {
-        let value = self
-            .client
-            .transport()
-            .request(
-                Method::Get,
-                &resource::with_query(
-                    "/v1/projects/stats",
-                    &[
-                        ("q", params.q.map(|v| v.to_string())),
-                        ("edition", params.edition.map(|v| v.to_string())),
-                        ("access", params.access.map(|v| v.to_string())),
-                        ("features", params.features.map(|v| v.to_string())),
-                        ("region", params.region.map(|v| v.to_string())),
-                        ("hosting", params.hosting.map(|v| v.to_string())),
-                        ("verified", params.verified.map(|v| v.to_string())),
-                    ],
-                ),
-                Channel::PlatformPublic,
-                None,
-            )
-            .await?;
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &resource::with_query(
+                "/v1/projects/stats",
+                &[
+                    ("q", params.q.map(|v| v.to_string())),
+                    ("edition", params.edition.map(|v| v.to_string())),
+                    ("access", params.access.map(|v| v.to_string())),
+                    ("features", params.features.map(|v| v.to_string())),
+                    ("region", params.region.map(|v| v.to_string())),
+                    ("hosting", params.hosting.map(|v| v.to_string())),
+                    ("verified", params.verified.map(|v| v.to_string())),
+                ],
+            ),
+            Channel::PlatformPublic,
+        )
+        .await?;
         serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// projects.bridge
     pub async fn bridge(&self, server_id: i64) -> Result<models::BridgeSettings, TransportError> {
-        let value = self
-            .client
-            .transport()
-            .request(
-                Method::Get,
-                &format!("/v1/discord/servers/{}/bridge", server_id),
-                Channel::Platform,
-                None,
-            )
-            .await?;
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &format!("/v1/discord/servers/{}/bridge", server_id),
+            Channel::Platform,
+        )
+        .await?;
         serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
@@ -1750,16 +1706,14 @@ impl ProjectsNs {
         &self,
         server_id: i64,
     ) -> Result<models::RoleCatalog, TransportError> {
-        let value = self
-            .client
-            .transport()
-            .request(
-                Method::Get,
-                &format!("/v1/discord/servers/{}/roles-catalog", server_id),
-                Channel::Platform,
-                None,
-            )
-            .await?;
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &format!("/v1/discord/servers/{}/roles-catalog", server_id),
+            Channel::Platform,
+        )
+        .await?;
         serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
@@ -1768,22 +1722,20 @@ impl ProjectsNs {
         &self,
         params: models::ProjectsProjectsListParams,
     ) -> Result<models::WorkspaceListResponse, TransportError> {
-        let value = self
-            .client
-            .transport()
-            .request(
-                Method::Get,
-                &resource::with_query(
-                    "/v1/me/projects",
-                    &[
-                        ("page", params.page.map(|v| v.to_string())),
-                        ("per_page", params.per_page.map(|v| v.to_string())),
-                    ],
-                ),
-                Channel::Platform,
-                None,
-            )
-            .await?;
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &resource::with_query(
+                "/v1/me/projects",
+                &[
+                    ("page", params.page.map(|v| v.to_string())),
+                    ("per_page", params.per_page.map(|v| v.to_string())),
+                ],
+            ),
+            Channel::Platform,
+        )
+        .await?;
         serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
@@ -1792,16 +1744,14 @@ impl ProjectsNs {
         &self,
         project_ref: String,
     ) -> Result<models::WorkspaceResolveResponse, TransportError> {
-        let value = self
-            .client
-            .transport()
-            .request(
-                Method::Get,
-                &format!("/v1/me/projects/resolve/{}", project_ref),
-                Channel::Platform,
-                None,
-            )
-            .await?;
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &format!("/v1/me/projects/resolve/{}", project_ref),
+            Channel::Platform,
+        )
+        .await?;
         serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
@@ -1810,31 +1760,29 @@ impl ProjectsNs {
         &self,
         params: models::ProjectsListParams,
     ) -> Result<models::ProjectListResponse, TransportError> {
-        let value = self
-            .client
-            .transport()
-            .request(
-                Method::Get,
-                &resource::with_query(
-                    "/v1/projects",
-                    &[
-                        ("q", params.q.map(|v| v.to_string())),
-                        ("edition", params.edition.map(|v| v.to_string())),
-                        ("access", params.access.map(|v| v.to_string())),
-                        ("features", params.features.map(|v| v.to_string())),
-                        ("region", params.region.map(|v| v.to_string())),
-                        ("hosting", params.hosting.map(|v| v.to_string())),
-                        ("verified", params.verified.map(|v| v.to_string())),
-                        ("has_build", params.has_build.map(|v| v.to_string())),
-                        ("page", params.page.map(|v| v.to_string())),
-                        ("per_page", params.per_page.map(|v| v.to_string())),
-                        ("sort", params.sort.map(|v| v.to_string())),
-                    ],
-                ),
-                Channel::PlatformPublic,
-                None,
-            )
-            .await?;
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &resource::with_query(
+                "/v1/projects",
+                &[
+                    ("q", params.q.map(|v| v.to_string())),
+                    ("edition", params.edition.map(|v| v.to_string())),
+                    ("access", params.access.map(|v| v.to_string())),
+                    ("features", params.features.map(|v| v.to_string())),
+                    ("region", params.region.map(|v| v.to_string())),
+                    ("hosting", params.hosting.map(|v| v.to_string())),
+                    ("verified", params.verified.map(|v| v.to_string())),
+                    ("has_build", params.has_build.map(|v| v.to_string())),
+                    ("page", params.page.map(|v| v.to_string())),
+                    ("per_page", params.per_page.map(|v| v.to_string())),
+                    ("sort", params.sort.map(|v| v.to_string())),
+                ],
+            ),
+            Channel::PlatformPublic,
+        )
+        .await?;
         serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
@@ -1861,16 +1809,14 @@ impl ProjectsNs {
         &self,
         project_ref: String,
     ) -> Result<models::ProjectResolveResponse, TransportError> {
-        let value = self
-            .client
-            .transport()
-            .request(
-                Method::Get,
-                &format!("/v1/projects/resolve/{}", project_ref),
-                Channel::PlatformPublic,
-                None,
-            )
-            .await?;
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &format!("/v1/projects/resolve/{}", project_ref),
+            Channel::PlatformPublic,
+        )
+        .await?;
         serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 }
@@ -1916,16 +1862,14 @@ impl ServersNs {
 
     /// servers.resolve
     pub async fn resolve(&self, server_ref: String) -> Result<models::ServerCard, TransportError> {
-        let value = self
-            .client
-            .transport()
-            .request(
-                Method::Get,
-                &format!("/v1/servers/resolve/{}", server_ref),
-                Channel::PlatformPublic,
-                None,
-            )
-            .await?;
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &format!("/v1/servers/resolve/{}", server_ref),
+            Channel::PlatformPublic,
+        )
+        .await?;
         serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 }
@@ -1945,38 +1889,39 @@ impl StatsNs {
         &self,
         params: models::StatsFilterParams,
     ) -> Result<models::FilterStats, TransportError> {
-        let value = self
-            .client
-            .transport()
-            .request(
-                Method::Get,
-                &resource::with_query(
-                    "/v1/stats/filter",
-                    &[
-                        ("q", params.q.map(|v| v.to_string())),
-                        ("edition", params.edition.map(|v| v.to_string())),
-                        ("access", params.access.map(|v| v.to_string())),
-                        ("features", params.features.map(|v| v.to_string())),
-                        ("region", params.region.map(|v| v.to_string())),
-                        ("hosting", params.hosting.map(|v| v.to_string())),
-                        ("verified", params.verified.map(|v| v.to_string())),
-                        ("role", params.role.map(|v| v.to_string())),
-                    ],
-                ),
-                Channel::Platform,
-                None,
-            )
-            .await?;
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &resource::with_query(
+                "/v1/stats/filter",
+                &[
+                    ("q", params.q.map(|v| v.to_string())),
+                    ("edition", params.edition.map(|v| v.to_string())),
+                    ("access", params.access.map(|v| v.to_string())),
+                    ("features", params.features.map(|v| v.to_string())),
+                    ("region", params.region.map(|v| v.to_string())),
+                    ("hosting", params.hosting.map(|v| v.to_string())),
+                    ("verified", params.verified.map(|v| v.to_string())),
+                    ("role", params.role.map(|v| v.to_string())),
+                ],
+            ),
+            Channel::Platform,
+        )
+        .await?;
         serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// stats.live
     pub async fn live(&self) -> Result<models::LiveDashboardStats, TransportError> {
-        let value = self
-            .client
-            .transport()
-            .request(Method::Get, "/v1/stats/live", Channel::Platform, None)
-            .await?;
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            "/v1/stats/live",
+            Channel::Platform,
+        )
+        .await?;
         serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 }
@@ -2014,22 +1959,20 @@ impl TicketsNs {
         &self,
         params: models::TicketsMineParams,
     ) -> Result<models::TicketList, TransportError> {
-        let value = self
-            .client
-            .transport()
-            .request(
-                Method::Get,
-                &resource::with_query(
-                    "/v1/community/tickets/my",
-                    &[
-                        ("page", params.page.map(|v| v.to_string())),
-                        ("limit", params.limit.map(|v| v.to_string())),
-                    ],
-                ),
-                Channel::Platform,
-                None,
-            )
-            .await?;
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &resource::with_query(
+                "/v1/community/tickets/my",
+                &[
+                    ("page", params.page.map(|v| v.to_string())),
+                    ("limit", params.limit.map(|v| v.to_string())),
+                ],
+            ),
+            Channel::Platform,
+        )
+        .await?;
         serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 }
@@ -2049,23 +1992,21 @@ impl UpdatesNs {
         &self,
         params: models::UpdatesManifestParams,
     ) -> Result<models::UpdateManifest, TransportError> {
-        let value = self
-            .client
-            .transport()
-            .request(
-                Method::Get,
-                &resource::with_query(
-                    "/v1/launcher/updates/manifest",
-                    &[
-                        ("channel", params.channel.map(|v| v.to_string())),
-                        ("platform", params.platform.map(|v| v.to_string())),
-                        ("server_id", params.server_id.map(|v| v.to_string())),
-                    ],
-                ),
-                Channel::PlatformPublic,
-                None,
-            )
-            .await?;
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &resource::with_query(
+                "/v1/launcher/updates/manifest",
+                &[
+                    ("channel", params.channel.map(|v| v.to_string())),
+                    ("platform", params.platform.map(|v| v.to_string())),
+                    ("server_id", params.server_id.map(|v| v.to_string())),
+                ],
+            ),
+            Channel::PlatformPublic,
+        )
+        .await?;
         serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
@@ -2163,37 +2104,33 @@ impl UsersNs {
         &self,
         params: models::UsersSearchParams,
     ) -> Result<models::BatchPublicProfilesResponse, TransportError> {
-        let value = self
-            .client
-            .transport()
-            .request(
-                Method::Get,
-                &resource::with_query(
-                    "/v1/users/search",
-                    &[
-                        ("q", params.q.map(|v| v.to_string())),
-                        ("limit", params.limit.map(|v| v.to_string())),
-                    ],
-                ),
-                Channel::Platform,
-                None,
-            )
-            .await?;
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &resource::with_query(
+                "/v1/users/search",
+                &[
+                    ("q", params.q.map(|v| v.to_string())),
+                    ("limit", params.limit.map(|v| v.to_string())),
+                ],
+            ),
+            Channel::Platform,
+        )
+        .await?;
         serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// users.engagement
     pub async fn engagement(&self, user_id: i64) -> Result<models::UserEngagement, TransportError> {
-        let value = self
-            .client
-            .transport()
-            .request(
-                Method::Get,
-                &format!("/v1/community/users/{}/engagement", user_id),
-                Channel::PlatformPublic,
-                None,
-            )
-            .await?;
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &format!("/v1/community/users/{}/engagement", user_id),
+            Channel::PlatformPublic,
+        )
+        .await?;
         serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 
@@ -2203,19 +2140,17 @@ impl UsersNs {
         user_id: i64,
         params: models::UsersActivityListParams,
     ) -> Result<models::UserRecentActivity, TransportError> {
-        let value = self
-            .client
-            .transport()
-            .request(
-                Method::Get,
-                &resource::with_query(
-                    &format!("/v1/community/users/{}/recent-activity", user_id),
-                    &[("limit", params.limit.map(|v| v.to_string()))],
-                ),
-                Channel::PlatformPublic,
-                None,
-            )
-            .await?;
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &resource::with_query(
+                &format!("/v1/community/users/{}/recent-activity", user_id),
+                &[("limit", params.limit.map(|v| v.to_string()))],
+            ),
+            Channel::PlatformPublic,
+        )
+        .await?;
         serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 }
@@ -2325,16 +2260,14 @@ impl VerificationNs {
         &self,
         server_id: i64,
     ) -> Result<models::PluginVerification, TransportError> {
-        let value = self
-            .client
-            .transport()
-            .request(
-                Method::Get,
-                &format!("/v1/servers/verification/plugin/{}", server_id),
-                Channel::Platform,
-                None,
-            )
-            .await?;
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &format!("/v1/servers/verification/plugin/{}", server_id),
+            Channel::Platform,
+        )
+        .await?;
         serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 }
@@ -2383,24 +2316,22 @@ impl WhitelistFormsNs {
         &self,
         params: models::WhitelistFormsListParams,
     ) -> Result<models::WhitelistFormPage, TransportError> {
-        let value = self
-            .client
-            .transport()
-            .request(
-                Method::Get,
-                &resource::with_query(
-                    "/v1/whitelist/forms",
-                    &[
-                        ("project_id", params.project_id.map(|v| v.to_string())),
-                        ("search", params.search.map(|v| v.to_string())),
-                        ("page", params.page.map(|v| v.to_string())),
-                        ("per_page", params.per_page.map(|v| v.to_string())),
-                    ],
-                ),
-                Channel::Platform,
-                None,
-            )
-            .await?;
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &resource::with_query(
+                "/v1/whitelist/forms",
+                &[
+                    ("project_id", params.project_id.map(|v| v.to_string())),
+                    ("search", params.search.map(|v| v.to_string())),
+                    ("page", params.page.map(|v| v.to_string())),
+                    ("per_page", params.per_page.map(|v| v.to_string())),
+                ],
+            ),
+            Channel::Platform,
+        )
+        .await?;
         serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
     }
 

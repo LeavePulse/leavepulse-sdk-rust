@@ -7,6 +7,9 @@ use crate::cache::DataCell;
 use crate::client::LeavePulse;
 use crate::models;
 use crate::resource;
+use crate::resources::Binding;
+use crate::resources::Comment;
+use crate::resources::Form;
 use crate::resources::Server;
 use crate::transport::{Channel, Method, TransportError};
 
@@ -313,5 +316,251 @@ impl Project {
             .await?;
         let _: Project = self.client.hydrate("Project", data, None);
         Ok(())
+    }
+
+    /// project.comments.list
+    pub async fn comments_list(
+        &self,
+        params: models::ProjectCommentsListParams,
+    ) -> Result<Comment, TransportError> {
+        let data = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &resource::with_query(
+                &format!("/v1/community/projects/{}/comments", self.id()),
+                &[
+                    ("page", params.page.map(|v| v.to_string())),
+                    ("limit", params.limit.map(|v| v.to_string())),
+                    ("target_locale", params.target_locale.map(|v| v.to_string())),
+                ],
+            ),
+            Channel::PlatformPublic,
+        )
+        .await?;
+        Ok(self.client.hydrate::<Comment>("Comment", data, None))
+    }
+
+    /// project.comments.liked
+    pub async fn comments_liked(&self) -> Result<models::LikedCommentIds, TransportError> {
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &format!("/v1/community/projects/{}/comments/liked", self.id()),
+            Channel::Platform,
+        )
+        .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// project.comments.mine
+    pub async fn comments_mine(
+        &self,
+        params: models::ProjectCommentsMineParams,
+    ) -> Result<models::MyComment, TransportError> {
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &resource::with_query(
+                &format!("/v1/community/projects/{}/comments/me", self.id()),
+                &[("target_locale", params.target_locale.map(|v| v.to_string()))],
+            ),
+            Channel::Platform,
+        )
+        .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// project.engagement
+    pub async fn engagement(&self) -> Result<models::ProjectEngagement, TransportError> {
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &format!("/v1/community/projects/{}/engagement", self.id()),
+            Channel::PlatformPublic,
+        )
+        .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// project.engagement.status
+    pub async fn engagement_status(
+        &self,
+    ) -> Result<models::ProjectEngagementStatus, TransportError> {
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &format!("/v1/community/projects/{}/engagement/status", self.id()),
+            Channel::Platform,
+        )
+        .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// project.votes.list
+    pub async fn votes_list(
+        &self,
+        params: models::ProjectVotesListParams,
+    ) -> Result<models::RecentVotes, TransportError> {
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &resource::with_query(
+                &format!("/v1/community/projects/{}/votes", self.id()),
+                &[("limit", params.limit.map(|v| v.to_string()))],
+            ),
+            Channel::PlatformPublic,
+        )
+        .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// me.projects.get
+    pub async fn me_projects_get(&self) -> Result<models::WorkspaceDetail, TransportError> {
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &format!("/v1/me/projects/{}", self.id()),
+            Channel::Platform,
+        )
+        .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// project.history.list
+    pub async fn history_list(
+        &self,
+        params: models::ProjectHistoryListParams,
+    ) -> Result<models::HistoryResponse, TransportError> {
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &resource::with_query(
+                &format!("/v1/monitoring/projects/{}/history", self.id()),
+                &[("period", params.period.map(|v| v.to_string()))],
+            ),
+            Channel::Platform,
+        )
+        .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// project.live
+    pub async fn live(&self) -> Result<models::ProjectLiveStatus, TransportError> {
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &format!("/v1/monitoring/projects/{}/live", self.id()),
+            Channel::Platform,
+        )
+        .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// project.servers.create
+    pub async fn servers_create(&self) -> Result<Server, TransportError> {
+        let data = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                &format!("/v1/projects/{}/servers", self.id()),
+                Channel::Platform,
+                None,
+            )
+            .await?;
+        Ok(self.client.hydrate::<Server>("Server", data, None))
+    }
+
+    /// project.stats
+    pub async fn stats(
+        &self,
+        params: models::ProjectStatsParams,
+    ) -> Result<models::ProjectStats, TransportError> {
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &resource::with_query(
+                &format!("/v1/projects/{}/stats", self.id()),
+                &[("period", params.period.map(|v| v.to_string()))],
+            ),
+            Channel::Platform,
+        )
+        .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// project.team_sync.targets
+    pub async fn team_sync_targets(
+        &self,
+        params: models::ProjectTeamSyncTargetsParams,
+    ) -> Result<models::DiscordRoleTargets, TransportError> {
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &resource::with_query(
+                &format!("/v1/projects/{}/team-sync/discord-targets", self.id()),
+                &[("role_id", params.role_id.map(|v| v.to_string()))],
+            ),
+            Channel::Platform,
+        )
+        .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// project.whitelist.config
+    pub async fn whitelist_config(
+        &self,
+    ) -> Result<Vec<models::ProjectWhitelistConfigItem>, TransportError> {
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &format!("/v1/projects/{}/whitelist/config", self.id()),
+            Channel::PlatformPublic,
+        )
+        .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// project.whitelist.forms
+    pub async fn whitelist_forms(&self) -> Result<Form, TransportError> {
+        let data = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &format!("/v1/projects/{}/whitelist/forms", self.id()),
+            Channel::Platform,
+        )
+        .await?;
+        Ok(self.client.hydrate::<Form>("Form", data, None))
+    }
+
+    /// project.policies
+    pub async fn policies(&self) -> Result<Vec<Binding>, TransportError> {
+        let data = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &format!("/v1/projects/{}/whitelist/policies", self.id()),
+            Channel::Platform,
+        )
+        .await?;
+        let items = if data.is_array() {
+            data
+        } else {
+            data.get("items").cloned().unwrap_or(Value::Null)
+        };
+        Ok(self.client.hydrate_many::<Binding>("Binding", items))
     }
 }

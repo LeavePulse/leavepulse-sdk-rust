@@ -18,7 +18,8 @@ pub mod resources;
 pub use client::LeavePulse;
 pub use errors::{HttpError, HttpErrorKind, LeavePulseError, ProblemDetails};
 pub use etag_store::{
-    default_cache_key, fetch_cached, EtagEntry, EtagStore, FileEtagStore, MemoryEtagStore,
+    default_cache_key, fetch_cached, fetch_cached_or_throw, EtagEntry, EtagStore, FileEtagStore,
+    MemoryEtagStore,
 };
 pub use snowflake::Snowflake;
 pub use transport::{

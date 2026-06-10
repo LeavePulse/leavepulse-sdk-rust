@@ -78,4 +78,17 @@ impl Ticket {
         let _: Ticket = self.client.hydrate("Ticket", data, None);
         Ok(())
     }
+
+    /// ticket.messages.list
+    pub async fn messages_list(&self) -> Result<models::TicketMessageList, TransportError> {
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &format!("/v1/community/tickets/{}/messages", self.id()),
+            Channel::Platform,
+        )
+        .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
 }

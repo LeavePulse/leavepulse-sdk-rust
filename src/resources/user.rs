@@ -71,4 +71,49 @@ impl User {
         let _: User = self.client.hydrate("User", data, None);
         Ok(())
     }
+
+    /// user.heatmap
+    pub async fn heatmap(
+        &self,
+        params: models::UserHeatmapParams,
+    ) -> Result<models::ProfileActivityHeatmap, TransportError> {
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &resource::with_query(
+                &format!("/v1/users/{}/profile/activity", self.id()),
+                &[("days", params.days.map(|v| v.to_string()))],
+            ),
+            Channel::PlatformPublic,
+        )
+        .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// user.gameplay
+    pub async fn gameplay(&self) -> Result<models::ProfileGameplaySummary, TransportError> {
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &format!("/v1/users/{}/profile/gameplay", self.id()),
+            Channel::PlatformPublic,
+        )
+        .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// user.ownership
+    pub async fn ownership(&self) -> Result<models::ProfileOwnershipSummary, TransportError> {
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &format!("/v1/users/{}/profile/ownership", self.id()),
+            Channel::PlatformPublic,
+        )
+        .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
 }

@@ -14,7 +14,8 @@ use std::sync::Mutex;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
-use crate::transport::{BearerTransport, Channel, ConditionalOutcome, Method, TransportError};
+use crate::errors::HttpError;
+use crate::transport::{Channel, ConditionalOutcome, Method, Transport, TransportError};
 
 /// A cached conditional response: the validator and the body it belongs to.
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -131,7 +132,7 @@ impl EtagStore for FileEtagStore {
 /// the cached body on `304`, store and return the fresh body on `200`, and
 /// return `None` on `404` (evicting any stale entry).
 pub async fn fetch_cached(
-    transport: &BearerTransport,
+    transport: &dyn Transport,
     store: &dyn EtagStore,
     method: Method,
     path: &str,
@@ -161,5 +162,22 @@ pub async fn fetch_cached(
             store.delete(&key);
             Ok(None)
         }
+    }
+}
+
+/// Like [`fetch_cached`] but for endpoints that always yield a value: a `404`
+/// (`None`) is surfaced as a `NotFound` [`HttpError`], matching what a plain
+/// `request` would return. Generated GET methods route through this so their
+/// return type stays non-`Option`.
+pub async fn fetch_cached_or_throw(
+    transport: &dyn Transport,
+    store: &dyn EtagStore,
+    method: Method,
+    path: &str,
+    channel: Channel,
+) -> Result<Value, TransportError> {
+    match fetch_cached(transport, store, method, path, channel).await? {
+        Some(body) => Ok(body),
+        None => Err(HttpError::new(404, method.as_str(), path, String::new(), None).into()),
     }
 }
