@@ -57,7 +57,7 @@ impl Me {
     }
 
     /// builds.list
-    pub async fn builds_list(&self) -> Result<Build, TransportError> {
+    pub async fn builds_list(&self) -> Result<Vec<Build>, TransportError> {
         let data = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),
@@ -66,7 +66,12 @@ impl Me {
             Channel::Platform,
         )
         .await?;
-        Ok(self.client.hydrate::<Build>("Build", data, None))
+        let items = if data.is_array() {
+            data
+        } else {
+            data.get("items").cloned().unwrap_or(Value::Null)
+        };
+        Ok(self.client.hydrate_many::<Build>("Build", items))
     }
 
     /// me.engagement
@@ -242,7 +247,7 @@ impl Me {
     pub async fn minecraft_state(
         &self,
         params: models::MeMinecraftStateParams,
-    ) -> Result<models::MinecraftVerificationState, TransportError> {
+    ) -> Result<Vec<models::MinecraftVerificationState>, TransportError> {
         let value = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),
@@ -506,7 +511,7 @@ impl Me {
     pub async fn whitelist_applications(
         &self,
         params: models::MeWhitelistApplicationsParams,
-    ) -> Result<Application, TransportError> {
+    ) -> Result<Vec<Application>, TransportError> {
         let data = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),
@@ -522,16 +527,21 @@ impl Me {
             Channel::Platform,
         )
         .await?;
+        let items = if data.is_array() {
+            data
+        } else {
+            data.get("items").cloned().unwrap_or(Value::Null)
+        };
         Ok(self
             .client
-            .hydrate::<Application>("Application", data, None))
+            .hydrate_many::<Application>("Application", items))
     }
 
     /// me.servers.list
     pub async fn servers_list(
         &self,
         params: models::MeServersListParams,
-    ) -> Result<Server, TransportError> {
+    ) -> Result<Vec<Server>, TransportError> {
         let data = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),
@@ -546,14 +556,19 @@ impl Me {
             Channel::Platform,
         )
         .await?;
-        Ok(self.client.hydrate::<Server>("Server", data, None))
+        let items = if data.is_array() {
+            data
+        } else {
+            data.get("items").cloned().unwrap_or(Value::Null)
+        };
+        Ok(self.client.hydrate_many::<Server>("Server", items))
     }
 
     /// me.servers.issues
     pub async fn servers_issues(
         &self,
         params: models::MeServersIssuesParams,
-    ) -> Result<models::MyServerIssuesPage, TransportError> {
+    ) -> Result<Vec<models::MyServerIssuesPage>, TransportError> {
         let value = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),

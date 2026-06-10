@@ -225,7 +225,9 @@ impl Build {
     }
 
     /// build.collaborators.list
-    pub async fn collaborators_list(&self) -> Result<models::CollaboratorList, TransportError> {
+    pub async fn collaborators_list(
+        &self,
+    ) -> Result<Vec<models::CollaboratorList>, TransportError> {
         let value = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),

@@ -322,7 +322,7 @@ impl Project {
     pub async fn comments_list(
         &self,
         params: models::ProjectCommentsListParams,
-    ) -> Result<Comment, TransportError> {
+    ) -> Result<Vec<Comment>, TransportError> {
         let data = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),
@@ -338,7 +338,12 @@ impl Project {
             Channel::PlatformPublic,
         )
         .await?;
-        Ok(self.client.hydrate::<Comment>("Comment", data, None))
+        let items = if data.is_array() {
+            data
+        } else {
+            data.get("items").cloned().unwrap_or(Value::Null)
+        };
+        Ok(self.client.hydrate_many::<Comment>("Comment", items))
     }
 
     /// project.comments.liked
@@ -453,7 +458,7 @@ impl Project {
     }
 
     /// project.live
-    pub async fn live(&self) -> Result<models::ProjectLiveStatus, TransportError> {
+    pub async fn live(&self) -> Result<Vec<models::ProjectLiveStatus>, TransportError> {
         let value = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),
@@ -503,7 +508,7 @@ impl Project {
     pub async fn team_sync_targets(
         &self,
         params: models::ProjectTeamSyncTargetsParams,
-    ) -> Result<models::DiscordRoleTargets, TransportError> {
+    ) -> Result<Vec<models::DiscordRoleTargets>, TransportError> {
         let value = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),
@@ -534,7 +539,7 @@ impl Project {
     }
 
     /// project.whitelist.forms
-    pub async fn whitelist_forms(&self) -> Result<Form, TransportError> {
+    pub async fn whitelist_forms(&self) -> Result<Vec<Form>, TransportError> {
         let data = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),
@@ -543,7 +548,12 @@ impl Project {
             Channel::Platform,
         )
         .await?;
-        Ok(self.client.hydrate::<Form>("Form", data, None))
+        let items = if data.is_array() {
+            data
+        } else {
+            data.get("items").cloned().unwrap_or(Value::Null)
+        };
+        Ok(self.client.hydrate_many::<Form>("Form", items))
     }
 
     /// project.policies

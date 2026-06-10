@@ -153,7 +153,7 @@ impl Binding {
         &self,
         binding_id: String,
         params: models::BindingEntriesListParams,
-    ) -> Result<models::WhitelistDirectEntryPage, TransportError> {
+    ) -> Result<Vec<models::WhitelistDirectEntryPage>, TransportError> {
         let value = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),
