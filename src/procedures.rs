@@ -1108,6 +1108,116 @@ impl AuthOauthNs {
     }
 }
 
+/// AuthOauth2Ns procedure namespace.
+pub struct AuthOauth2Ns {
+    client: Arc<LeavePulse>,
+}
+
+impl AuthOauth2Ns {
+    pub(crate) fn new(client: Arc<LeavePulse>) -> Self {
+        Self { client }
+    }
+
+    /// auth.oauth2.authorize
+    pub async fn authorize(
+        &self,
+        params: models::AuthOauth2AuthorizeParams,
+    ) -> Result<Value, TransportError> {
+        crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            &resource::with_query(
+                "/auth/oauth/authorize",
+                &[
+                    ("response_type", params.response_type.map(|v| v.to_string())),
+                    ("client_id", params.client_id.map(|v| v.to_string())),
+                    (
+                        "code_challenge",
+                        params.code_challenge.map(|v| v.to_string()),
+                    ),
+                    ("redirect_uri", params.redirect_uri.map(|v| v.to_string())),
+                    ("scope", params.scope.map(|v| v.to_string())),
+                    ("state", params.state.map(|v| v.to_string())),
+                    (
+                        "code_challenge_method",
+                        params.code_challenge_method.map(|v| v.to_string()),
+                    ),
+                ],
+            ),
+            Channel::Auth,
+        )
+        .await
+    }
+
+    /// auth.oauth2.token
+    pub async fn token(&self) -> Result<models::OAuthAuthorizationTokenResponse, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(Method::Post, "/auth/oauth/token", Channel::Auth, None)
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+}
+
+/// AuthTokensNs procedure namespace.
+pub struct AuthTokensNs {
+    client: Arc<LeavePulse>,
+}
+
+impl AuthTokensNs {
+    pub(crate) fn new(client: Arc<LeavePulse>) -> Self {
+        Self { client }
+    }
+
+    /// auth.tokens.list
+    pub async fn list(&self) -> Result<models::PersonalAccessTokenListResponse, TransportError> {
+        let value = crate::etag_store::fetch_cached_or_throw(
+            self.client.transport(),
+            self.client.etag_store(),
+            Method::Get,
+            "/auth/pat-tokens",
+            Channel::Auth,
+        )
+        .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// auth.tokens.create
+    pub async fn create(
+        &self,
+        body: models::PersonalAccessTokenCreateRequest,
+    ) -> Result<models::PersonalAccessTokenCreateResponse, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Post,
+                "/auth/pat-tokens",
+                Channel::Auth,
+                Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+
+    /// auth.tokens.revoke
+    pub async fn revoke(&self, token_id: i64) -> Result<models::StatusResponse, TransportError> {
+        let value = self
+            .client
+            .transport()
+            .request(
+                Method::Delete,
+                &format!("/auth/pat-tokens/{}", token_id),
+                Channel::Auth,
+                None,
+            )
+            .await?;
+        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+    }
+}
+
 /// AuthNs procedure namespace.
 pub struct AuthNs {
     client: Arc<LeavePulse>,
@@ -1124,6 +1234,14 @@ impl AuthNs {
 
     pub fn oauth(&self) -> AuthOauthNs {
         AuthOauthNs::new(Arc::clone(&self.client))
+    }
+
+    pub fn oauth2(&self) -> AuthOauth2Ns {
+        AuthOauth2Ns::new(Arc::clone(&self.client))
+    }
+
+    pub fn tokens(&self) -> AuthTokensNs {
+        AuthTokensNs::new(Arc::clone(&self.client))
     }
 
     /// auth.login

@@ -3660,15 +3660,21 @@ pub struct ServerSummary {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub game_edition: Option<GameEdition>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub has_build: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub icon_url: Option<String>,
     pub id: Snowflake,
     pub ip_or_domain: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub is_verified: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub max_players: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub motd: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub online_players: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parent_id: Option<Snowflake>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6045,6 +6051,25 @@ pub struct WhitelistFormsListParams {
     pub page: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub per_page: Option<i64>,
+}
+
+/// Query parameters for `auth.oauth2.authorize`.
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct AuthOauth2AuthorizeParams {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub response_type: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub client_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub code_challenge: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub redirect_uri: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub scope: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub code_challenge_method: Option<String>,
 }
 
 /// Query parameters for `projects.projects_list`.

@@ -9,12 +9,15 @@
 //! (honouring `Retry-After`) and 5xx (exponential backoff) up to
 //! `RetryOptions::max_retries`.
 
+use std::sync::Arc;
 use std::time::Duration;
 
 use async_trait::async_trait;
 use serde_json::Value;
 
-use crate::errors::{HttpError, HttpErrorKind, LeavePulseError};
+use crate::authenticated_transport::AuthenticatedTransport;
+use crate::credentials::StaticCredential;
+use crate::errors::LeavePulseError;
 
 /// The error type returned by every transport call. Alias kept for the
 /// generated client/resources, which name `transport::TransportError`.
@@ -61,7 +64,7 @@ pub enum Channel {
 
 impl Channel {
     /// Whether a credential should be attached on this channel.
-    fn authenticated(self) -> bool {
+    pub(crate) fn authenticated(self) -> bool {
         !matches!(self, Channel::PlatformPublic)
     }
 }
@@ -111,42 +114,35 @@ impl Default for RetryOptions {
     }
 }
 
-/// Parse a `Retry-After` header value (delta-seconds) into seconds.
-fn parse_retry_after(value: Option<&str>) -> Option<f64> {
-    value.and_then(|v| v.trim().parse::<f64>().ok())
-}
-
 /// Bearer-token transport for external consumers (no cookies), over reqwest.
+///
+/// A thin specialization of [`AuthenticatedTransport`] over a
+/// [`StaticCredential`], kept for back-compat: its public API
+/// (`new`/`with_auth_base_url`/`with_retry`, the inherent `conditional` and
+/// `request_with_if_match`, and the [`Transport`] impl) is unchanged. For tokens
+/// that rotate (device flow, OAuth2, launcher) use [`AuthenticatedTransport`]
+/// with a refreshing credential instead.
 pub struct BearerTransport {
-    base_url: String,
-    /// Auth-service base URL for the `Auth` channel; defaults to `base_url`.
-    auth_base_url: String,
-    token: String,
-    client: reqwest::Client,
-    retry: RetryOptions,
+    inner: AuthenticatedTransport,
 }
 
 impl BearerTransport {
     pub fn new(base_url: impl Into<String>, token: impl Into<String>) -> Self {
-        let base = base_url.into().trim_end_matches('/').to_string();
+        let provider = Arc::new(StaticCredential::new(token));
         Self {
-            auth_base_url: base.clone(),
-            base_url: base,
-            token: token.into(),
-            client: reqwest::Client::new(),
-            retry: RetryOptions::default(),
+            inner: AuthenticatedTransport::new(base_url, provider),
         }
     }
 
     /// Set a distinct base URL for the `Auth` channel (auth core not co-hosted).
     pub fn with_auth_base_url(mut self, auth_base_url: impl Into<String>) -> Self {
-        self.auth_base_url = auth_base_url.into().trim_end_matches('/').to_string();
+        self.inner = self.inner.with_auth_base_url(auth_base_url);
         self
     }
 
     /// Override the automatic-retry tuning (429 / 5xx).
     pub fn with_retry(mut self, retry: RetryOptions) -> Self {
-        self.retry = retry;
+        self.inner = self.inner.with_retry(retry);
         self
     }
 }
@@ -160,68 +156,7 @@ impl Transport for BearerTransport {
         channel: Channel,
         body: Option<Value>,
     ) -> Result<Value, TransportError> {
-        let base = match channel {
-            Channel::Auth => &self.auth_base_url,
-            Channel::Platform | Channel::PlatformPublic => &self.base_url,
-        };
-        let url = format!("{base}{path}");
-        let reqwest_method = reqwest::Method::from_bytes(method.as_str().as_bytes())
-            .map_err(|e| LeavePulseError::Transport(e.into()))?;
-
-        let mut attempt = 0u32;
-        loop {
-            let mut req = self.client.request(reqwest_method.clone(), &url);
-            if channel.authenticated() {
-                req = req.bearer_auth(&self.token);
-            }
-            if let Some(body) = &body {
-                req = req.json(body);
-            }
-            let response = req
-                .send()
-                .await
-                .map_err(|e| LeavePulseError::Transport(e.into()))?;
-            let status = response.status();
-
-            if status.is_success() {
-                if status.as_u16() == 204 {
-                    return Ok(Value::Null);
-                }
-                return response
-                    .json()
-                    .await
-                    .map_err(|e| LeavePulseError::Transport(e.into()));
-            }
-
-            let retry_after = parse_retry_after(
-                response
-                    .headers()
-                    .get("retry-after")
-                    .and_then(|v| v.to_str().ok()),
-            );
-            let raw = response.text().await.unwrap_or_default();
-            let error = HttpError::new(status.as_u16(), method.as_str(), path, raw, retry_after);
-
-            let retriable = error.is_rate_limited() || error.is_server();
-            if retriable && attempt < self.retry.max_retries {
-                let wait = match &error.kind {
-                    HttpErrorKind::RateLimited {
-                        retry_after: Some(secs),
-                    } => Duration::from_secs_f64(secs.max(0.0)),
-                    _ => {
-                        let backoff = self
-                            .retry
-                            .backoff_base
-                            .saturating_mul(2u32.saturating_pow(attempt));
-                        backoff.min(self.retry.backoff_max)
-                    }
-                };
-                attempt += 1;
-                tokio::time::sleep(wait).await;
-                continue;
-            }
-            return Err(LeavePulseError::from(error));
-        }
+        self.inner.request(method, path, channel, body).await
     }
 
     async fn conditional(
@@ -265,79 +200,9 @@ impl BearerTransport {
         channel: Channel,
         prior_etag: Option<&str>,
     ) -> Result<ConditionalOutcome, TransportError> {
-        let base = match channel {
-            Channel::Auth => &self.auth_base_url,
-            Channel::Platform | Channel::PlatformPublic => &self.base_url,
-        };
-        let url = format!("{base}{path}");
-        let reqwest_method = reqwest::Method::from_bytes(method.as_str().as_bytes())
-            .map_err(|e| LeavePulseError::Transport(e.into()))?;
-
-        let mut attempt = 0u32;
-        loop {
-            let mut req = self.client.request(reqwest_method.clone(), &url);
-            if channel.authenticated() {
-                req = req.bearer_auth(&self.token);
-            }
-            if let Some(etag) = prior_etag {
-                req = req.header("if-none-match", etag);
-            }
-            let response = req
-                .send()
-                .await
-                .map_err(|e| LeavePulseError::Transport(e.into()))?;
-            let status = response.status();
-            let etag = response
-                .headers()
-                .get("etag")
-                .and_then(|v| v.to_str().ok())
-                .map(str::to_owned);
-
-            if status.as_u16() == 404 {
-                return Ok(ConditionalOutcome::NotFound);
-            }
-            if status.as_u16() == 304 {
-                return Ok(ConditionalOutcome::NotModified { etag });
-            }
-            if status.is_success() {
-                let data = if status.as_u16() == 204 {
-                    Value::Null
-                } else {
-                    response
-                        .json()
-                        .await
-                        .map_err(|e| LeavePulseError::Transport(e.into()))?
-                };
-                return Ok(ConditionalOutcome::Modified { data, etag });
-            }
-
-            let retry_after = parse_retry_after(
-                response
-                    .headers()
-                    .get("retry-after")
-                    .and_then(|v| v.to_str().ok()),
-            );
-            let raw = response.text().await.unwrap_or_default();
-            let error = HttpError::new(status.as_u16(), method.as_str(), path, raw, retry_after);
-
-            let retriable = error.is_rate_limited() || error.is_server();
-            if retriable && attempt < self.retry.max_retries {
-                let wait = match &error.kind {
-                    HttpErrorKind::RateLimited {
-                        retry_after: Some(secs),
-                    } => Duration::from_secs_f64(secs.max(0.0)),
-                    _ => self
-                        .retry
-                        .backoff_base
-                        .saturating_mul(2u32.saturating_pow(attempt))
-                        .min(self.retry.backoff_max),
-                };
-                attempt += 1;
-                tokio::time::sleep(wait).await;
-                continue;
-            }
-            return Err(LeavePulseError::from(error));
-        }
+        self.inner
+            .conditional_request(method, path, channel, prior_etag)
+            .await
     }
 
     /// Like [`Transport::request`] but sends an `If-Match` header for optimistic
@@ -351,68 +216,8 @@ impl BearerTransport {
         body: Option<Value>,
         if_match: Option<&str>,
     ) -> Result<Value, TransportError> {
-        let base = match channel {
-            Channel::Auth => &self.auth_base_url,
-            Channel::Platform | Channel::PlatformPublic => &self.base_url,
-        };
-        let url = format!("{base}{path}");
-        let reqwest_method = reqwest::Method::from_bytes(method.as_str().as_bytes())
-            .map_err(|e| LeavePulseError::Transport(e.into()))?;
-
-        let mut attempt = 0u32;
-        loop {
-            let mut req = self.client.request(reqwest_method.clone(), &url);
-            if channel.authenticated() {
-                req = req.bearer_auth(&self.token);
-            }
-            if let Some(etag) = if_match {
-                req = req.header("if-match", etag);
-            }
-            if let Some(body) = &body {
-                req = req.json(body);
-            }
-            let response = req
-                .send()
-                .await
-                .map_err(|e| LeavePulseError::Transport(e.into()))?;
-            let status = response.status();
-
-            if status.is_success() {
-                if status.as_u16() == 204 {
-                    return Ok(Value::Null);
-                }
-                return response
-                    .json()
-                    .await
-                    .map_err(|e| LeavePulseError::Transport(e.into()));
-            }
-
-            let retry_after = parse_retry_after(
-                response
-                    .headers()
-                    .get("retry-after")
-                    .and_then(|v| v.to_str().ok()),
-            );
-            let raw = response.text().await.unwrap_or_default();
-            let error = HttpError::new(status.as_u16(), method.as_str(), path, raw, retry_after);
-
-            let retriable = error.is_rate_limited() || error.is_server();
-            if retriable && attempt < self.retry.max_retries {
-                let wait = match &error.kind {
-                    HttpErrorKind::RateLimited {
-                        retry_after: Some(secs),
-                    } => Duration::from_secs_f64(secs.max(0.0)),
-                    _ => self
-                        .retry
-                        .backoff_base
-                        .saturating_mul(2u32.saturating_pow(attempt))
-                        .min(self.retry.backoff_max),
-                };
-                attempt += 1;
-                tokio::time::sleep(wait).await;
-                continue;
-            }
-            return Err(LeavePulseError::from(error));
-        }
+        self.inner
+            .request_with_if_match(method, path, channel, body, if_match)
+            .await
     }
 }
