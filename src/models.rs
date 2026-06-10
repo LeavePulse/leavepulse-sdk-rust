@@ -12,9 +12,9 @@ pub struct AccountDeletionResult {
 /// AccountExport
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AccountExport {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub identities: Option<Vec<AccountExportIdentity>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sessions: Option<Vec<AccountExportSession>>,
     pub user: UserProfile,
 }
@@ -22,17 +22,17 @@ pub struct AccountExport {
 /// AccountExportIdentity
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AccountExportIdentity {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub avatar_url: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub display_name: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub email_verified: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub last_login_at: Option<String>,
     pub provider: String,
 }
@@ -40,12 +40,12 @@ pub struct AccountExportIdentity {
 /// AccountExportSession
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AccountExportSession {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expires_at: Option<String>,
     pub id: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub issued_at: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub revoked_at: Option<String>,
 }
 
@@ -64,7 +64,7 @@ pub enum ActivityType {
 /// AdminChangeProjectSlugRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AdminChangeProjectSlugRequest {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub slug: Option<String>,
 }
 
@@ -77,7 +77,7 @@ pub struct AdminDeleteResponse {
 /// AdminDiscordSubjectResponse
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AdminDiscordSubjectResponse {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub discord_subject: Option<String>,
     pub status: String,
 }
@@ -86,13 +86,13 @@ pub struct AdminDiscordSubjectResponse {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AdminForceCreateRequest {
     pub address: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub is_verified: Option<bool>,
     pub name: String,
     pub owner_id: Snowflake,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parent_id: Option<Snowflake>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub project_id: Option<Snowflake>,
     pub server_role: ServerRole,
 }
@@ -101,25 +101,25 @@ pub struct AdminForceCreateRequest {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AdminMinecraftAccount {
     pub account_type: MinecraftAccountType,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
     pub id: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub identity_scope_id: Option<String>,
     pub identity_scope_type: MinecraftIdentityScopeType,
     pub link_source: MinecraftLinkSource,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_nick: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_uuid: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proof_server_id: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub updated_at: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uuid_type: Option<MinecraftUuidType>,
     pub verification_status: MinecraftVerificationStatus,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub verified_at: Option<String>,
 }
 
@@ -127,7 +127,7 @@ pub struct AdminMinecraftAccount {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AdminMinecraftAccountCreateRequest {
     pub minecraft_nick: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_uuid: Option<String>,
 }
 
@@ -142,25 +142,25 @@ pub struct AdminMinecraftAccountDeleteResult {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AdminMinecraftAccountDetailed {
     pub account_type: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
     pub id: i64,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub identity_scope_id: Option<i64>,
     pub identity_scope_type: String,
     pub link_source: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_nick: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_uuid: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proof_server_id: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub updated_at: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uuid_type: Option<String>,
     pub verification_status: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub verified_at: Option<String>,
 }
 
@@ -168,7 +168,7 @@ pub struct AdminMinecraftAccountDetailed {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AdminMinecraftAccountUpdateRequest {
     pub minecraft_nick: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_uuid: Option<String>,
 }
 
@@ -176,7 +176,7 @@ pub struct AdminMinecraftAccountUpdateRequest {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AdminMinecraftAccountWriteRequest {
     pub minecraft_nick: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_uuid: Option<String>,
 }
 
@@ -184,33 +184,33 @@ pub struct AdminMinecraftAccountWriteRequest {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AdminProject {
     pub created_at: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub creator_user_id: Option<Snowflake>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub display_server_id: Option<Snowflake>,
     pub id: Snowflake,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub lifecycle_state: Option<LifecycleState>,
     pub name: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub online_server_id: Option<Snowflake>,
     pub online_strategy: OnlineStrategy,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub owner_id: Option<Snowflake>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub public_server_count: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub root_server_id: Option<Snowflake>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub server_count: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub slug: Option<String>,
     pub updated_at: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub verified_plugin_rollout_mode: Option<RolloutMode>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub verified_plugin_rollout_state: Option<RolloutState>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub verified_server_count: Option<i64>,
 }
 
@@ -241,7 +241,7 @@ pub struct AdminRole {
     pub id: String,
     pub key: String,
     pub name: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub permissions: Option<Vec<String>>,
 }
 
@@ -254,7 +254,7 @@ pub struct AdminRoleDeleteResponse {
 /// AdminRoleListResponse
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AdminRoleListResponse {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<AdminRole>>,
 }
 
@@ -263,14 +263,14 @@ pub struct AdminRoleListResponse {
 pub struct AdminRoleRequest {
     pub key: String,
     pub name: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub permissions: Option<Vec<String>>,
 }
 
 /// AdminServerListResponse
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AdminServerListResponse {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<AdminServerSummary>>,
     pub page: i64,
     pub per_page: i64,
@@ -281,51 +281,51 @@ pub struct AdminServerListResponse {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AdminServerSummary {
     pub created_at: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub creator_user_id: Option<String>,
     pub id: String,
     pub ip_or_domain: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub is_hidden: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub is_verified: Option<bool>,
     pub name: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub owner_id: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parent_id: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub project_id: Option<String>,
     pub server_role: ServerRole,
     pub updated_at: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub verified_plugin_compatibility: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub verified_plugin_last_seen_at: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub verified_plugin_platform: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub verified_plugin_protocol_generation: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub verified_plugin_rollout_state: Option<RolloutState>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub verified_plugin_version: Option<String>,
 }
 
 /// AdminServerUpdateRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AdminServerUpdateRequest {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub is_hidden: Option<serde_json::Value>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub is_verified: Option<serde_json::Value>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub owner_id: Option<Snowflake>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parent_id: Option<Snowflake>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub project_id: Option<Snowflake>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub server_role: Option<serde_json::Value>,
 }
 
@@ -344,31 +344,31 @@ pub struct AdminSetProjectRolloutModeRequest {
 /// AdminTransferOwnershipRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AdminTransferOwnershipRequest {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub owner_id: Option<Snowflake>,
 }
 
 /// AdminUserDetail
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AdminUserDetail {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub avatar_url: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bio: Option<String>,
     pub created_at: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub discord_subject: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
     pub id: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub is_shadow: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_accounts: Option<Vec<AdminMinecraftAccount>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub roles: Option<Vec<String>>,
     pub status: UserStatus,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub updated_at: Option<String>,
     pub username: String,
 }
@@ -376,14 +376,14 @@ pub struct AdminUserDetail {
 /// AdminUserDiscordUpdateRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AdminUserDiscordUpdateRequest {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub discord_subject: Option<String>,
 }
 
 /// AdminUserListResponse
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AdminUserListResponse {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<AdminUserSummary>>,
     pub total: i64,
 }
@@ -391,13 +391,13 @@ pub struct AdminUserListResponse {
 /// AdminUserSummary
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AdminUserSummary {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub avatar_url: Option<String>,
     pub created_at: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
     pub id: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub roles: Option<Vec<String>>,
     pub status: UserStatus,
     pub username: String,
@@ -406,11 +406,11 @@ pub struct AdminUserSummary {
 /// AdminUserUpdateRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AdminUserUpdateRequest {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub avatar_url: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bio: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
     pub status: UserStatus,
     pub username: String,
@@ -419,7 +419,7 @@ pub struct AdminUserUpdateRequest {
 /// AuthStatusRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AuthStatusRequest {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ip_address: Option<String>,
     pub username: String,
 }
@@ -427,23 +427,23 @@ pub struct AuthStatusRequest {
 /// AuthStatusResponse
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AuthStatusResponse {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
     pub exists: bool,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub last_login_at: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub needs_password_change: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<UserStatus>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub trusted_login: Option<bool>,
 }
 
 /// AvatarUrlRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AvatarUrlRequest {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub avatar_url: Option<String>,
 }
 
@@ -456,7 +456,7 @@ pub struct BatchPublicProfilesRequest {
 /// BatchPublicProfilesResponse
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct BatchPublicProfilesResponse {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<PublicProfileCard>>,
 }
 
@@ -469,69 +469,69 @@ pub struct BatchResolveRequest {
 /// BatchResolveResponse
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct BatchResolveResponse {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<PlatformPermsRow>>,
 }
 
 /// BridgeSettings
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct BridgeSettings {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub discord_to_mc_channel_id: Option<String>,
     pub discord_to_mc_enabled: bool,
     pub discord_to_mc_mode: String,
     pub discord_to_mc_plain_format: String,
     pub discord_to_mc_spoof_content_format: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub discord_to_mc_target_channel: Option<String>,
     pub enabled: bool,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mc_to_discord_channel_id: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mc_to_discord_chat_routing: Option<std::collections::HashMap<String, serde_json::Value>>,
     pub mc_to_discord_enabled: bool,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mc_to_discord_notifications: Option<std::collections::HashMap<String, serde_json::Value>>,
     pub mc_to_discord_use_webhook: bool,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_chat_filter: Option<std::collections::HashMap<String, serde_json::Value>>,
     pub nickname_sync_enabled: bool,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status_notifications: Option<std::collections::HashMap<String, serde_json::Value>>,
 }
 
 /// BridgeSettingsUpdateRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct BridgeSettingsUpdateRequest {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub discord_to_mc_channel_id: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub discord_to_mc_enabled: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub discord_to_mc_mode: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub discord_to_mc_plain_format: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub discord_to_mc_spoof_content_format: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub discord_to_mc_target_channel: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mc_to_discord_channel_id: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mc_to_discord_chat_routing: Option<std::collections::HashMap<String, serde_json::Value>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mc_to_discord_enabled: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mc_to_discord_notifications: Option<std::collections::HashMap<String, serde_json::Value>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mc_to_discord_use_webhook: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_chat_filter: Option<std::collections::HashMap<String, serde_json::Value>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nickname_sync_enabled: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status_notifications: Option<std::collections::HashMap<String, serde_json::Value>>,
 }
 
@@ -539,18 +539,18 @@ pub struct BridgeSettingsUpdateRequest {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Build {
     pub access: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config_blob_sha256: Option<String>,
     pub created_at: String,
     pub has_config_blob: bool,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub icon: Option<String>,
     pub id: String,
     pub is_public: bool,
     pub manifest: BuildManifest,
     pub name: String,
     pub owner_id: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub share_token: Option<String>,
     pub summary: String,
     pub updated_at: String,
@@ -560,12 +560,12 @@ pub struct Build {
 /// BuildCreateRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct BuildCreateRequest {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub icon: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub manifest: Option<BuildManifest>,
     pub name: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub summary: Option<String>,
 }
 
@@ -579,42 +579,42 @@ pub struct BuildList {
 /// BuildManifest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct BuildManifest {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub game_args: Option<Vec<String>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub game_version: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub jvm_args: Option<Vec<String>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub loader_kind: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub loader_version: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory_max_mb: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory_min_mb: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mods: Option<Vec<BuildManifestMod>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub schema_version: Option<i64>,
 }
 
 /// BuildManifestMod
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct BuildManifestMod {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub file_path: Option<String>,
     pub kind: String,
     pub name: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub provider: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sha256: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source_url: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
 
@@ -624,7 +624,7 @@ pub struct BuildSummary {
     pub access: String,
     pub created_at: String,
     pub has_config_blob: bool,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub icon: Option<String>,
     pub id: String,
     pub is_public: bool,
@@ -638,43 +638,43 @@ pub struct BuildSummary {
 /// BuildUpdateRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct BuildUpdateRequest {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub icon: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub manifest: Option<BuildManifest>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub summary: Option<String>,
 }
 
 /// CheckoutRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CheckoutRequest {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cancel_url: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub context: Option<std::collections::HashMap<String, serde_json::Value>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub create_subscription: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable_auto_pull: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub idempotency_key: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub product_code: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub product_id: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub quantity: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub success_url: Option<String>,
 }
 
 /// CheckoutResult
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CheckoutResult {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub checkout_url: Option<String>,
     pub order: Order,
 }
@@ -690,7 +690,7 @@ pub struct Collaborator {
 /// CollaboratorAddRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CollaboratorAddRequest {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub can_edit: Option<bool>,
     pub user_id: String,
 }
@@ -707,26 +707,26 @@ pub struct Comment {
     pub author: CommentAuthor,
     pub content: String,
     pub created_at: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub edited_at: Option<String>,
     pub id: Snowflake,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub likes: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replies: Option<Vec<CommentReply>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub translation: Option<TextTranslation>,
 }
 
 /// CommentAuthor
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CommentAuthor {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub avatar_url: Option<String>,
     pub id: Snowflake,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub slug: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,
 }
 
@@ -759,10 +759,10 @@ pub struct CommentReply {
     pub author: CommentAuthor,
     pub content: String,
     pub created_at: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub edited_at: Option<String>,
     pub id: Snowflake,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub translation: Option<TextTranslation>,
 }
 
@@ -805,7 +805,7 @@ pub struct ConfigBlobUpload {
 /// ConfigBlobUploadRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ConfigBlobUploadRequest {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub size_bytes: Option<i64>,
 }
 
@@ -819,9 +819,9 @@ pub struct CreateLinkTokenRequest {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CreateProjectServerRequest {
     pub address: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
@@ -830,7 +830,7 @@ pub struct CreateProjectServerRequest {
 pub struct CreateStatusOverrideRequest {
     pub ends_at: String,
     pub mode: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub note: Option<String>,
     pub starts_at: String,
 }
@@ -838,19 +838,19 @@ pub struct CreateStatusOverrideRequest {
 /// DashboardAccount
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DashboardAccount {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nick: Option<String>,
     #[serde(rename = "type")]
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub r#type: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uuid: Option<String>,
 }
 
 /// DashboardDailyActivityPoint
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DashboardDailyActivityPoint {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub count: Option<i64>,
     pub date: String,
 }
@@ -858,11 +858,11 @@ pub struct DashboardDailyActivityPoint {
 /// DashboardServerItem
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DashboardServerItem {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub activity: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub last_seen: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub playtime_seconds: Option<i64>,
     pub server_id: Snowflake,
 }
@@ -888,7 +888,7 @@ pub struct DeleteCommentResult {
 /// DeleteStatusOverrideResponse
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DeleteStatusOverrideResponse {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ok: Option<bool>,
 }
 
@@ -901,7 +901,7 @@ pub struct DeviceApproveRequest {
 /// DeviceApproveResult
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DeviceApproveResult {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub error: Option<String>,
     pub ok: bool,
 }
@@ -926,7 +926,7 @@ pub enum DevicePollStatus {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DeviceStartRequest {
     pub client_id: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scope: Option<Vec<String>>,
 }
 
@@ -950,16 +950,16 @@ pub struct DeviceTokenRequest {
 /// DeviceTokenResult
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DeviceTokenResult {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub access_token: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expires_in: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub refresh_token: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub refresh_token_expires_in: Option<i64>,
     pub status: DevicePollStatus,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub token_type: Option<String>,
 }
 
@@ -967,24 +967,24 @@ pub struct DeviceTokenResult {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DiscordLink {
     pub enabled: bool,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub guild_id: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub invite_url: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub member_count: Option<i64>,
     pub server_id: Snowflake,
     pub verified: bool,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub verified_at: Option<String>,
 }
 
 /// DiscordLinkUpdateRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DiscordLinkUpdateRequest {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<serde_json::Value>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub invite_url: Option<String>,
 }
 
@@ -1005,7 +1005,7 @@ pub enum DiscordMembershipMode {
 /// DiscordRoleTarget
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DiscordRoleTarget {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub desired_discord_user_ids: Option<Vec<String>>,
     pub discord_role_id: String,
     pub role_id: Snowflake,
@@ -1016,7 +1016,7 @@ pub struct DiscordRoleTarget {
 /// DiscordRoleTargets
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DiscordRoleTargets {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<DiscordRoleTarget>>,
     pub project_id: Snowflake,
 }
@@ -1024,7 +1024,7 @@ pub struct DiscordRoleTargets {
 /// DiscordVerifyRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DiscordVerifyRequest {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub invite_url: Option<String>,
 }
 
@@ -1032,7 +1032,7 @@ pub struct DiscordVerifyRequest {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DiscoveryApproveResult {
     pub candidate_id: i64,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub server_id: Option<i64>,
     pub status: String,
 }
@@ -1053,14 +1053,14 @@ pub struct DiscoveryIgnoreResult {
 /// DnsVerification
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DnsVerification {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub checked_at: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expires_at: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
     pub record_name: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub record_type: Option<String>,
     pub record_value: String,
     pub server: VerificationServerSummary,
@@ -1071,10 +1071,10 @@ pub struct DnsVerification {
 /// EmailChangeRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EmailChangeRequest {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub current_password: Option<String>,
     pub email: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub totp_code: Option<String>,
 }
 
@@ -1104,36 +1104,36 @@ pub struct FilterCount {
 /// FilterStats
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct FilterStats {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub access: Option<std::collections::HashMap<String, i64>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub editions: Option<std::collections::HashMap<String, i64>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub features: Option<std::collections::HashMap<String, i64>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hosting: Option<std::collections::HashMap<String, i64>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regions: Option<std::collections::HashMap<String, i64>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub roles: Option<std::collections::HashMap<String, i64>>,
     pub total: i64,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub verified: Option<std::collections::HashMap<String, i64>>,
 }
 
 /// ForcePingResult
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ForcePingResult {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cooldown_seconds: Option<i64>,
     pub enqueued: bool,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hourly_limit: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub remaining_hourly: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub retry_after_seconds: Option<i64>,
 }
 
@@ -1164,11 +1164,11 @@ pub enum GameEdition {
 pub struct GatewayToken {
     pub audience: String,
     pub expires_in: i64,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub link_code: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub roles: Option<Vec<String>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scope: Option<Vec<String>>,
     pub server_id: Snowflake,
     pub session_id: String,
@@ -1179,7 +1179,7 @@ pub struct GatewayToken {
 /// GatewayTokenRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GatewayTokenRequest {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expires_in_hours: Option<i64>,
 }
 
@@ -1194,20 +1194,20 @@ pub struct GlobalServerStats {
 /// HistoryPoint
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct HistoryPoint {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub avg_online: Option<f64>,
     pub collected_at: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exclude_from_score: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub last_online: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max_players: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub peak_online: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<OnlineState>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status_source: Option<TrustState>,
 }
 
@@ -1215,7 +1215,7 @@ pub struct HistoryPoint {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct HistoryResponse {
     pub period: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub points: Option<Vec<HistoryPoint>>,
 }
 
@@ -1231,7 +1231,7 @@ pub struct IconEntry {
 /// IconHistory
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct IconHistory {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<IconEntry>>,
 }
 
@@ -1239,7 +1239,7 @@ pub struct IconHistory {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct IconSelectRequest {
     pub key: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sync: Option<bool>,
 }
 
@@ -1256,14 +1256,14 @@ pub enum IconSource {
 /// ImportPull
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ImportPull {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub channel_id: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub entries: Option<Vec<std::collections::HashMap<String, serde_json::Value>>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fetched_at: Option<String>,
     pub guild_id: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub guild_name: Option<String>,
     pub scanned_messages: i64,
     pub source: String,
@@ -1272,12 +1272,12 @@ pub struct ImportPull {
 /// ImportPullRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ImportPullRequest {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<std::collections::HashMap<String, serde_json::Value>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub before_message_id: Option<String>,
     pub channel_id: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<i64>,
 }
 
@@ -1290,7 +1290,7 @@ pub struct ImportSharedBuildRequest {
 /// InternalBatchIdentitiesRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct InternalBatchIdentitiesRequest {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub project_id: Option<i64>,
     pub user_ids: Vec<i64>,
 }
@@ -1304,9 +1304,9 @@ pub struct InternalBatchIdentitiesResponse {
 /// InternalBatchIdentityItem
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct InternalBatchIdentityItem {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub discord_subject: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_uuid: Option<String>,
     pub user_id: i64,
 }
@@ -1314,12 +1314,12 @@ pub struct InternalBatchIdentityItem {
 /// InternalDiscordEnsureUserResponse
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct InternalDiscordEnsureUserResponse {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub created: Option<bool>,
     pub found: bool,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub is_shadow: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user_id: Option<i64>,
 }
 
@@ -1327,7 +1327,7 @@ pub struct InternalDiscordEnsureUserResponse {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct InternalDiscordIdentityLookupResponse {
     pub found: bool,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user_id: Option<i64>,
 }
 
@@ -1335,7 +1335,7 @@ pub struct InternalDiscordIdentityLookupResponse {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct InternalMinecraftIdentityLookupResponse {
     pub found: bool,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user_id: Option<i64>,
 }
 
@@ -1350,11 +1350,11 @@ pub struct InternalMinecraftLinkCodeCandidateRequest {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct InternalMinecraftLinkCodeCompleteRequest {
     pub code: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_nick: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_uuid: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub project_id: Option<i64>,
     pub server_id: i64,
 }
@@ -1390,7 +1390,7 @@ pub struct InternalMinecraftLinkCodeStoreRequest {
     pub code: String,
     pub expires_in: i64,
     pub minecraft_nick: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_uuid: Option<String>,
     pub user_id: i64,
 }
@@ -1410,17 +1410,17 @@ pub struct InternalMinecraftProfilesStatsResponse {
 /// InternalUserContactResponse
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct InternalUserContactResponse {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
     pub found: bool,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,
 }
 
 /// InternalUserDiscordSubjectResponse
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct InternalUserDiscordSubjectResponse {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub discord_subject: Option<String>,
     pub found: bool,
 }
@@ -1435,21 +1435,21 @@ pub struct IntrospectRequest {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct IntrospectResponse {
     pub active: bool,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub aud: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exp: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub iat: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub jti: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub roles: Option<Vec<String>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scope: Option<Vec<String>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tenant: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user_id: Option<String>,
 }
 
@@ -1461,7 +1461,7 @@ pub struct IssuedTokenResponse {
     pub roles: Vec<String>,
     pub scope: Vec<String>,
     pub session_id: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tenant: Option<String>,
     pub token: String,
     pub token_type: String,
@@ -1484,9 +1484,9 @@ pub struct LandingStats {
 /// LaunchManifestInlineContent
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LaunchManifestInlineContent {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mods: Option<Vec<LaunchManifestModRef>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resourcepacks: Option<Vec<LaunchManifestPackRef>>,
     #[serde(rename = "type")]
     pub r#type: String,
@@ -1495,20 +1495,20 @@ pub struct LaunchManifestInlineContent {
 /// LaunchManifestJvm
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LaunchManifestJvm {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub extra_args: Option<Vec<String>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub min_ram_mb: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub recommended_ram_mb: Option<i64>,
 }
 
 /// LaunchManifestMinecraft
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LaunchManifestMinecraft {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub loader: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub loader_version: Option<String>,
     pub version: String,
 }
@@ -1516,16 +1516,16 @@ pub struct LaunchManifestMinecraft {
 /// LaunchManifestModRef
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LaunchManifestModRef {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub download_url: Option<String>,
     pub filename: String,
     pub project_id: String,
     pub provider: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sha1: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sha512: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub size: Option<i64>,
     pub version_id: String,
 }
@@ -1533,11 +1533,11 @@ pub struct LaunchManifestModRef {
 /// LaunchManifestMrpackContent
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LaunchManifestMrpackContent {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sha256: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sha512: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub size: Option<i64>,
     #[serde(rename = "type")]
     pub r#type: String,
@@ -1547,19 +1547,19 @@ pub struct LaunchManifestMrpackContent {
 /// LaunchManifestPackRef
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LaunchManifestPackRef {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub download_url: Option<String>,
     pub filename: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub project_id: Option<String>,
     pub provider: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sha1: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sha512: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub size: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version_id: Option<String>,
 }
 
@@ -1567,18 +1567,18 @@ pub struct LaunchManifestPackRef {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LaunchManifestServerEndpoint {
     pub address: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub motd: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
 }
 
 /// LaunchManifestWhitelist
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LaunchManifestWhitelist {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub link_url: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub required: Option<bool>,
 }
 
@@ -1611,10 +1611,10 @@ pub struct LinkCompletionRequest {
 /// LinkCompletionResponse
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LinkCompletionResponse {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub account: Option<LinkedMinecraftAccount>,
     pub status: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user_id: Option<Snowflake>,
 }
 
@@ -1631,14 +1631,14 @@ pub enum LinkResultStatus {
 /// LinkSession
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LinkSession {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub already_linked_project_id: Option<Snowflake>,
     pub expires_at: String,
     pub guild_id: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub guild_name: Option<String>,
     pub status: LinkSessionStatus,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub used_at: Option<String>,
 }
 
@@ -1666,13 +1666,13 @@ pub struct LinkTokenResult {
 pub struct LinkedMinecraftAccount {
     pub account_type: MinecraftAccountType,
     pub id: Snowflake,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub identity_scope_id: Option<Snowflake>,
     pub identity_scope_type: MinecraftIdentityScopeType,
     pub link_source: MinecraftLinkSource,
     pub minecraft_nick: String,
     pub minecraft_uuid: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proof_server_id: Option<Snowflake>,
     pub verification_status: MinecraftVerificationStatus,
 }
@@ -1680,16 +1680,16 @@ pub struct LinkedMinecraftAccount {
 /// LiveDashboardStats
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LiveDashboardStats {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub collected_at: Option<String>,
     pub players_online: i64,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub players_with_profile: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub registered_profiles: Option<i64>,
     pub servers_online: i64,
     pub servers_with_agent: i64,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub total_playtime_hours: Option<i64>,
 }
 
@@ -1697,28 +1697,28 @@ pub struct LiveDashboardStats {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LiveStatus {
     pub collected_at: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub connection_state: Option<OnlineState>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub country: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub country_code: Option<String>,
     pub freshness_state: FreshnessState,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max_players: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub motd: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub online: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub online_reason: Option<String>,
     pub online_state: OnlineState,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub players: Option<Vec<String>>,
     pub server_id: Snowflake,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source: Option<TrustState>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
 
@@ -1728,9 +1728,9 @@ pub struct LoginResponse {
     pub access_jwt: String,
     pub audience: String,
     pub expires_in: i64,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub refresh_token: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub refresh_token_expires_in: Option<i64>,
     pub roles: Vec<String>,
     pub scope: Vec<String>,
@@ -1762,14 +1762,14 @@ pub struct ManifestDelta {
 /// MeResponse
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MeResponse {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_accounts: Option<Vec<MinecraftAccount>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub roles: Option<Vec<String>>,
     pub user_id: Snowflake,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,
 }
 
@@ -1815,11 +1815,11 @@ pub struct MinecraftAccountResolveRequest {
 pub struct MinecraftAccountResolveResponse {
     pub account_type: String,
     pub found: bool,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_nick: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_uuid: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source: Option<String>,
 }
 
@@ -1827,23 +1827,23 @@ pub struct MinecraftAccountResolveResponse {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MinecraftAccountResponse {
     pub account_type: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
     pub id: i64,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub identity_scope_id: Option<i64>,
     pub identity_scope_type: String,
     pub link_source: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_nick: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_uuid: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proof_server_id: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uuid_type: Option<String>,
     pub verification_status: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub verified_at: Option<String>,
 }
 
@@ -1863,16 +1863,16 @@ pub struct MinecraftCandidateAccount {
     pub account_type: MinecraftAccountType,
     pub found: bool,
     pub minecraft_nick: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_uuid: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source: Option<String>,
 }
 
 /// MinecraftGroupTarget
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MinecraftGroupTarget {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub desired_minecraft_uuids: Option<Vec<String>>,
     pub luckperms_group: String,
     pub role_id: Snowflake,
@@ -1884,7 +1884,7 @@ pub struct MinecraftGroupTarget {
 /// MinecraftGroupTargets
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MinecraftGroupTargets {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<MinecraftGroupTarget>>,
     pub project_id: Snowflake,
     pub server_id: Snowflake,
@@ -1916,7 +1916,7 @@ pub enum MinecraftIdentityState {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MinecraftLinkCodeIssueRequest {
     pub minecraft_nick: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub server_id: Option<serde_json::Value>,
 }
 
@@ -1973,9 +1973,9 @@ pub struct MinecraftPendingChallenge {
     pub code: String,
     pub expires_at: String,
     pub expires_in: i64,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_nick: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_uuid: Option<String>,
 }
 
@@ -2011,9 +2011,9 @@ pub enum MinecraftUuidType {
 pub struct MinecraftVerificationAccount {
     pub account_type: MinecraftAccountType,
     pub id: Snowflake,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_nick: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_uuid: Option<String>,
     pub verification_status: MinecraftVerificationStatus,
 }
@@ -2021,9 +2021,9 @@ pub struct MinecraftVerificationAccount {
 /// MinecraftVerificationState
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MinecraftVerificationState {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<MinecraftVerificationAccount>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pending_challenge: Option<MinecraftPendingChallenge>,
 }
 
@@ -2040,11 +2040,11 @@ pub enum MinecraftVerificationStatus {
 /// MotdVerification
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MotdVerification {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub checked_at: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expires_at: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
     pub server: VerificationServerSummary,
     pub status: VerificationStatus,
@@ -2054,28 +2054,28 @@ pub struct MotdVerification {
 /// MyComment
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MyComment {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub can_moderate_comments: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub can_reply_to_comments: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub comment: Option<Comment>,
 }
 
 /// MyDashboardStats
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MyDashboardStats {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub accounts: Option<Vec<DashboardAccount>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub daily_activity: Option<Vec<DashboardDailyActivityPoint>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub estimated: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub events_breakdown: Option<std::collections::HashMap<String, i64>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub servers: Option<Vec<DashboardServerItem>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source: Option<String>,
     pub total_playtime_seconds: i64,
 }
@@ -2083,17 +2083,17 @@ pub struct MyDashboardStats {
 /// MyPlayerStats
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MyPlayerStats {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub accounts: Option<Vec<std::collections::HashMap<String, serde_json::Value>>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub daily_activity: Option<Vec<std::collections::HashMap<String, serde_json::Value>>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub estimated: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub events_breakdown: Option<std::collections::HashMap<String, i64>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub servers: Option<Vec<std::collections::HashMap<String, serde_json::Value>>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source: Option<String>,
     pub total_playtime_seconds: i64,
 }
@@ -2101,7 +2101,7 @@ pub struct MyPlayerStats {
 /// MyServerIssuesPage
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MyServerIssuesPage {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<ServerIssuesItem>>,
     pub total_issues: i64,
     pub total_servers: i64,
@@ -2110,7 +2110,7 @@ pub struct MyServerIssuesPage {
 /// MyServersPage
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MyServersPage {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<ServerCard>>,
     pub page: i64,
     pub per_page: i64,
@@ -2120,29 +2120,29 @@ pub struct MyServersPage {
 /// NotificationPreferences
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct NotificationPreferences {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub whitelist_applicant: Option<NotificationTopicPreferences>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub whitelist_staff: Option<NotificationTopicPreferences>,
 }
 
 /// NotificationPreferencesUpdate
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct NotificationPreferencesUpdate {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub whitelist_applicant: Option<NotificationTopicPreferences>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub whitelist_staff: Option<NotificationTopicPreferences>,
 }
 
 /// NotificationTopicPreferences
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct NotificationTopicPreferences {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled_channels: Option<Vec<String>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub preferred_order: Option<Vec<String>>,
 }
 
@@ -2174,15 +2174,15 @@ pub struct OAuthAuthorizationTokenResponse {
 /// OAuthCallbackRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct OAuthCallbackRequest {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audience: Option<String>,
     pub code: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scope: Option<Vec<String>>,
     pub state: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tenant_id: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub totp_code: Option<String>,
 }
 
@@ -2218,22 +2218,22 @@ pub struct OAuthProviderListResponse {
 /// OAuthProviderStatus
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct OAuthProviderStatus {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub avatar_url: Option<String>,
     pub connected: bool,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub display_name: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
     pub provider: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub subject: Option<String>,
 }
 
 /// OAuthProvidersResponse
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct OAuthProvidersResponse {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub providers: Option<Vec<OAuthProviderStatus>>,
 }
 
@@ -2249,7 +2249,7 @@ pub struct OAuthStartResponse {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct OAuthTotpChallengeResponse {
     pub challenge_id: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub error: Option<String>,
     pub expires_in: i64,
     pub status: String,
@@ -2305,25 +2305,25 @@ pub struct Order {
     pub ccy: i64,
     pub created_at: String,
     pub description: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expires_at: Option<String>,
     pub external_ref: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub extra: Option<std::collections::HashMap<String, serde_json::Value>>,
     pub id: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub idempotency_key: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub paid_at: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub payments: Option<Vec<Payment>>,
     pub product_id: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub refunded_at: Option<String>,
     pub status: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status_reason: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub subscription_id: Option<String>,
     pub updated_at: String,
     pub user_id: String,
@@ -2343,7 +2343,7 @@ pub struct OrderList {
 pub struct PasswordChangeRequest {
     pub current_password: String,
     pub new_password: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub totp_code: Option<String>,
 }
 
@@ -2375,10 +2375,10 @@ pub struct PasswordResetResult {
 /// PasswordSetRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PasswordSetRequest {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub current_password: Option<String>,
     pub new_password: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub totp_code: Option<String>,
 }
 
@@ -2393,10 +2393,10 @@ pub struct PasswordStatus {
 pub struct Payment {
     pub created_at: String,
     pub id: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub page_url: Option<String>,
     pub provider: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub provider_payment_id: Option<String>,
     pub status: String,
     pub updated_at: String,
@@ -2405,16 +2405,16 @@ pub struct Payment {
 /// PersonalAccessTokenCreateRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PersonalAccessTokenCreateRequest {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audience: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expires_in_days: Option<i64>,
     pub name: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub note: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scope: Option<Vec<String>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tenant_id: Option<i64>,
 }
 
@@ -2435,12 +2435,12 @@ pub struct PersonalAccessTokenItem {
     pub expires_at: String,
     pub id: String,
     pub name: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub note: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub revoked_at: Option<String>,
     pub scope: Vec<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tenant: Option<String>,
     pub token_hint: String,
 }
@@ -2466,7 +2466,7 @@ pub struct PlatformInfo {
 pub struct PlatformPermsRow {
     pub bits: i64,
     pub max_role_weight: i64,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub roles: Option<Vec<String>>,
     pub user_id: Snowflake,
     pub version: i64,
@@ -2475,7 +2475,7 @@ pub struct PlatformPermsRow {
 /// PlatformRoleListResponse
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PlatformRoleListResponse {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<PlatformRoleResponse>>,
 }
 
@@ -2484,7 +2484,7 @@ pub struct PlatformRoleListResponse {
 pub struct PlatformRoleRequest {
     pub key: String,
     pub name: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub permissions: Option<Vec<String>>,
 }
 
@@ -2494,7 +2494,7 @@ pub struct PlatformRoleResponse {
     pub id: String,
     pub key: String,
     pub name: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub permissions: Option<Vec<String>>,
 }
 
@@ -2508,7 +2508,7 @@ pub struct PlayerSearchPage {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PlayerSearchResult {
     pub last_seen_at: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub last_server_id: Option<Snowflake>,
     pub total_playtime_seconds: i64,
     pub username: String,
@@ -2519,10 +2519,10 @@ pub struct PlayerSearchResult {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PlayerStats {
     pub found: bool,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub per_server_seconds: Option<std::collections::HashMap<String, i64>>,
     pub server_playtime_seconds: i64,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source: Option<String>,
     pub total_playtime_seconds: i64,
 }
@@ -2530,19 +2530,19 @@ pub struct PlayerStats {
 /// PluginVerification
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PluginVerification {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expires_at: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expires_in: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub link_code: Option<String>,
     pub server: VerificationServerSummary,
     pub status: VerificationStatus,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub token: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub token_type: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub verified_at: Option<String>,
 }
 
@@ -2550,15 +2550,15 @@ pub struct PluginVerification {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PluginVerificationStartRequest {
     pub address: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expires_in_hours: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub project_id: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy_type: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub server_role: Option<ServerRole>,
 }
 
@@ -2570,15 +2570,15 @@ pub struct Product {
     pub ccy: i64,
     pub code: String,
     pub country_code: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub extra: Option<std::collections::HashMap<String, serde_json::Value>>,
     pub geo_source: String,
     pub id: String,
     pub interval: String,
     pub name: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub price_country_code: Option<String>,
     pub product_type: String,
     pub provider_supported: bool,
@@ -2588,11 +2588,11 @@ pub struct Product {
 /// ProfileActivityHeatmap
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ProfileActivityHeatmap {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub days: Option<Vec<ProfileActivityHeatmapDay>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub total_events: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub window_days: Option<i64>,
 }
 
@@ -2600,47 +2600,47 @@ pub struct ProfileActivityHeatmap {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ProfileActivityHeatmapDay {
     pub date: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub events: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sessions: Option<i64>,
 }
 
 /// ProfileGameplaySummary
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ProfileGameplaySummary {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub active_days: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub linked_accounts: Option<Vec<ProfileLinkedMinecraftAccount>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub most_played_server: Option<ProfileMostPlayedServer>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub streak_current: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub streak_longest: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub total_playtime_seconds: Option<i64>,
 }
 
 /// ProfileLinkedMinecraftAccount
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ProfileLinkedMinecraftAccount {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nick: Option<String>,
     #[serde(rename = "type")]
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub r#type: Option<String>,
 }
 
 /// ProfileMostPlayedServer
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ProfileMostPlayedServer {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub activity: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub last_seen: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub playtime_seconds: Option<i64>,
     pub server_id: String,
 }
@@ -2648,94 +2648,94 @@ pub struct ProfileMostPlayedServer {
 /// ProfileOwnedProject
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ProfileOwnedProject {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub display_server: Option<ProfileOwnedProjectDisplayServer>,
     pub id: Snowflake,
     pub name: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub public_entrypoint: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub slug: Option<String>,
 }
 
 /// ProfileOwnedProjectDisplayServer
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ProfileOwnedProjectDisplayServer {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub favicon_url: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub icon_url: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ip_or_domain: Option<String>,
 }
 
 /// ProfileOwnedServer
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ProfileOwnedServer {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub canonical_project_id: Option<Snowflake>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub canonical_project_slug: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub favicon_url: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub icon_url: Option<String>,
     pub id: Snowflake,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ip_or_domain: Option<String>,
     pub name: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub public_profile_kind: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub slug: Option<String>,
 }
 
 /// ProfileOwnershipSummary
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ProfileOwnershipSummary {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub project_count: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub projects: Option<Vec<ProfileOwnedProject>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub server_count: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub servers: Option<Vec<ProfileOwnedServer>>,
 }
 
 /// ProfilePrivacyUpdate
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ProfilePrivacyUpdate {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub show_activity_stats: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub show_bio: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub show_join_date: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub show_linked_accounts: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub show_ownership: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub show_status: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub show_streak: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub show_top_server: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub show_user_id: Option<bool>,
 }
 
 /// ProfileUpdateRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ProfileUpdateRequest {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bio: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privacy: Option<ProfilePrivacyUpdate>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub slug: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub time_format_preference: Option<String>,
     pub username: String,
 }
@@ -2747,61 +2747,61 @@ pub struct Project {
     pub created_at: String,
     pub display_server: ServerSummary,
     pub display_server_id: Snowflake,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub freshness_state: Option<FreshnessState>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub game_editions: Option<Vec<String>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hearts: Option<i64>,
     pub id: Snowflake,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub last_status_at: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max_players: Option<i64>,
     pub name: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub online_players: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub online_reason: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub online_server_id: Option<Snowflake>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub online_source: Option<OnlineSource>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub online_state: Option<OnlineState>,
     pub online_strategy: OnlineStrategy,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub owner_id: Option<Snowflake>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub public_entrypoint: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub public_entrypoint_count: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub public_entrypoint_state: Option<PublicEntrypointState>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub public_profile_kind: Option<PublicProfileKind>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub public_server_count: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regions: Option<Vec<String>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub score: Option<f64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub score_breakdown: Option<ScoreBreakdown>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub server_count: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub slug: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub trust_state: Option<TrustState>,
     pub updated_at: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uptime_24h_percentage: Option<f64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uptime_7d_percentage: Option<f64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub verified_server_count: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub votes_monthly: Option<i64>,
 }
 
@@ -2809,9 +2809,9 @@ pub struct Project {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ProjectCreateRequest {
     pub name: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub public_entrypoint: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub slug: Option<String>,
 }
 
@@ -2819,12 +2819,12 @@ pub struct ProjectCreateRequest {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ProjectCreateResponse {
     pub id: Snowflake,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub lifecycle_state: Option<LifecycleState>,
     pub name: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub public_entrypoint: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub slug: Option<String>,
 }
 
@@ -2832,7 +2832,7 @@ pub struct ProjectCreateResponse {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ProjectDetail {
     pub project: Project,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub servers: Option<Vec<ServerSummary>>,
 }
 
@@ -2856,20 +2856,20 @@ pub struct ProjectEngagementStatus {
 /// ProjectFilterStats
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ProjectFilterStats {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub access: Option<Vec<FilterCount>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub editions: Option<Vec<FilterCount>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub features: Option<Vec<FilterCount>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hosting: Option<Vec<FilterCount>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regions: Option<Vec<FilterCount>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub roles: Option<Vec<FilterCount>>,
     pub total: i64,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub verified: Option<Vec<FilterCount>>,
 }
 
@@ -2893,20 +2893,20 @@ pub struct ProjectListResponse {
 /// ProjectLiveStatus
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ProjectLiveStatus {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub collected_at: Option<String>,
     pub freshness_state: FreshnessState,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<LiveStatus>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max_players: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub online: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub online_reason: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub online_server_id: Option<Snowflake>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub online_source: Option<String>,
     pub online_state: OnlineState,
     pub project_id: Snowflake,
@@ -2916,7 +2916,7 @@ pub struct ProjectLiveStatus {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ProjectResolveResponse {
     pub project_id: Snowflake,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub slug: Option<String>,
 }
 
@@ -2924,25 +2924,25 @@ pub struct ProjectResolveResponse {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ProjectStats {
     pub active_servers: i64,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub avg_online: Option<f64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub chats: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub commands: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub first_event_at: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub joins: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub last_event_at: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub peak_online: Option<i64>,
     pub period: String,
     pub server_count: i64,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub total_events: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub unique_players: Option<i64>,
 }
 
@@ -2957,90 +2957,90 @@ pub struct ProjectThumbResult {
 /// ProjectWhitelistApplicationPreview
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ProjectWhitelistApplicationPreview {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub application_url: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub auto_approved: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub binding_id: Option<Snowflake>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub discord_name: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub form_id: Option<Snowflake>,
     pub id: Snowflake,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_account_type: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_identity_state: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_nick: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_uuid: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub payload: Option<std::collections::HashMap<String, serde_json::Value>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub review_reason: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reviewed_at: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub server_id: Option<Snowflake>,
     pub status: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status_alias: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub updated_at: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user_id: Option<Snowflake>,
 }
 
 /// ProjectWhitelistBindingPreview
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ProjectWhitelistBindingPreview {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub discord_membership_mode: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     pub enforcement_mode: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub form_id: Option<Snowflake>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub granted_role_ids: Option<Vec<Snowflake>>,
     pub id: Snowflake,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub notification_settings: Option<std::collections::HashMap<String, serde_json::Value>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub project_id: Option<Snowflake>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub restrict_chat: Option<bool>,
     pub scope_type: String,
     pub server_id: Snowflake,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub target_server_ids: Option<Vec<Snowflake>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub updated_at: Option<String>,
 }
 
 /// ProjectWhitelistConfigItem
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ProjectWhitelistConfigItem {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub application: Option<ProjectWhitelistApplicationPreview>,
     pub apply_server_id: Snowflake,
     pub binding: ProjectWhitelistBindingPreview,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enforcement_servers: Option<Vec<WhitelistTargetServerRef>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub form: Option<WhitelistFormCard>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grant_target_servers: Option<Vec<WhitelistTargetServerRef>>,
     pub project_id: Snowflake,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proof_entry: Option<WhitelistProofEntry>,
 }
 
@@ -3067,42 +3067,42 @@ pub struct PublicJWK {
     pub kty: String,
     pub n: String,
     #[serde(rename = "use")]
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub r#use: Option<String>,
 }
 
 /// PublicProfile
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PublicProfile {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub avatar_url: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bio: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privacy: Option<UsersProfilePrivacy>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub slug: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
     pub user_id: Snowflake,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,
 }
 
 /// PublicProfileCard
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PublicProfileCard {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub avatar_url: Option<String>,
     pub found: bool,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub slug: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
     pub user_id: Snowflake,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,
 }
 
@@ -3121,34 +3121,34 @@ pub enum PublicProfileKind {
 /// PublicProfileResponse
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PublicProfileResponse {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub avatar_url: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bio: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
     pub found: bool,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privacy: Option<UserProfilePrivacy>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub slug: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user_id: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,
 }
 
 /// PublicProfilesBatchItem
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PublicProfilesBatchItem {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub avatar_url: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub slug: Option<String>,
     pub user_id: i64,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,
 }
 
@@ -3167,9 +3167,9 @@ pub struct PublicProfilesBatchResponse {
 /// PublicTeamMember
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PublicTeamMember {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub is_owner: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub roles: Option<Vec<String>>,
     pub user_id: Snowflake,
 }
@@ -3178,7 +3178,7 @@ pub struct PublicTeamMember {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RecentActivityItem {
     pub created_at: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub preview: Option<String>,
     pub project_id: Snowflake,
     #[serde(rename = "type")]
@@ -3195,20 +3195,20 @@ pub struct RecentVotes {
 /// RefreshTokenRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RefreshTokenRequest {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audience: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub refresh_token: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scope: Option<Vec<String>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tenant_id: Option<i64>,
 }
 
 /// ReportUserRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ReportUserRequest {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub details: Option<String>,
     pub reason: String,
 }
@@ -3230,10 +3230,10 @@ pub struct RevokeOtherSessionsResult {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RoleCandidate {
     pub id: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub managed: Option<bool>,
     pub name: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub position: Option<i64>,
 }
 
@@ -3241,13 +3241,13 @@ pub struct RoleCandidate {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RoleCatalog {
     pub available: bool,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub guild_id: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub guild_name: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub roles: Option<Vec<RoleCandidate>>,
 }
 
@@ -3278,25 +3278,25 @@ pub enum RolloutState {
 /// ScoreBreakdown
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ScoreBreakdown {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub avg_online: Option<f64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub comments: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hearts: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub thumbs: Option<i64>,
     pub total: f64,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub verified_bonus: Option<f64>,
 }
 
 /// ServerBot
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServerBot {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bot_id: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub linked_guilds: Option<Vec<ServerBotLinkedGuild>>,
 }
 
@@ -3304,16 +3304,16 @@ pub struct ServerBot {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServerBotLinkedGuild {
     pub guild_id: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub guild_name: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub linked_at: Option<String>,
 }
 
 /// ServerBotUpdateRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServerBotUpdateRequest {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bot_link: Option<String>,
 }
 
@@ -3321,31 +3321,31 @@ pub struct ServerBotUpdateRequest {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServerCard {
     pub created_at: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub favicon_url: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub game_edition: Option<GameEdition>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub icon_url: Option<String>,
     pub id: Snowflake,
     pub ip_or_domain: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub is_verified: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub last_max_players: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub last_online_players: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub maintenance_enabled: Option<bool>,
     pub name: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parent_id: Option<Snowflake>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub project_id: Option<Snowflake>,
     pub role: ServerRole,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub show_in_public: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub slug: Option<String>,
     pub updated_at: String,
 }
@@ -3353,11 +3353,11 @@ pub struct ServerCard {
 /// ServerCardTranslations
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServerCardTranslations {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<TextTranslation>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub maintenance_message: Option<TextTranslation>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub motd: Option<TextTranslation>,
 }
 
@@ -3376,30 +3376,30 @@ pub struct ServerChangeSlugRequest {
 /// ServerDetail
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServerDetail {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bedrock_port: Option<i64>,
     pub created_at: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub game_edition: Option<GameEdition>,
     pub id: Snowflake,
     pub ip_or_domain: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub is_verified: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parent_id: Option<Snowflake>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ping_ip_or_domain: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ping_port: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub project_id: Option<Snowflake>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub project_online_strategy: Option<OnlineStrategy>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy_type: Option<String>,
     pub role: ServerRole,
     pub updated_at: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub verification_source: Option<VerificationSource>,
 }
 
@@ -3408,17 +3408,17 @@ pub struct ServerDetail {
 pub struct ServerEventPoint {
     pub collected_at: String,
     pub event_type: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub extra: Option<std::collections::HashMap<String, serde_json::Value>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub online: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub online_delta: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub player_id: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub player_name: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source: Option<String>,
 }
 
@@ -3436,7 +3436,7 @@ pub struct ServerEvents {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServerHostRiskEvidence {
     pub filename: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub payload: Option<std::collections::HashMap<String, serde_json::Value>>,
 }
 
@@ -3444,11 +3444,11 @@ pub struct ServerHostRiskEvidence {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServerIssuesItem {
     pub ip_or_domain: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub issues: Option<Vec<ServerServiceIssue>>,
     pub server_id: Snowflake,
     pub server_name: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub server_slug: Option<String>,
 }
 
@@ -3456,17 +3456,17 @@ pub struct ServerIssuesItem {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServerLaunchManifest {
     pub content: serde_json::Value,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub etag: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub jvm: Option<LaunchManifestJvm>,
     pub minecraft: LaunchManifestMinecraft,
     pub schema_version: i64,
     pub server: LaunchManifestServerEndpoint,
     pub server_id: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub updated_at: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub whitelist: Option<LaunchManifestWhitelist>,
 }
 
@@ -3474,7 +3474,7 @@ pub struct ServerLaunchManifest {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServerMaintenance {
     pub enabled: bool,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
 }
 
@@ -3482,16 +3482,16 @@ pub struct ServerMaintenance {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServerMaintenanceUpdateRequest {
     pub enabled: bool,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
 }
 
 /// ServerMediaSummary
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServerMediaSummary {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub icon_key: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub icon_url: Option<String>,
     pub icon_version: i64,
     pub server_id: Snowflake,
@@ -3507,7 +3507,7 @@ pub struct ServerMotdSummary {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServerMotdUpdateRequest {
     pub motd: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sync: Option<bool>,
 }
 
@@ -3550,10 +3550,10 @@ pub struct ServerRoot {
 /// ServerServiceIssue
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServerServiceIssue {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<String>,
     pub code: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub detail: Option<String>,
     pub service: String,
     pub severity: String,
@@ -3587,7 +3587,7 @@ pub struct ServerSetPingPortRequest {
 /// ServerSetRegionsRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServerSetRegionsRequest {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regions: Option<Vec<String>>,
 }
 
@@ -3629,11 +3629,11 @@ pub struct ServerStats {
     pub chats: i64,
     pub commands: i64,
     pub deaths: i64,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub first_event_at: Option<String>,
     pub joins: i64,
     pub kicks: i64,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub last_event_at: Option<String>,
     pub leaves: i64,
     pub period: String,
@@ -3645,7 +3645,7 @@ pub struct ServerStats {
 /// ServerSubservers
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServerSubservers {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub subserver_ids: Option<Vec<Snowflake>>,
 }
 
@@ -3653,35 +3653,35 @@ pub struct ServerSubservers {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServerSummary {
     pub created_at: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub favicon_url: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub game_edition: Option<GameEdition>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub icon_url: Option<String>,
     pub id: Snowflake,
     pub ip_or_domain: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub is_verified: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub motd: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parent_id: Option<Snowflake>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub project_id: Option<Snowflake>,
     pub role: ServerRole,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub show_description: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub slug: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub translations: Option<ServerCardTranslations>,
     pub updated_at: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub verification_source: Option<VerificationSource>,
 }
 
@@ -3689,12 +3689,12 @@ pub struct ServerSummary {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServerTeamManage {
     pub enabled: bool,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub members: Option<Vec<TeamMemberItem>>,
     pub project_id: Snowflake,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub project_servers: Option<Vec<TeamScopeServer>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub roles: Option<Vec<TeamRoleItem>>,
     pub root_server_id: Snowflake,
     pub server_id: Snowflake,
@@ -3704,9 +3704,9 @@ pub struct ServerTeamManage {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServerTeamPublic {
     pub enabled: bool,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub inherited_from_server_id: Option<Snowflake>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub members: Option<Vec<PublicTeamMember>>,
     pub project_id: Snowflake,
     pub server_id: Snowflake,
@@ -3715,14 +3715,14 @@ pub struct ServerTeamPublic {
 /// ServerTelemetry
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServerTelemetry {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub collected_at: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub latest: Option<std::collections::HashMap<String, serde_json::Value>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metrics: Option<Vec<ServerTelemetryMetric>>,
     pub period: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source: Option<String>,
 }
 
@@ -3742,25 +3742,25 @@ pub struct ServerTelemetryMetric {
 /// ServerTranslation
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServerTranslation {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub engine: Option<String>,
     pub field: String,
     pub locale: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub original_text: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source_locale: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<TranslationStatus>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub target_locale: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub translated_text: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub updated_at: Option<String>,
 }
 
@@ -3773,24 +3773,24 @@ pub struct ServerTranslationUpsertRequest {
 /// ServerTranslations
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServerTranslations {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<ServerTranslation>>,
 }
 
 /// ServerWhitelistPublicConfig
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServerWhitelistPublicConfig {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub application: Option<WhitelistApplication>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub binding: Option<WhitelistBindingDetail>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enforcement_servers: Option<Vec<WhitelistTargetServerRef>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub form: Option<WhitelistFormDetail>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grant_target_servers: Option<Vec<WhitelistTargetServerRef>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proof_entry: Option<WhitelistProofEntry>,
 }
 
@@ -3808,9 +3808,9 @@ pub enum ServiceHealth {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServiceHealthEntry {
     pub checked_at: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub error: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub latency_ms: Option<i64>,
     pub name: String,
     pub status: ServiceHealth,
@@ -3819,31 +3819,31 @@ pub struct ServiceHealthEntry {
 /// ServicesHealthResponse
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServicesHealthResponse {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<ServiceHealthEntry>>,
 }
 
 /// SessionInfo
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SessionInfo {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub current: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expires_at: Option<String>,
     pub id: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ip_address: Option<String>,
     pub issued_at: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub revoked_at: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user_agent: Option<String>,
 }
 
 /// SessionList
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SessionList {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sessions: Option<Vec<SessionInfo>>,
 }
 
@@ -3856,7 +3856,7 @@ pub struct SessionListResponse {
 /// SessionRevokeOthersResponse
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SessionRevokeOthersResponse {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub revoked_count: Option<i64>,
     pub status: String,
 }
@@ -3886,10 +3886,10 @@ pub type Snowflake = i64;
 /// SocialLinkVerification
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SocialLinkVerification {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<std::collections::HashMap<String, String>>,
     pub platform: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
     pub verified: bool,
 }
@@ -3904,61 +3904,61 @@ pub struct SocialLinkVerifyRequest {
 /// SocialLinks
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SocialLinks {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub instagram_url: Option<String>,
     pub server_id: Snowflake,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub telegram_url: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tiktok_url: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub twitch_url: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub twitter_url: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub verified_data: Option<std::collections::HashMap<String, SocialLinkVerification>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub website_url: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub youtube_url: Option<String>,
 }
 
 /// SocialLinksUpdateRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SocialLinksUpdateRequest {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub instagram_url: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub telegram_url: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tiktok_url: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub twitch_url: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub twitter_url: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub website_url: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub youtube_url: Option<String>,
 }
 
 /// StatusOverrideItem
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct StatusOverrideItem {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub created_by: Option<i64>,
     pub ends_at: String,
     pub id: String,
     pub mode: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub note: Option<String>,
     pub server_id: Snowflake,
     pub starts_at: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub updated_at: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub updated_by: Option<i64>,
 }
 
@@ -3971,15 +3971,15 @@ pub struct StatusResponse {
 /// Subscription
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Subscription {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub canceled_at: Option<String>,
     pub created_at: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub extra: Option<std::collections::HashMap<String, serde_json::Value>>,
     pub id: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub last_charge_at: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub next_charge_at: Option<String>,
     pub product_id: String,
     pub provider: String,
@@ -4001,15 +4001,15 @@ pub struct SubscriptionList {
 /// TeamMemberCreateRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TeamMemberCreateRequest {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub is_public: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub member_state: Option<MemberState>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub role_assignments: Option<Vec<TeamMemberRoleAssignmentInput>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub role_ids: Option<Vec<String>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sort_order: Option<i64>,
     pub user_id: String,
 }
@@ -4027,11 +4027,11 @@ pub struct TeamMemberItem {
     pub id: Snowflake,
     pub is_owner: bool,
     pub is_public: bool,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub member_state: Option<MemberState>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub role_assignments: Option<Vec<TeamMemberRoleAssignment>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub role_ids: Option<Vec<String>>,
     pub sort_order: i64,
     pub updated_at: String,
@@ -4042,9 +4042,9 @@ pub struct TeamMemberItem {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TeamMemberRoleAssignment {
     pub role_id: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scope_id: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scope_type: Option<TeamScopeType>,
 }
 
@@ -4052,48 +4052,48 @@ pub struct TeamMemberRoleAssignment {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TeamMemberRoleAssignmentInput {
     pub role_id: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scope_id: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scope_type: Option<TeamScopeType>,
 }
 
 /// TeamMemberUpdateRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TeamMemberUpdateRequest {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub is_public: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub member_state: Option<MemberState>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub role_assignments: Option<Vec<TeamMemberRoleAssignmentInput>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub role_ids: Option<Vec<String>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sort_order: Option<i64>,
 }
 
 /// TeamRoleCreateRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TeamRoleCreateRequest {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub color: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub discord_role_id: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub icon: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub is_public: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub luckperms_group: Option<String>,
     pub name: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub permissions: Option<Vec<String>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub position: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sort_order: Option<i64>,
 }
 
@@ -4106,29 +4106,29 @@ pub struct TeamRoleDeleteResponse {
 /// TeamRoleItem
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TeamRoleItem {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub color: Option<String>,
     pub created_at: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub discord_role_id: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub icon: Option<String>,
     pub id: Snowflake,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub is_public: Option<bool>,
     pub key: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub luckperms_group: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub managed: Option<bool>,
     pub name: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub permissions: Option<Vec<String>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub permissions_bits: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub position: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sort_order: Option<i64>,
     pub updated_at: String,
 }
@@ -4136,25 +4136,25 @@ pub struct TeamRoleItem {
 /// TeamRoleUpdateRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TeamRoleUpdateRequest {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub color: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub discord_role_id: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub icon: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub is_public: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub luckperms_group: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub permissions: Option<Vec<String>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub position: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sort_order: Option<i64>,
 }
 
@@ -4165,7 +4165,7 @@ pub struct TeamScopeServer {
     pub id: Snowflake,
     pub name: String,
     pub server_role: ServerRole,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub slug: Option<String>,
     pub updated_at: String,
 }
@@ -4209,9 +4209,9 @@ pub enum TelemetryMetricKind {
 pub struct TextTranslation {
     pub engine: String,
     pub original_text: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source_locale: Option<String>,
     pub status: TranslationStatus,
     pub target_locale: String,
@@ -4234,14 +4234,14 @@ pub enum TicketAuthorType {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TicketCreateRequest {
     pub content: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_username: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_uuid: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub priority: Option<TicketPriority>,
     pub server_id: Snowflake,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source: Option<TicketSource>,
     pub subject: String,
 }
@@ -4250,7 +4250,7 @@ pub struct TicketCreateRequest {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TicketDetail {
     pub creator_id: Snowflake,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub messages: Option<Vec<TicketMessage>>,
     pub summary: TicketSummary,
 }
@@ -4349,11 +4349,11 @@ pub struct TicketSummary {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TokenExchangeRequest {
     pub audience: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expires_in_minutes: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scope: Option<Vec<String>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tenant_id: Option<i64>,
 }
 
@@ -4373,7 +4373,7 @@ pub struct TotpCodeRequest {
 /// TotpStatus
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TotpStatus {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
     pub enabled: bool,
 }
@@ -4411,17 +4411,17 @@ pub enum TrustState {
 pub struct UnlinkedMinecraftAccount {
     pub account_type: String,
     pub id: Snowflake,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub identity_scope_id: Option<Snowflake>,
     pub identity_scope_type: String,
     pub link_source: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_nick: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_uuid: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proof_server_id: Option<Snowflake>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uuid_type: Option<String>,
     pub verification_status: String,
 }
@@ -4431,24 +4431,24 @@ pub struct UnlinkedMinecraftAccount {
 pub struct UpdateManifest {
     pub artifact_id: String,
     pub channel: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub components: Option<std::collections::HashMap<String, ManifestComponent>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deltas:
         Option<std::collections::HashMap<String, std::collections::HashMap<String, ManifestDelta>>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub download_url: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub download_urls: Option<Vec<String>>,
     pub file_name: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub modrinth_url: Option<String>,
     pub platform: String,
     pub product: String,
     pub sha256: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub signature: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub signature_version: Option<String>,
     pub version: String,
 }
@@ -4456,26 +4456,26 @@ pub struct UpdateManifest {
 /// UpdateManifestUpsert
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct UpdateManifestUpsert {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub artifact_id: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub components: Option<std::collections::HashMap<String, ManifestComponent>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deltas:
         Option<std::collections::HashMap<String, std::collections::HashMap<String, ManifestDelta>>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub download_url: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub download_urls: Option<Vec<String>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub file_name: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub modrinth_url: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rollout_allow_servers: Option<Vec<i64>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rollout_deny_servers: Option<Vec<i64>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rollout_percent: Option<i64>,
     pub sha256: String,
     pub version: String,
@@ -4490,34 +4490,34 @@ pub struct UpdateReportAck {
 /// UpdateReportInput
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct UpdateReportInput {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub channel: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub current_version: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub detail: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub event: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub platform: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub server_id: Option<Snowflake>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub target_version: Option<String>,
 }
 
 /// UserDetailed
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct UserDetailed {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub avatar_url: Option<String>,
     pub created_at: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
     pub id: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub roles: Option<Vec<String>>,
     pub status: String,
     pub username: String,
@@ -4526,7 +4526,7 @@ pub struct UserDetailed {
 /// UserEngagement
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct UserEngagement {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub top_project: Option<UserEngagementTopProject>,
     pub total_comments: i64,
     pub total_favorites: i64,
@@ -4543,18 +4543,18 @@ pub struct UserEngagementTopProject {
 /// UserLogin
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct UserLogin {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audience: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub captcha_token: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ip_address: Option<String>,
     pub password: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scope: Option<Vec<String>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tenant_id: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub totp_code: Option<String>,
     pub username: String,
 }
@@ -4562,25 +4562,25 @@ pub struct UserLogin {
 /// UserProfile
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct UserProfile {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub avatar_url: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bio: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub email_verified: Option<bool>,
     pub id: Snowflake,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privacy: Option<MeProfilePrivacy>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub slug: Option<String>,
     pub status: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub time_format_preference: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub updated_at: Option<String>,
     pub username: String,
 }
@@ -4588,49 +4588,49 @@ pub struct UserProfile {
 /// UserProfilePrivacy
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct UserProfilePrivacy {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub show_activity_stats: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub show_bio: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub show_join_date: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub show_linked_accounts: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub show_ownership: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub show_status: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub show_streak: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub show_top_server: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub show_user_id: Option<bool>,
 }
 
 /// UserPublic
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct UserPublic {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub avatar_url: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bio: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub email_verified: Option<bool>,
     pub id: i64,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privacy: Option<UserProfilePrivacy>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub slug: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<UserStatus>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub time_format_preference: Option<UserTimeFormatPreference>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub updated_at: Option<String>,
     pub username: String,
 }
@@ -4644,9 +4644,9 @@ pub struct UserRecentActivity {
 /// UserRegister
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct UserRegister {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub captcha_token: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
     pub password: String,
     pub username: String,
@@ -4655,7 +4655,7 @@ pub struct UserRegister {
 /// UserRolesResponse
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct UserRolesResponse {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub roles: Option<Vec<String>>,
     pub user_id: String,
 }
@@ -4700,30 +4700,30 @@ pub struct VerificationCheckRequest {
 /// VerificationServerSummary
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct VerificationServerSummary {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub favicon_url: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub game_edition: Option<GameEdition>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub icon_url: Option<String>,
     pub id: Snowflake,
     pub ip_or_domain: String,
     pub is_verified: bool,
     pub name: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub owner_id: Option<Snowflake>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub project_id: Option<Snowflake>,
     pub proxy_type: String,
     pub role: ServerRole,
     pub server_role: ServerRole,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub slug: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub verification_level: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub verification_source: Option<VerificationSource>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub verified_at: Option<String>,
 }
 
@@ -4741,7 +4741,7 @@ pub enum VerificationSource {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct VerificationStartRequest {
     pub address: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub project_id: Option<Snowflake>,
 }
 
@@ -4762,12 +4762,12 @@ pub enum VerificationStatus {
 /// VoteItem
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct VoteItem {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub avatar_url: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub slug: Option<String>,
     pub user_id: Snowflake,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,
     pub voted_at: String,
 }
@@ -4775,13 +4775,13 @@ pub struct VoteItem {
 /// VotingLinks
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct VotingLinks {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub allmc_url: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disflip_url: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub leavepulse_url: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub monicore_url: Option<String>,
     pub server_id: Snowflake,
 }
@@ -4789,13 +4789,13 @@ pub struct VotingLinks {
 /// VotingLinksUpdateRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct VotingLinksUpdateRequest {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub allmc_url: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disflip_url: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub leavepulse_url: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub monicore_url: Option<String>,
 }
 
@@ -4803,53 +4803,53 @@ pub struct VotingLinksUpdateRequest {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WebsocketTokenRequest {
     pub audience: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scope: Option<Vec<String>>,
 }
 
 /// WhitelistApplicantNotificationSettings
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WhitelistApplicantNotificationSettings {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub discord_dm: Option<WhitelistNotificationChannelSettings>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub email: Option<WhitelistNotificationChannelSettings>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_direct: Option<WhitelistNotificationChannelSettings>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub telegram: Option<WhitelistNotificationChannelSettings>,
 }
 
 /// WhitelistApplication
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WhitelistApplication {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub application_url: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub auto_approved: Option<bool>,
     pub created_at: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub discord_name: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub form_id: Option<Snowflake>,
     pub id: Snowflake,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_account_type: Option<MinecraftAccountType>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_identity_state: Option<MinecraftIdentityState>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_nick: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_uuid: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub payload: Option<std::collections::HashMap<String, String>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub review_reason: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reviewed_at: Option<String>,
     pub server_id: Snowflake,
     pub status: WhitelistApplicationStatus,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status_alias: Option<String>,
     pub updated_at: String,
     pub user_id: Snowflake,
@@ -4858,13 +4858,13 @@ pub struct WhitelistApplication {
 /// WhitelistApplicationList
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WhitelistApplicationList {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<WhitelistApplication>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub page: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub per_page: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub total: Option<i64>,
 }
 
@@ -4887,14 +4887,14 @@ pub enum WhitelistApplicationStatus {
 /// WhitelistApplyRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WhitelistApplyRequest {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub answers: Option<std::collections::HashMap<String, serde_json::Value>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub binding_id: Option<Snowflake>,
     pub minecraft_account_type: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_nick: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_uuid: Option<String>,
 }
 
@@ -4902,27 +4902,27 @@ pub struct WhitelistApplyRequest {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WhitelistBindingDetail {
     pub created_at: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub discord_membership_mode: Option<DiscordMembershipMode>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     pub enforcement_mode: EnforcementMode,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub form_id: Option<Snowflake>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub granted_role_ids: Option<Vec<Snowflake>>,
     pub id: Snowflake,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<WhitelistBindingMode>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub notification_settings: Option<WhitelistNotificationSettings>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub project_id: Option<Snowflake>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub restrict_chat: Option<bool>,
     pub scope_type: TeamScopeType,
     pub server_id: Snowflake,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub target_server_ids: Option<Vec<Snowflake>>,
     pub updated_at: String,
 }
@@ -4940,7 +4940,7 @@ pub enum WhitelistBindingMode {
 /// WhitelistBindingTestResult
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WhitelistBindingTestResult {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub detail: Option<String>,
     pub sent: bool,
 }
@@ -4948,41 +4948,41 @@ pub struct WhitelistBindingTestResult {
 /// WhitelistBindingWriteRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WhitelistBindingWriteRequest {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub discord_membership_mode: Option<DiscordMembershipMode>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     pub enforcement_mode: EnforcementMode,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub form_id: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub granted_role_ids: Option<Vec<String>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<WhitelistBindingMode>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub notification_settings: Option<WhitelistNotificationSettings>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub restrict_chat: Option<bool>,
     pub scope_type: TeamScopeType,
     pub server_id: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub target_server_ids: Option<Vec<String>>,
 }
 
 /// WhitelistConfig
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WhitelistConfig {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub binding_server_id: Option<Snowflake>,
     pub enabled: bool,
     pub enforcement_mode: EnforcementMode,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub entries: Option<Vec<WhitelistEntry>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub form_fields: Option<Vec<WhitelistFormField>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub form_id: Option<Snowflake>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub form_name: Option<String>,
     pub restrict_chat: bool,
     pub scope_type: TeamScopeType,
@@ -4992,7 +4992,7 @@ pub struct WhitelistConfig {
 /// WhitelistDecisionRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WhitelistDecisionRequest {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
 }
 
@@ -5005,15 +5005,15 @@ pub struct WhitelistDirectAddRequest {
 /// WhitelistDirectEntry
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WhitelistDirectEntry {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub added_by_user_id: Option<Snowflake>,
     pub created_at: String,
     pub id: Snowflake,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_account_type: Option<MinecraftAccountType>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_nick: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_uuid: Option<String>,
     pub server_id: Snowflake,
     pub updated_at: String,
@@ -5022,7 +5022,7 @@ pub struct WhitelistDirectEntry {
 /// WhitelistDirectEntryPage
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WhitelistDirectEntryPage {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<WhitelistDirectEntry>>,
     pub total: i64,
 }
@@ -5030,7 +5030,7 @@ pub struct WhitelistDirectEntryPage {
 /// WhitelistDirectRemoval
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WhitelistDirectRemoval {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_nick: Option<String>,
     pub removed: bool,
 }
@@ -5038,19 +5038,19 @@ pub struct WhitelistDirectRemoval {
 /// WhitelistEntry
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WhitelistEntry {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub discord_name: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_account_type: Option<MinecraftAccountType>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_nick: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_uuid: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub updated_at: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user_id: Option<Snowflake>,
 }
 
@@ -5058,15 +5058,15 @@ pub struct WhitelistEntry {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WhitelistFieldConfig {
     pub field_type: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub help_text: Option<String>,
     pub key: String,
     pub label: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub order: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub required: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rules: Option<std::collections::HashMap<String, serde_json::Value>>,
 }
 
@@ -5091,11 +5091,11 @@ pub enum WhitelistFieldType {
 pub struct WhitelistFormCard {
     pub auto_approve_enabled: bool,
     pub created_at: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     pub id: Snowflake,
     pub name: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub project_id: Option<Snowflake>,
     pub require_discord: bool,
     pub require_minecraft_nick: bool,
@@ -5105,33 +5105,33 @@ pub struct WhitelistFormCard {
 /// WhitelistFormCreateRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WhitelistFormCreateRequest {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub auto_approve_enabled: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub auto_approve_rules: Option<std::collections::HashMap<String, serde_json::Value>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fields: Option<Vec<WhitelistFieldConfig>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub import_mapping: Option<std::collections::HashMap<String, serde_json::Value>>,
     pub name: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub project_id: Option<Snowflake>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub require_discord: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub require_minecraft_nick: Option<bool>,
 }
 
 /// WhitelistFormDetail
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WhitelistFormDetail {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub auto_approve_rules: Option<std::collections::HashMap<String, serde_json::Value>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fields: Option<Vec<WhitelistFieldConfig>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub import_mapping: Option<std::collections::HashMap<String, serde_json::Value>>,
     pub summary: WhitelistFormCard,
 }
@@ -5142,7 +5142,7 @@ pub struct WhitelistFormField {
     pub field_type: WhitelistFieldType,
     pub key: String,
     pub label: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub order: Option<i64>,
     pub required: bool,
 }
@@ -5150,14 +5150,14 @@ pub struct WhitelistFormField {
 /// WhitelistFormImportMappingRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WhitelistFormImportMappingRequest {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub import_mapping: Option<std::collections::HashMap<String, serde_json::Value>>,
 }
 
 /// WhitelistFormPage
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WhitelistFormPage {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<WhitelistFormCard>>,
     pub page: i64,
     pub per_page: i64,
@@ -5167,23 +5167,23 @@ pub struct WhitelistFormPage {
 /// WhitelistFormPatch
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WhitelistFormPatch {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub auto_approve_enabled: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub auto_approve_rules: Option<std::collections::HashMap<String, serde_json::Value>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fields: Option<Vec<WhitelistFieldConfig>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub import_mapping: Option<std::collections::HashMap<String, serde_json::Value>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub project_id: Option<Snowflake>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub require_discord: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub require_minecraft_nick: Option<bool>,
 }
 
@@ -5196,34 +5196,34 @@ pub struct WhitelistFormUpdateRequest {
 /// WhitelistImportJob
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WhitelistImportJob {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub applications_added: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub batches_expected: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub batches_received: Option<i64>,
     pub binding_id: Snowflake,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub completed_at: Option<String>,
     pub conflict_policy: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conflicts: Option<i64>,
     pub created_at: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub entries_added: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub entries_updated: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub error_reason: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expires_at: Option<String>,
     pub id: Snowflake,
     pub include_history: bool,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub payload: Option<serde_json::Value>,
     pub server_id: Snowflake,
     pub source: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub started_at: Option<String>,
     pub status: String,
     pub token: String,
@@ -5233,31 +5233,31 @@ pub struct WhitelistImportJob {
 /// WhitelistImportJobPage
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WhitelistImportJobPage {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<WhitelistImportJob>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub page: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub per_page: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub total: Option<i64>,
 }
 
 /// WhitelistImportOptions
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WhitelistImportOptions {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub entries: Option<Vec<std::collections::HashMap<String, serde_json::Value>>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub field_priority: Option<std::collections::HashMap<String, Vec<String>>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub manual_overrides:
         Option<std::collections::HashMap<String, std::collections::HashMap<String, String>>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub payload: Option<std::collections::HashMap<String, serde_json::Value>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source_priority: Option<Vec<String>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sources: Option<Vec<std::collections::HashMap<String, serde_json::Value>>>,
 }
 
@@ -5265,106 +5265,106 @@ pub struct WhitelistImportOptions {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WhitelistImportRequest {
     pub binding_id: Snowflake,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conflict_policy: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub dry_run: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expires_in_hours: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub form_id: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub import_account_mode: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub include_history: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub options: Option<WhitelistImportOptions>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source: Option<String>,
 }
 
 /// WhitelistMinecraftPullRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WhitelistMinecraftPullRequest {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub batch_size: Option<i64>,
     pub binding_id: Snowflake,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conflict_policy: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expires_in_hours: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub form_id: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub import_account_mode: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub include_history: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source: Option<String>,
 }
 
 /// WhitelistNotificationChannelSettings
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WhitelistNotificationChannelSettings {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub channel_id: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub content_template: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub format: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub statuses: Option<Vec<String>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub subject_template: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub target_scope: Option<String>,
 }
 
 /// WhitelistNotificationSettings
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WhitelistNotificationSettings {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub applicant: Option<WhitelistApplicantNotificationSettings>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub staff: Option<WhitelistStaffNotificationSettings>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<i64>,
 }
 
 /// WhitelistProofEntry
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WhitelistProofEntry {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub entry_hint_kind: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub entry_server_id: Option<Snowflake>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub preferred_command_root: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scope: Option<String>,
 }
 
 /// WhitelistStaffNotificationSettings
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WhitelistStaffNotificationSettings {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub discord_channel: Option<WhitelistNotificationChannelSettings>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub discord_dm: Option<WhitelistNotificationChannelSettings>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub email: Option<WhitelistNotificationChannelSettings>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minecraft_broadcast: Option<WhitelistNotificationChannelSettings>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub telegram: Option<WhitelistNotificationChannelSettings>,
 }
 
 /// WhitelistStatusRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WhitelistStatusRequest {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
     pub status: String,
 }
@@ -5372,7 +5372,7 @@ pub struct WhitelistStatusRequest {
 /// WhitelistTargetServerRef
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WhitelistTargetServerRef {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub entry_server_id: Option<Snowflake>,
     pub server_id: Snowflake,
 }
@@ -5380,89 +5380,89 @@ pub struct WhitelistTargetServerRef {
 /// Workspace
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Workspace {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub can_edit_draft: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub can_manage: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub can_verify: Option<bool>,
     pub catalog_mode: String,
     pub created_at: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub creator_user_id: Option<Snowflake>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub display_server: Option<ServerSummary>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub display_server_id: Option<Snowflake>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub freshness_state: Option<FreshnessState>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub game_editions: Option<Vec<String>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hearts: Option<i64>,
     pub id: Snowflake,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub last_status_at: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub lifecycle_state: Option<LifecycleState>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max_players: Option<i64>,
     pub name: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub online_players: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub online_reason: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub online_server_id: Option<Snowflake>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub online_source: Option<OnlineSource>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub online_state: Option<OnlineState>,
     pub online_strategy: OnlineStrategy,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub owner_id: Option<Snowflake>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub public_entrypoint: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub public_entrypoint_count: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub public_entrypoint_state: Option<PublicEntrypointState>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub public_server_count: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regions: Option<Vec<String>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub root_server_id: Option<Snowflake>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub server_count: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub slug: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub trust_state: Option<TrustState>,
     pub updated_at: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user_permissions: Option<Vec<String>>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub verified_plugin_rollout_mode: Option<RolloutMode>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub verified_plugin_rollout_state: Option<RolloutState>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub verified_server_count: Option<i64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub votes_monthly: Option<i64>,
 }
 
 /// WorkspaceChangeSlugRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WorkspaceChangeSlugRequest {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub slug: Option<String>,
 }
 
 /// WorkspaceDetail
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WorkspaceDetail {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub servers: Option<Vec<ServerSummary>>,
     pub workspace: Workspace,
 }
@@ -5485,7 +5485,7 @@ pub struct WorkspaceRenameRequest {
 /// WorkspaceResolveResponse
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WorkspaceResolveResponse {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub slug: Option<String>,
     pub workspace_id: Snowflake,
 }
@@ -5506,7 +5506,7 @@ pub struct WorkspaceSetRolloutModeRequest {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WsTokenRequest {
     pub audience: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scope: Option<Vec<String>>,
 }
 
@@ -5515,10 +5515,10 @@ pub struct WsTokenRequest {
 pub struct WsTokenResponse {
     pub audience: String,
     pub expires_in: i64,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scope: Option<Vec<String>>,
     pub session_id: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tenant: Option<String>,
     pub token: String,
     pub token_type: String,
@@ -5534,53 +5534,53 @@ pub struct AvatarUploadForm {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct IconUploadForm {
     pub file: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sync: Option<serde_json::Value>,
 }
 
 /// ProfilePrivacy
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MeProfilePrivacy {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub show_activity_stats: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub show_bio: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub show_join_date: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub show_linked_accounts: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub show_ownership: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub show_status: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub show_streak: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub show_top_server: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub show_user_id: Option<bool>,
 }
 
 /// ProfilePrivacy
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct UsersProfilePrivacy {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub show_activity_stats: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub show_bio: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub show_join_date: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub show_linked_accounts: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub show_ownership: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub show_status: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub show_streak: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub show_top_server: Option<bool>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub show_user_id: Option<bool>,
 }
 
