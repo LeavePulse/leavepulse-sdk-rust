@@ -881,7 +881,7 @@ impl Server {
     pub async fn tickets_list(
         &self,
         params: models::ServerTicketsListParams,
-    ) -> Result<Vec<Ticket>, TransportError> {
+    ) -> Result<crate::page::Page<Ticket>, TransportError> {
         let data = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),
@@ -897,12 +897,12 @@ impl Server {
             Channel::Platform,
         )
         .await?;
-        let items = if data.is_array() {
-            data
-        } else {
-            data.get("items").cloned().unwrap_or(Value::Null)
-        };
-        Ok(self.client.hydrate_many::<Ticket>("Ticket", items))
+        Ok(crate::page::page_data_from(
+            data,
+            |items| self.client.hydrate_many::<Ticket>("Ticket", items),
+            params.page.unwrap_or(1),
+            params.limit.unwrap_or(20),
+        ))
     }
 
     /// server.player_stats

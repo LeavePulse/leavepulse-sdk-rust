@@ -2,6 +2,8 @@
 #![allow(clippy::all)]
 use serde::{Deserialize, Serialize};
 
+use crate::snowflake::Snowflake;
+
 /// AccountDeletionResult
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AccountDeletionResult {
@@ -385,6 +387,10 @@ pub struct AdminUserDiscordUpdateRequest {
 pub struct AdminUserListResponse {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<AdminUserSummary>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub page: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub per_page: Option<i64>,
     pub total: i64,
 }
 
@@ -573,6 +579,10 @@ pub struct BuildCreateRequest {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct BuildList {
     pub items: Vec<BuildSummary>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub page: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub per_page: Option<i64>,
     pub total: i64,
 }
 
@@ -748,8 +758,8 @@ pub struct CommentLikeResult {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CommentList {
     pub items: Vec<Comment>,
-    pub limit: i64,
     pub page: i64,
+    pub per_page: i64,
     pub total: i64,
 }
 
@@ -2103,8 +2113,16 @@ pub struct MyPlayerStats {
 pub struct MyServerIssuesPage {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<ServerIssuesItem>>,
-    pub total_issues: i64,
-    pub total_servers: i64,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub page: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub per_page: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub total: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub total_issues: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub total_servers: Option<i64>,
 }
 
 /// MyServersPage
@@ -2333,8 +2351,8 @@ pub struct Order {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct OrderList {
     pub items: Vec<Order>,
-    pub limit: i64,
     pub page: i64,
+    pub per_page: i64,
     pub total: i64,
 }
 
@@ -3426,8 +3444,8 @@ pub struct ServerEventPoint {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServerEvents {
     pub items: Vec<ServerEventPoint>,
-    pub limit: i64,
     pub page: i64,
+    pub per_page: i64,
     pub period: String,
     pub total: i64,
 }
@@ -3887,8 +3905,6 @@ pub struct ShareLink {
     pub share_token: String,
 }
 
-pub type Snowflake = i64;
-
 /// SocialLinkVerification
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SocialLinkVerification {
@@ -3999,8 +4015,8 @@ pub struct Subscription {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SubscriptionList {
     pub items: Vec<Subscription>,
-    pub limit: i64,
     pub page: i64,
+    pub per_page: i64,
     pub total: i64,
 }
 
@@ -4265,8 +4281,8 @@ pub struct TicketDetail {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TicketList {
     pub items: Vec<TicketSummary>,
-    pub limit: i64,
     pub page: i64,
+    pub per_page: i64,
     pub total: i64,
 }
 
@@ -5030,6 +5046,10 @@ pub struct WhitelistDirectEntry {
 pub struct WhitelistDirectEntryPage {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<WhitelistDirectEntry>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub page: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub per_page: Option<i64>,
     pub total: i64,
 }
 

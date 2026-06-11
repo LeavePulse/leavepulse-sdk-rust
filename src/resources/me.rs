@@ -386,7 +386,7 @@ impl Me {
     }
 
     /// me.sessions.list
-    pub async fn sessions_list(&self) -> Result<Session, TransportError> {
+    pub async fn sessions_list(&self) -> Result<Vec<Session>, TransportError> {
         let data = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),
@@ -395,9 +395,12 @@ impl Me {
             Channel::Platform,
         )
         .await?;
-        Ok(self
-            .client
-            .hydrate::<Session>("Session", data, Some("sessions")))
+        let items = if data.is_array() {
+            data
+        } else {
+            data.get("sessions").cloned().unwrap_or(Value::Null)
+        };
+        Ok(self.client.hydrate_many::<Session>("Session", items))
     }
 
     /// me.sessions.revoke_others
@@ -511,7 +514,7 @@ impl Me {
     pub async fn whitelist_applications(
         &self,
         params: models::MeWhitelistApplicationsParams,
-    ) -> Result<Vec<Application>, TransportError> {
+    ) -> Result<crate::page::Page<Application>, TransportError> {
         let data = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),
@@ -527,21 +530,22 @@ impl Me {
             Channel::Platform,
         )
         .await?;
-        let items = if data.is_array() {
-            data
-        } else {
-            data.get("items").cloned().unwrap_or(Value::Null)
-        };
-        Ok(self
-            .client
-            .hydrate_many::<Application>("Application", items))
+        Ok(crate::page::page_data_from(
+            data,
+            |items| {
+                self.client
+                    .hydrate_many::<Application>("Application", items)
+            },
+            params.page.unwrap_or(1),
+            params.per_page.unwrap_or(20),
+        ))
     }
 
     /// me.servers.list
     pub async fn servers_list(
         &self,
         params: models::MeServersListParams,
-    ) -> Result<Vec<Server>, TransportError> {
+    ) -> Result<crate::page::Page<Server>, TransportError> {
         let data = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),
@@ -556,12 +560,12 @@ impl Me {
             Channel::Platform,
         )
         .await?;
-        let items = if data.is_array() {
-            data
-        } else {
-            data.get("items").cloned().unwrap_or(Value::Null)
-        };
-        Ok(self.client.hydrate_many::<Server>("Server", items))
+        Ok(crate::page::page_data_from(
+            data,
+            |items| self.client.hydrate_many::<Server>("Server", items),
+            params.page.unwrap_or(1),
+            params.per_page.unwrap_or(20),
+        ))
     }
 
     /// me.servers.issues

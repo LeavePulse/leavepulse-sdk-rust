@@ -10,6 +10,7 @@ pub mod device;
 pub mod errors;
 pub mod etag_store;
 pub mod oauth2;
+pub mod page;
 pub mod resource;
 pub mod snowflake;
 pub mod transport;
@@ -40,6 +41,7 @@ pub use etag_store::{
 pub use oauth2::{
     build_authorize_url, exchange_code, AuthorizeUrl, BuildAuthorizeUrlInit, ExchangeCodeInit,
 };
+pub use page::{page_data_from, Page};
 pub use snowflake::Snowflake;
 pub use transport::{
     BearerTransport, Channel, ConditionalOutcome, Method, RetryOptions, Transport, TransportError,

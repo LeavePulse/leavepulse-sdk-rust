@@ -6,6 +6,15 @@ use serde_json::Value;
 use crate::client::LeavePulse;
 use crate::models;
 use crate::resource;
+use crate::resources::Binding;
+use crate::resources::Build;
+use crate::resources::Form;
+use crate::resources::Order;
+use crate::resources::Product;
+use crate::resources::Server;
+use crate::resources::Subscription;
+use crate::resources::Ticket;
+use crate::resources::User;
 use crate::transport::{Channel, Method, TransportError};
 
 /// AdminDiscoveryNs procedure namespace.
@@ -1333,8 +1342,8 @@ impl BillingOrdersNs {
     pub async fn list(
         &self,
         params: models::BillingOrdersListParams,
-    ) -> Result<models::OrderList, TransportError> {
-        let value = crate::etag_store::fetch_cached_or_throw(
+    ) -> Result<crate::page::Page<Order>, TransportError> {
+        let data = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),
             Method::Get,
@@ -1348,7 +1357,12 @@ impl BillingOrdersNs {
             Channel::Platform,
         )
         .await?;
-        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+        Ok(crate::page::page_data_from(
+            data,
+            |items| self.client.hydrate_many::<Order>("Order", items),
+            params.page.unwrap_or(1),
+            params.limit.unwrap_or(20),
+        ))
     }
 }
 
@@ -1363,8 +1377,8 @@ impl BillingProductsNs {
     }
 
     /// billing.products.list
-    pub async fn list(&self) -> Result<Vec<models::Product>, TransportError> {
-        let value = crate::etag_store::fetch_cached_or_throw(
+    pub async fn list(&self) -> Result<Vec<Product>, TransportError> {
+        let data = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),
             Method::Get,
@@ -1372,7 +1386,12 @@ impl BillingProductsNs {
             Channel::Platform,
         )
         .await?;
-        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+        let items = if data.is_array() {
+            data
+        } else {
+            data.get("items").cloned().unwrap_or(Value::Null)
+        };
+        Ok(self.client.hydrate_many::<Product>("Product", items))
     }
 }
 
@@ -1390,8 +1409,8 @@ impl BillingSubscriptionsNs {
     pub async fn list(
         &self,
         params: models::BillingSubscriptionsListParams,
-    ) -> Result<models::SubscriptionList, TransportError> {
-        let value = crate::etag_store::fetch_cached_or_throw(
+    ) -> Result<crate::page::Page<Subscription>, TransportError> {
+        let data = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),
             Method::Get,
@@ -1405,7 +1424,15 @@ impl BillingSubscriptionsNs {
             Channel::Platform,
         )
         .await?;
-        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+        Ok(crate::page::page_data_from(
+            data,
+            |items| {
+                self.client
+                    .hydrate_many::<Subscription>("Subscription", items)
+            },
+            params.page.unwrap_or(1),
+            params.limit.unwrap_or(20),
+        ))
     }
 }
 
@@ -1461,11 +1488,8 @@ impl BuildsNs {
     }
 
     /// builds.create
-    pub async fn create(
-        &self,
-        body: models::BuildCreateRequest,
-    ) -> Result<models::Build, TransportError> {
-        let value = self
+    pub async fn create(&self, body: models::BuildCreateRequest) -> Result<Build, TransportError> {
+        let data = self
             .client
             .transport()
             .request(
@@ -1475,15 +1499,15 @@ impl BuildsNs {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+        Ok(self.client.hydrate::<Build>("Build", data, None))
     }
 
     /// builds.import
     pub async fn import(
         &self,
         body: models::ImportSharedBuildRequest,
-    ) -> Result<models::Build, TransportError> {
-        let value = self
+    ) -> Result<Build, TransportError> {
+        let data = self
             .client
             .transport()
             .request(
@@ -1493,12 +1517,12 @@ impl BuildsNs {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+        Ok(self.client.hydrate::<Build>("Build", data, None))
     }
 
     /// builds.preview
-    pub async fn preview(&self, share_token: String) -> Result<models::Build, TransportError> {
-        let value = crate::etag_store::fetch_cached_or_throw(
+    pub async fn preview(&self, share_token: String) -> Result<Build, TransportError> {
+        let data = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),
             Method::Get,
@@ -1506,12 +1530,12 @@ impl BuildsNs {
             Channel::PlatformPublic,
         )
         .await?;
-        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+        Ok(self.client.hydrate::<Build>("Build", data, None))
     }
 
     /// builds.shared_with_me
-    pub async fn shared_with_me(&self) -> Result<models::BuildList, TransportError> {
-        let value = crate::etag_store::fetch_cached_or_throw(
+    pub async fn shared_with_me(&self) -> Result<Vec<Build>, TransportError> {
+        let data = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),
             Method::Get,
@@ -1519,7 +1543,12 @@ impl BuildsNs {
             Channel::Platform,
         )
         .await?;
-        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+        let items = if data.is_array() {
+            data
+        } else {
+            data.get("items").cloned().unwrap_or(Value::Null)
+        };
+        Ok(self.client.hydrate_many::<Build>("Build", items))
     }
 }
 
@@ -1979,8 +2008,8 @@ impl ServersNs {
     }
 
     /// servers.resolve
-    pub async fn resolve(&self, server_ref: String) -> Result<models::ServerCard, TransportError> {
-        let value = crate::etag_store::fetch_cached_or_throw(
+    pub async fn resolve(&self, server_ref: String) -> Result<Server, TransportError> {
+        let data = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),
             Method::Get,
@@ -1988,7 +2017,7 @@ impl ServersNs {
             Channel::PlatformPublic,
         )
         .await?;
-        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+        Ok(self.client.hydrate::<Server>("Server", data, None))
     }
 }
 
@@ -2058,8 +2087,8 @@ impl TicketsNs {
     pub async fn create(
         &self,
         body: models::TicketCreateRequest,
-    ) -> Result<models::TicketDetail, TransportError> {
-        let value = self
+    ) -> Result<Ticket, TransportError> {
+        let data = self
             .client
             .transport()
             .request(
@@ -2069,15 +2098,15 @@ impl TicketsNs {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+        Ok(self.client.hydrate::<Ticket>("Ticket", data, None))
     }
 
     /// tickets.mine
     pub async fn mine(
         &self,
         params: models::TicketsMineParams,
-    ) -> Result<models::TicketList, TransportError> {
-        let value = crate::etag_store::fetch_cached_or_throw(
+    ) -> Result<crate::page::Page<Ticket>, TransportError> {
+        let data = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),
             Method::Get,
@@ -2091,7 +2120,12 @@ impl TicketsNs {
             Channel::Platform,
         )
         .await?;
-        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+        Ok(crate::page::page_data_from(
+            data,
+            |items| self.client.hydrate_many::<Ticket>("Ticket", items),
+            params.page.unwrap_or(1),
+            params.limit.unwrap_or(20),
+        ))
     }
 }
 
@@ -2203,8 +2237,8 @@ impl UsersNs {
     pub async fn batch(
         &self,
         body: models::BatchPublicProfilesRequest,
-    ) -> Result<models::BatchPublicProfilesResponse, TransportError> {
-        let value = self
+    ) -> Result<Vec<User>, TransportError> {
+        let data = self
             .client
             .transport()
             .request(
@@ -2214,15 +2248,20 @@ impl UsersNs {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+        let items = if data.is_array() {
+            data
+        } else {
+            data.get("items").cloned().unwrap_or(Value::Null)
+        };
+        Ok(self.client.hydrate_many::<User>("User", items))
     }
 
     /// users.search
     pub async fn search(
         &self,
         params: models::UsersSearchParams,
-    ) -> Result<models::BatchPublicProfilesResponse, TransportError> {
-        let value = crate::etag_store::fetch_cached_or_throw(
+    ) -> Result<Vec<User>, TransportError> {
+        let data = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),
             Method::Get,
@@ -2236,7 +2275,12 @@ impl UsersNs {
             Channel::Platform,
         )
         .await?;
-        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+        let items = if data.is_array() {
+            data
+        } else {
+            data.get("items").cloned().unwrap_or(Value::Null)
+        };
+        Ok(self.client.hydrate_many::<User>("User", items))
     }
 
     /// users.engagement
@@ -2404,8 +2448,8 @@ impl WhitelistBindingsNs {
     pub async fn create(
         &self,
         body: models::WhitelistBindingWriteRequest,
-    ) -> Result<models::WhitelistBindingDetail, TransportError> {
-        let value = self
+    ) -> Result<Binding, TransportError> {
+        let data = self
             .client
             .transport()
             .request(
@@ -2415,7 +2459,7 @@ impl WhitelistBindingsNs {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+        Ok(self.client.hydrate::<Binding>("Binding", data, None))
     }
 }
 
@@ -2433,8 +2477,8 @@ impl WhitelistFormsNs {
     pub async fn list(
         &self,
         params: models::WhitelistFormsListParams,
-    ) -> Result<models::WhitelistFormPage, TransportError> {
-        let value = crate::etag_store::fetch_cached_or_throw(
+    ) -> Result<crate::page::Page<Form>, TransportError> {
+        let data = crate::etag_store::fetch_cached_or_throw(
             self.client.transport(),
             self.client.etag_store(),
             Method::Get,
@@ -2450,15 +2494,20 @@ impl WhitelistFormsNs {
             Channel::Platform,
         )
         .await?;
-        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+        Ok(crate::page::page_data_from(
+            data,
+            |items| self.client.hydrate_many::<Form>("Form", items),
+            params.page.unwrap_or(1),
+            params.per_page.unwrap_or(20),
+        ))
     }
 
     /// whitelist.forms.create
     pub async fn create(
         &self,
         body: models::WhitelistFormCreateRequest,
-    ) -> Result<models::WhitelistFormDetail, TransportError> {
-        let value = self
+    ) -> Result<Form, TransportError> {
+        let data = self
             .client
             .transport()
             .request(
@@ -2468,7 +2517,7 @@ impl WhitelistFormsNs {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        serde_json::from_value(value).map_err(|e| TransportError::Transport(e.into()))
+        Ok(self.client.hydrate::<Form>("Form", data, None))
     }
 }
 
