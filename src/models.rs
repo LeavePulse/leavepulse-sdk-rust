@@ -63,6 +63,18 @@ pub enum ActivityType {
     Unknown,
 }
 
+impl std::fmt::Display for ActivityType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let wire = match self {
+            Self::Vote => "vote",
+            Self::Comment => "comment",
+            Self::Favorite => "favorite",
+            Self::Unknown => "unknown",
+        };
+        f.write_str(wire)
+    }
+}
+
 /// AdminChangeProjectSlugRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AdminChangeProjectSlugRequest {
@@ -932,6 +944,20 @@ pub enum DevicePollStatus {
     Unknown,
 }
 
+impl std::fmt::Display for DevicePollStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let wire = match self {
+            Self::Approved => "approved",
+            Self::Pending => "pending",
+            Self::SlowDown => "slow_down",
+            Self::Expired => "expired",
+            Self::Denied => "denied",
+            Self::Unknown => "unknown",
+        };
+        f.write_str(wire)
+    }
+}
+
 /// DeviceStartRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DeviceStartRequest {
@@ -1012,6 +1038,19 @@ pub enum DiscordMembershipMode {
     Unknown,
 }
 
+impl std::fmt::Display for DiscordMembershipMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let wire = match self {
+            Self::Disabled => "disabled",
+            Self::OnApply => "on_apply",
+            Self::OnJoin => "on_join",
+            Self::Both => "both",
+            Self::Unknown => "unknown",
+        };
+        f.write_str(wire)
+    }
+}
+
 /// DiscordRoleTarget
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DiscordRoleTarget {
@@ -1060,6 +1099,30 @@ pub struct DiscoveryIgnoreResult {
     pub status: String,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum DiscoverySort {
+    #[serde(rename = "sources")]
+    Sources,
+    #[serde(rename = "discord_members")]
+    DiscordMembers,
+    #[serde(rename = "mc_online")]
+    McOnline,
+    #[serde(rename = "unknown")]
+    Unknown,
+}
+
+impl std::fmt::Display for DiscoverySort {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let wire = match self {
+            Self::Sources => "sources",
+            Self::DiscordMembers => "discord_members",
+            Self::McOnline => "mc_online",
+            Self::Unknown => "unknown",
+        };
+        f.write_str(wire)
+    }
+}
+
 /// DnsVerification
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DnsVerification {
@@ -1102,6 +1165,17 @@ pub enum EnforcementMode {
     Restrict,
     #[serde(rename = "unknown")]
     Unknown,
+}
+
+impl std::fmt::Display for EnforcementMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let wire = match self {
+            Self::Kick => "kick",
+            Self::Restrict => "restrict",
+            Self::Unknown => "unknown",
+        };
+        f.write_str(wire)
+    }
 }
 
 /// FilterCount
@@ -1157,6 +1231,17 @@ pub enum FreshnessState {
     Unknown,
 }
 
+impl std::fmt::Display for FreshnessState {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let wire = match self {
+            Self::Fresh => "fresh",
+            Self::Stale => "stale",
+            Self::Unknown => "unknown",
+        };
+        f.write_str(wire)
+    }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum GameEdition {
     #[serde(rename = "java")]
@@ -1167,6 +1252,18 @@ pub enum GameEdition {
     Hybrid,
     #[serde(rename = "unknown")]
     Unknown,
+}
+
+impl std::fmt::Display for GameEdition {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let wire = match self {
+            Self::Java => "java",
+            Self::Bedrock => "bedrock",
+            Self::Hybrid => "hybrid",
+            Self::Unknown => "unknown",
+        };
+        f.write_str(wire)
+    }
 }
 
 /// GatewayToken
@@ -1261,6 +1358,17 @@ pub enum IconSource {
     Auto,
     #[serde(rename = "unknown")]
     Unknown,
+}
+
+impl std::fmt::Display for IconSource {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let wire = match self {
+            Self::Manual => "manual",
+            Self::Auto => "auto",
+            Self::Unknown => "unknown",
+        };
+        f.write_str(wire)
+    }
 }
 
 /// ImportPull
@@ -1602,6 +1710,17 @@ pub enum LifecycleState {
     Unknown,
 }
 
+impl std::fmt::Display for LifecycleState {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let wire = match self {
+            Self::Draft => "draft",
+            Self::Active => "active",
+            Self::Unknown => "unknown",
+        };
+        f.write_str(wire)
+    }
+}
+
 /// LikedCommentIds
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LikedCommentIds {
@@ -1638,6 +1757,17 @@ pub enum LinkResultStatus {
     Unknown,
 }
 
+impl std::fmt::Display for LinkResultStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let wire = match self {
+            Self::Linked => "linked",
+            Self::AlreadyLinked => "already_linked",
+            Self::Unknown => "unknown",
+        };
+        f.write_str(wire)
+    }
+}
+
 /// LinkSession
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LinkSession {
@@ -1662,6 +1792,18 @@ pub enum LinkSessionStatus {
     Expired,
     #[serde(rename = "unknown")]
     Unknown,
+}
+
+impl std::fmt::Display for LinkSessionStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let wire = match self {
+            Self::Pending => "pending",
+            Self::Used => "used",
+            Self::Expired => "expired",
+            Self::Unknown => "unknown",
+        };
+        f.write_str(wire)
+    }
 }
 
 /// LinkTokenResult
@@ -1793,6 +1935,17 @@ pub enum MemberState {
     Unknown,
 }
 
+impl std::fmt::Display for MemberState {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let wire = match self {
+            Self::Active => "active",
+            Self::Suspended => "suspended",
+            Self::Unknown => "unknown",
+        };
+        f.write_str(wire)
+    }
+}
+
 /// MinecraftAccount
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MinecraftAccount {
@@ -1867,6 +2020,17 @@ pub enum MinecraftAccountType {
     Unknown,
 }
 
+impl std::fmt::Display for MinecraftAccountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let wire = match self {
+            Self::Official => "official",
+            Self::Offline => "offline",
+            Self::Unknown => "unknown",
+        };
+        f.write_str(wire)
+    }
+}
+
 /// MinecraftCandidateAccount
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MinecraftCandidateAccount {
@@ -1910,6 +2074,17 @@ pub enum MinecraftIdentityScopeType {
     Unknown,
 }
 
+impl std::fmt::Display for MinecraftIdentityScopeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let wire = match self {
+            Self::GlobalMinecraft => "global_minecraft",
+            Self::Project => "project",
+            Self::Unknown => "unknown",
+        };
+        f.write_str(wire)
+    }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum MinecraftIdentityState {
     #[serde(rename = "verified")]
@@ -1920,6 +2095,18 @@ pub enum MinecraftIdentityState {
     ApprovedPendingProof,
     #[serde(rename = "unknown")]
     Unknown,
+}
+
+impl std::fmt::Display for MinecraftIdentityState {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let wire = match self {
+            Self::Verified => "verified",
+            Self::UnverifiedCandidate => "unverified_candidate",
+            Self::ApprovedPendingProof => "approved_pending_proof",
+            Self::Unknown => "unknown",
+        };
+        f.write_str(wire)
+    }
 }
 
 /// MinecraftLinkCodeIssueRequest
@@ -1965,6 +2152,18 @@ pub enum MinecraftLinkSource {
     OfflineManual,
     #[serde(rename = "unknown")]
     Unknown,
+}
+
+impl std::fmt::Display for MinecraftLinkSource {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let wire = match self {
+            Self::Microsoft => "microsoft",
+            Self::NicknameProof => "nickname_proof",
+            Self::OfflineManual => "offline_manual",
+            Self::Unknown => "unknown",
+        };
+        f.write_str(wire)
+    }
 }
 
 /// MinecraftOfficialLinkStart
@@ -2016,6 +2215,19 @@ pub enum MinecraftUuidType {
     Unknown,
 }
 
+impl std::fmt::Display for MinecraftUuidType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let wire = match self {
+            Self::Mojang => "mojang",
+            Self::Offline => "offline",
+            Self::Xuid => "xuid",
+            Self::Floodgate => "floodgate",
+            Self::Unknown => "unknown",
+        };
+        f.write_str(wire)
+    }
+}
+
 /// MinecraftVerificationAccount
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MinecraftVerificationAccount {
@@ -2045,6 +2257,17 @@ pub enum MinecraftVerificationStatus {
     LegacyUnverified,
     #[serde(rename = "unknown")]
     Unknown,
+}
+
+impl std::fmt::Display for MinecraftVerificationStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let wire = match self {
+            Self::Verified => "verified",
+            Self::LegacyUnverified => "legacy_unverified",
+            Self::Unknown => "unknown",
+        };
+        f.write_str(wire)
+    }
 }
 
 /// MotdVerification
@@ -2296,6 +2519,17 @@ pub enum OnlineSource {
     Unknown,
 }
 
+impl std::fmt::Display for OnlineSource {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let wire = match self {
+            Self::Proxy => "proxy",
+            Self::Aggregate => "aggregate",
+            Self::Unknown => "unknown",
+        };
+        f.write_str(wire)
+    }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum OnlineState {
     #[serde(rename = "live")]
@@ -2306,6 +2540,17 @@ pub enum OnlineState {
     Unknown,
 }
 
+impl std::fmt::Display for OnlineState {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let wire = match self {
+            Self::Live => "live",
+            Self::Offline => "offline",
+            Self::Unknown => "unknown",
+        };
+        f.write_str(wire)
+    }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum OnlineStrategy {
     #[serde(rename = "proxy_preferred")]
@@ -2314,6 +2559,17 @@ pub enum OnlineStrategy {
     Aggregate,
     #[serde(rename = "unknown")]
     Unknown,
+}
+
+impl std::fmt::Display for OnlineStrategy {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let wire = match self {
+            Self::ProxyPreferred => "proxy_preferred",
+            Self::Aggregate => "aggregate",
+            Self::Unknown => "unknown",
+        };
+        f.write_str(wire)
+    }
 }
 
 /// Order
@@ -2938,6 +3194,33 @@ pub struct ProjectResolveResponse {
     pub slug: Option<String>,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum ProjectSort {
+    #[serde(rename = "players")]
+    Players,
+    #[serde(rename = "newest")]
+    Newest,
+    #[serde(rename = "verified")]
+    Verified,
+    #[serde(rename = "score")]
+    Score,
+    #[serde(rename = "unknown")]
+    Unknown,
+}
+
+impl std::fmt::Display for ProjectSort {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let wire = match self {
+            Self::Players => "players",
+            Self::Newest => "newest",
+            Self::Verified => "verified",
+            Self::Score => "score",
+            Self::Unknown => "unknown",
+        };
+        f.write_str(wire)
+    }
+}
+
 /// ProjectStats
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ProjectStats {
@@ -3076,6 +3359,19 @@ pub enum PublicEntrypointState {
     Unknown,
 }
 
+impl std::fmt::Display for PublicEntrypointState {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let wire = match self {
+            Self::None => "none",
+            Self::Single => "single",
+            Self::Multiple => "multiple",
+            Self::Primary => "primary",
+            Self::Unknown => "unknown",
+        };
+        f.write_str(wire)
+    }
+}
+
 /// PublicJWK
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PublicJWK {
@@ -3134,6 +3430,18 @@ pub enum PublicProfileKind {
     StandaloneServer,
     #[serde(rename = "unknown")]
     Unknown,
+}
+
+impl std::fmt::Display for PublicProfileKind {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let wire = match self {
+            Self::CanonicalProjectOnly => "canonical_project_only",
+            Self::ProjectChildVisible => "project_child_visible",
+            Self::StandaloneServer => "standalone_server",
+            Self::Unknown => "unknown",
+        };
+        f.write_str(wire)
+    }
 }
 
 /// PublicProfileResponse
@@ -3279,6 +3587,17 @@ pub enum RolloutMode {
     Unknown,
 }
 
+impl std::fmt::Display for RolloutMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let wire = match self {
+            Self::Auto => "auto",
+            Self::CutoverEnforced => "cutover_enforced",
+            Self::Unknown => "unknown",
+        };
+        f.write_str(wire)
+    }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum RolloutState {
     #[serde(rename = "legacy_grace")]
@@ -3291,6 +3610,19 @@ pub enum RolloutState {
     CutoverEnforced,
     #[serde(rename = "unknown")]
     Unknown,
+}
+
+impl std::fmt::Display for RolloutState {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let wire = match self {
+            Self::LegacyGrace => "legacy_grace",
+            Self::MixedFleet => "mixed_fleet",
+            Self::CutoverReady => "cutover_ready",
+            Self::CutoverEnforced => "cutover_enforced",
+            Self::Unknown => "unknown",
+        };
+        f.write_str(wire)
+    }
 }
 
 /// ScoreBreakdown
@@ -3555,6 +3887,19 @@ pub enum ServerRole {
     Hub,
     #[serde(rename = "unknown")]
     Unknown,
+}
+
+impl std::fmt::Display for ServerRole {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let wire = match self {
+            Self::Standalone => "standalone",
+            Self::Proxy => "proxy",
+            Self::Sub => "sub",
+            Self::Hub => "hub",
+            Self::Unknown => "unknown",
+        };
+        f.write_str(wire)
+    }
 }
 
 /// ServerRoot
@@ -3826,6 +4171,17 @@ pub enum ServiceHealth {
     Down,
     #[serde(rename = "unknown")]
     Unknown,
+}
+
+impl std::fmt::Display for ServiceHealth {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let wire = match self {
+            Self::Up => "up",
+            Self::Down => "down",
+            Self::Unknown => "unknown",
+        };
+        f.write_str(wire)
+    }
 }
 
 /// ServiceHealthEntry
@@ -4208,6 +4564,20 @@ pub enum TeamScopeType {
     Unknown,
 }
 
+impl std::fmt::Display for TeamScopeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let wire = match self {
+            Self::Project => "project",
+            Self::Server => "server",
+            Self::NetworkAll => "network_all",
+            Self::NetworkSelected => "network_selected",
+            Self::WhitelistPolicy => "whitelist_policy",
+            Self::Unknown => "unknown",
+        };
+        f.write_str(wire)
+    }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum TelemetryMetricKind {
     #[serde(rename = "hot")]
@@ -4224,6 +4594,21 @@ pub enum TelemetryMetricKind {
     Other,
     #[serde(rename = "unknown")]
     Unknown,
+}
+
+impl std::fmt::Display for TelemetryMetricKind {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let wire = match self {
+            Self::Hot => "hot",
+            Self::Warm => "warm",
+            Self::Cold => "cold",
+            Self::Static => "static",
+            Self::Event => "event",
+            Self::Other => "other",
+            Self::Unknown => "unknown",
+        };
+        f.write_str(wire)
+    }
 }
 
 /// TextTranslation
@@ -4250,6 +4635,18 @@ pub enum TicketAuthorType {
     System,
     #[serde(rename = "unknown")]
     Unknown,
+}
+
+impl std::fmt::Display for TicketAuthorType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let wire = match self {
+            Self::User => "user",
+            Self::Staff => "staff",
+            Self::System => "system",
+            Self::Unknown => "unknown",
+        };
+        f.write_str(wire)
+    }
 }
 
 /// TicketCreateRequest
@@ -4323,6 +4720,19 @@ pub enum TicketPriority {
     Unknown,
 }
 
+impl std::fmt::Display for TicketPriority {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let wire = match self {
+            Self::Low => "low",
+            Self::Normal => "normal",
+            Self::High => "high",
+            Self::Urgent => "urgent",
+            Self::Unknown => "unknown",
+        };
+        f.write_str(wire)
+    }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum TicketSource {
     #[serde(rename = "web")]
@@ -4333,6 +4743,18 @@ pub enum TicketSource {
     Minecraft,
     #[serde(rename = "unknown")]
     Unknown,
+}
+
+impl std::fmt::Display for TicketSource {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let wire = match self {
+            Self::Web => "web",
+            Self::Discord => "discord",
+            Self::Minecraft => "minecraft",
+            Self::Unknown => "unknown",
+        };
+        f.write_str(wire)
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -4347,6 +4769,19 @@ pub enum TicketStatus {
     Closed,
     #[serde(rename = "unknown")]
     Unknown,
+}
+
+impl std::fmt::Display for TicketStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let wire = match self {
+            Self::Open => "open",
+            Self::Pending => "pending",
+            Self::Resolved => "resolved",
+            Self::Closed => "closed",
+            Self::Unknown => "unknown",
+        };
+        f.write_str(wire)
+    }
 }
 
 /// TicketStatusUpdateRequest
@@ -4416,6 +4851,20 @@ pub enum TranslationStatus {
     Unknown,
 }
 
+impl std::fmt::Display for TranslationStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let wire = match self {
+            Self::Translated => "translated",
+            Self::Skipped => "skipped",
+            Self::Pending => "pending",
+            Self::Unavailable => "unavailable",
+            Self::Unsupported => "unsupported",
+            Self::Unknown => "unknown",
+        };
+        f.write_str(wire)
+    }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum TrustState {
     #[serde(rename = "verified")]
@@ -4426,6 +4875,18 @@ pub enum TrustState {
     Unverified,
     #[serde(rename = "unknown")]
     Unknown,
+}
+
+impl std::fmt::Display for TrustState {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let wire = match self {
+            Self::Verified => "verified",
+            Self::Gateway => "gateway",
+            Self::Unverified => "unverified",
+            Self::Unknown => "unknown",
+        };
+        f.write_str(wire)
+    }
 }
 
 /// UnlinkedMinecraftAccount
@@ -4703,6 +5164,19 @@ pub enum UserStatus {
     Unknown,
 }
 
+impl std::fmt::Display for UserStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let wire = match self {
+            Self::Active => "active",
+            Self::Pending => "pending",
+            Self::Disabled => "disabled",
+            Self::Banned => "banned",
+            Self::Unknown => "unknown",
+        };
+        f.write_str(wire)
+    }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum UserTimeFormatPreference {
     #[serde(rename = "auto")]
@@ -4711,6 +5185,17 @@ pub enum UserTimeFormatPreference {
     _12h,
     #[serde(rename = "24h")]
     _24h,
+}
+
+impl std::fmt::Display for UserTimeFormatPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let wire = match self {
+            Self::Auto => "auto",
+            Self::_12h => "12h",
+            Self::_24h => "24h",
+        };
+        f.write_str(wire)
+    }
 }
 
 /// VerificationCheckRequest
@@ -4759,6 +5244,17 @@ pub enum VerificationSource {
     Unknown,
 }
 
+impl std::fmt::Display for VerificationSource {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let wire = match self {
+            Self::Plugin => "plugin",
+            Self::Motd => "motd",
+            Self::Unknown => "unknown",
+        };
+        f.write_str(wire)
+    }
+}
+
 /// VerificationStartRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct VerificationStartRequest {
@@ -4779,6 +5275,19 @@ pub enum VerificationStatus {
     Expired,
     #[serde(rename = "unknown")]
     Unknown,
+}
+
+impl std::fmt::Display for VerificationStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let wire = match self {
+            Self::Issued => "issued",
+            Self::Pending => "pending",
+            Self::Verified => "verified",
+            Self::Expired => "expired",
+            Self::Unknown => "unknown",
+        };
+        f.write_str(wire)
+    }
 }
 
 /// VoteItem
@@ -4906,6 +5415,20 @@ pub enum WhitelistApplicationStatus {
     Unknown,
 }
 
+impl std::fmt::Display for WhitelistApplicationStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let wire = match self {
+            Self::Pending => "pending",
+            Self::Approved => "approved",
+            Self::ApprovedPendingProof => "approved_pending_proof",
+            Self::Denied => "denied",
+            Self::Revision => "revision",
+            Self::Unknown => "unknown",
+        };
+        f.write_str(wire)
+    }
+}
+
 /// WhitelistApplyRequest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WhitelistApplyRequest {
@@ -4957,6 +5480,17 @@ pub enum WhitelistBindingMode {
     Direct,
     #[serde(rename = "unknown")]
     Unknown,
+}
+
+impl std::fmt::Display for WhitelistBindingMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let wire = match self {
+            Self::Form => "form",
+            Self::Direct => "direct",
+            Self::Unknown => "unknown",
+        };
+        f.write_str(wire)
+    }
 }
 
 /// WhitelistBindingTestResult
@@ -5110,6 +5644,20 @@ pub enum WhitelistFieldType {
     Select,
     #[serde(rename = "unknown")]
     Unknown,
+}
+
+impl std::fmt::Display for WhitelistFieldType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let wire = match self {
+            Self::Text => "text",
+            Self::Textarea => "textarea",
+            Self::Number => "number",
+            Self::Boolean => "boolean",
+            Self::Select => "select",
+            Self::Unknown => "unknown",
+        };
+        f.write_str(wire)
+    }
 }
 
 /// WhitelistFormCard
@@ -5868,7 +6416,7 @@ pub struct AdminDiscoveryCandidatesParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub edition: Option<String>,
+    pub edition: Option<GameEdition>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5878,7 +6426,7 @@ pub struct AdminDiscoveryCandidatesParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub min_discord_members: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub sort: Option<String>,
+    pub sort: Option<DiscoverySort>,
 }
 
 /// Query parameters for `admin.discovery.approve`.
@@ -6017,7 +6565,7 @@ pub struct ProjectsStatsParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub q: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub edition: Option<String>,
+    pub edition: Option<GameEdition>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub access: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6036,7 +6584,7 @@ pub struct StatsFilterParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub q: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub edition: Option<String>,
+    pub edition: Option<GameEdition>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub access: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6107,7 +6655,7 @@ pub struct ProjectsListParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub q: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub edition: Option<String>,
+    pub edition: Option<GameEdition>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub access: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6125,7 +6673,7 @@ pub struct ProjectsListParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub per_page: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub sort: Option<String>,
+    pub sort: Option<ProjectSort>,
 }
 
 /// Query parameters for `users.activity_list`.

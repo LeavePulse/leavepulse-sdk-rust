@@ -88,7 +88,7 @@ impl Build {
     }
 
     /// build.delete
-    pub async fn delete(&self) -> Result<(), TransportError> {
+    pub async fn delete(&self) -> Result<models::DeleteBuildResult, TransportError> {
         let data = self
             .client
             .transport()
@@ -99,8 +99,7 @@ impl Build {
                 None,
             )
             .await?;
-        let _: Build = self.client.hydrate("Build", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// build.update
@@ -123,7 +122,7 @@ impl Build {
     pub async fn collaborators_add(
         &self,
         body: models::CollaboratorAddRequest,
-    ) -> Result<(), TransportError> {
+    ) -> Result<models::Collaborator, TransportError> {
         let data = self
             .client
             .transport()
@@ -134,12 +133,14 @@ impl Build {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        let _: Build = self.client.hydrate("Build", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// build.collaborators.remove
-    pub async fn collaborators_remove(&self, user_id: String) -> Result<(), TransportError> {
+    pub async fn collaborators_remove(
+        &self,
+        user_id: String,
+    ) -> Result<models::DeleteBuildResult, TransportError> {
         let data = self
             .client
             .transport()
@@ -150,8 +151,7 @@ impl Build {
                 None,
             )
             .await?;
-        let _: Build = self.client.hydrate("Build", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// build.config.confirm
@@ -177,7 +177,7 @@ impl Build {
     pub async fn config_upload(
         &self,
         body: models::ConfigBlobUploadRequest,
-    ) -> Result<(), TransportError> {
+    ) -> Result<models::ConfigBlobUpload, TransportError> {
         let data = self
             .client
             .transport()
@@ -188,12 +188,11 @@ impl Build {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        let _: Build = self.client.hydrate("Build", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// build.unshare
-    pub async fn unshare(&self) -> Result<(), TransportError> {
+    pub async fn unshare(&self) -> Result<models::DeleteBuildResult, TransportError> {
         let data = self
             .client
             .transport()
@@ -204,12 +203,11 @@ impl Build {
                 None,
             )
             .await?;
-        let _: Build = self.client.hydrate("Build", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// build.share
-    pub async fn share(&self) -> Result<(), TransportError> {
+    pub async fn share(&self) -> Result<models::ShareLink, TransportError> {
         let data = self
             .client
             .transport()
@@ -220,8 +218,7 @@ impl Build {
                 None,
             )
             .await?;
-        let _: Build = self.client.hydrate("Build", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// build.collaborators.list

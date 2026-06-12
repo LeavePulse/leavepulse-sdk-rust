@@ -64,7 +64,7 @@ impl Ticket {
     pub async fn reply(
         &self,
         body: models::TicketMessageCreateRequest,
-    ) -> Result<(), TransportError> {
+    ) -> Result<models::TicketMessage, TransportError> {
         let data = self
             .client
             .transport()
@@ -75,8 +75,7 @@ impl Ticket {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        let _: Ticket = self.client.hydrate("Ticket", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// ticket.messages.list

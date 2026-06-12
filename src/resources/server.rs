@@ -152,7 +152,7 @@ impl Server {
     pub async fn change_address(
         &self,
         body: models::ServerChangeAddressRequest,
-    ) -> Result<(), TransportError> {
+    ) -> Result<models::ServerCard, TransportError> {
         let data = self
             .client
             .transport()
@@ -163,15 +163,14 @@ impl Server {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        let _: Server = self.client.hydrate("Server", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// server.change_slug
     pub async fn change_slug(
         &self,
         body: models::ServerChangeSlugRequest,
-    ) -> Result<(), TransportError> {
+    ) -> Result<models::ServerCard, TransportError> {
         let data = self
             .client
             .transport()
@@ -182,12 +181,11 @@ impl Server {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        let _: Server = self.client.hydrate("Server", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// server.force_ping
-    pub async fn force_ping(&self) -> Result<(), TransportError> {
+    pub async fn force_ping(&self) -> Result<models::ForcePingResult, TransportError> {
         let data = self
             .client
             .transport()
@@ -198,12 +196,14 @@ impl Server {
                 None,
             )
             .await?;
-        let _: Server = self.client.hydrate("Server", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// server.rename
-    pub async fn rename(&self, body: models::ServerRenameRequest) -> Result<(), TransportError> {
+    pub async fn rename(
+        &self,
+        body: models::ServerRenameRequest,
+    ) -> Result<models::ServerCard, TransportError> {
         let data = self
             .client
             .transport()
@@ -214,15 +214,14 @@ impl Server {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        let _: Server = self.client.hydrate("Server", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// server.set_bedrock_port
     pub async fn set_bedrock_port(
         &self,
         body: models::ServerSetBedrockPortRequest,
-    ) -> Result<(), TransportError> {
+    ) -> Result<models::ServerCard, TransportError> {
         let data = self
             .client
             .transport()
@@ -233,15 +232,14 @@ impl Server {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        let _: Server = self.client.hydrate("Server", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// server.set_description
     pub async fn set_description(
         &self,
         body: models::ServerSetDescriptionRequest,
-    ) -> Result<(), TransportError> {
+    ) -> Result<models::ServerCard, TransportError> {
         let data = self
             .client
             .transport()
@@ -252,15 +250,14 @@ impl Server {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        let _: Server = self.client.hydrate("Server", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// server.set_parent
     pub async fn set_parent(
         &self,
         body: models::ServerSetParentRequest,
-    ) -> Result<(), TransportError> {
+    ) -> Result<models::ServerCard, TransportError> {
         let data = self
             .client
             .transport()
@@ -271,15 +268,14 @@ impl Server {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        let _: Server = self.client.hydrate("Server", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// server.set_ping_port
     pub async fn set_ping_port(
         &self,
         body: models::ServerSetPingPortRequest,
-    ) -> Result<(), TransportError> {
+    ) -> Result<models::ServerCard, TransportError> {
         let data = self
             .client
             .transport()
@@ -290,15 +286,14 @@ impl Server {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        let _: Server = self.client.hydrate("Server", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// server.set_regions
     pub async fn set_regions(
         &self,
         body: models::ServerSetRegionsRequest,
-    ) -> Result<(), TransportError> {
+    ) -> Result<models::ServerCard, TransportError> {
         let data = self
             .client
             .transport()
@@ -309,12 +304,14 @@ impl Server {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        let _: Server = self.client.hydrate("Server", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// server.set_role
-    pub async fn set_role(&self, body: models::ServerSetRoleRequest) -> Result<(), TransportError> {
+    pub async fn set_role(
+        &self,
+        body: models::ServerSetRoleRequest,
+    ) -> Result<models::ServerCard, TransportError> {
         let data = self
             .client
             .transport()
@@ -325,15 +322,14 @@ impl Server {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        let _: Server = self.client.hydrate("Server", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// server.set_show_description
     pub async fn set_show_description(
         &self,
         body: models::ServerSetShowDescriptionRequest,
-    ) -> Result<(), TransportError> {
+    ) -> Result<models::ServerCard, TransportError> {
         let data = self
             .client
             .transport()
@@ -344,15 +340,14 @@ impl Server {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        let _: Server = self.client.hydrate("Server", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// server.set_show_in_public
     pub async fn set_show_in_public(
         &self,
         body: models::ServerSetShowInPublicRequest,
-    ) -> Result<(), TransportError> {
+    ) -> Result<models::ServerCard, TransportError> {
         let data = self
             .client
             .transport()
@@ -363,15 +358,14 @@ impl Server {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        let _: Server = self.client.hydrate("Server", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// server.set_team_enabled
     pub async fn set_team_enabled(
         &self,
         body: models::ServerSetTeamEnabledRequest,
-    ) -> Result<(), TransportError> {
+    ) -> Result<models::ServerCard, TransportError> {
         let data = self
             .client
             .transport()
@@ -382,15 +376,14 @@ impl Server {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        let _: Server = self.client.hydrate("Server", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// server.set_version_override
     pub async fn set_version_override(
         &self,
         body: models::ServerSetVersionOverrideRequest,
-    ) -> Result<(), TransportError> {
+    ) -> Result<models::ServerCard, TransportError> {
         let data = self
             .client
             .transport()
@@ -401,15 +394,14 @@ impl Server {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        let _: Server = self.client.hydrate("Server", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// server.bot.update
     pub async fn bot_update(
         &self,
         body: models::ServerBotUpdateRequest,
-    ) -> Result<(), TransportError> {
+    ) -> Result<models::ServerBot, TransportError> {
         let data = self
             .client
             .transport()
@@ -420,15 +412,14 @@ impl Server {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        let _: Server = self.client.hydrate("Server", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// server.issue_gateway_token
     pub async fn issue_gateway_token(
         &self,
         body: models::GatewayTokenRequest,
-    ) -> Result<(), TransportError> {
+    ) -> Result<models::GatewayToken, TransportError> {
         let data = self
             .client
             .transport()
@@ -439,12 +430,11 @@ impl Server {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        let _: Server = self.client.hydrate("Server", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// server.icons.upload
-    pub async fn icons_upload(&self) -> Result<(), TransportError> {
+    pub async fn icons_upload(&self) -> Result<models::ServerMediaSummary, TransportError> {
         let data = self
             .client
             .transport()
@@ -455,15 +445,14 @@ impl Server {
                 None,
             )
             .await?;
-        let _: Server = self.client.hydrate("Server", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// server.icons.select
     pub async fn icons_select(
         &self,
         body: models::IconSelectRequest,
-    ) -> Result<(), TransportError> {
+    ) -> Result<models::ServerMediaSummary, TransportError> {
         let data = self
             .client
             .transport()
@@ -474,15 +463,14 @@ impl Server {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        let _: Server = self.client.hydrate("Server", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// server.voting.update
     pub async fn voting_update(
         &self,
         body: models::VotingLinksUpdateRequest,
-    ) -> Result<(), TransportError> {
+    ) -> Result<models::VotingLinks, TransportError> {
         let data = self
             .client
             .transport()
@@ -493,15 +481,14 @@ impl Server {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        let _: Server = self.client.hydrate("Server", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// server.maintenance.update
     pub async fn maintenance_update(
         &self,
         body: models::ServerMaintenanceUpdateRequest,
-    ) -> Result<(), TransportError> {
+    ) -> Result<models::ServerMaintenance, TransportError> {
         let data = self
             .client
             .transport()
@@ -512,15 +499,14 @@ impl Server {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        let _: Server = self.client.hydrate("Server", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// server.motd.update
     pub async fn motd_update(
         &self,
         body: models::ServerMotdUpdateRequest,
-    ) -> Result<(), TransportError> {
+    ) -> Result<models::ServerMotdSummary, TransportError> {
         let data = self
             .client
             .transport()
@@ -531,12 +517,11 @@ impl Server {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        let _: Server = self.client.hydrate("Server", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// server.discord.unlink
-    pub async fn discord_unlink(&self) -> Result<(), TransportError> {
+    pub async fn discord_unlink(&self) -> Result<models::DiscordLink, TransportError> {
         let data = self
             .client
             .transport()
@@ -547,15 +532,14 @@ impl Server {
                 None,
             )
             .await?;
-        let _: Server = self.client.hydrate("Server", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// server.discord.update
     pub async fn discord_update(
         &self,
         body: models::DiscordLinkUpdateRequest,
-    ) -> Result<(), TransportError> {
+    ) -> Result<models::DiscordLink, TransportError> {
         let data = self
             .client
             .transport()
@@ -566,15 +550,14 @@ impl Server {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        let _: Server = self.client.hydrate("Server", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// server.discord.verify
     pub async fn discord_verify(
         &self,
         body: models::DiscordVerifyRequest,
-    ) -> Result<(), TransportError> {
+    ) -> Result<models::DiscordLink, TransportError> {
         let data = self
             .client
             .transport()
@@ -585,15 +568,14 @@ impl Server {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        let _: Server = self.client.hydrate("Server", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// server.social.update
     pub async fn social_update(
         &self,
         body: models::SocialLinksUpdateRequest,
-    ) -> Result<(), TransportError> {
+    ) -> Result<models::SocialLinks, TransportError> {
         let data = self
             .client
             .transport()
@@ -604,15 +586,14 @@ impl Server {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        let _: Server = self.client.hydrate("Server", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// server.social.verify
     pub async fn social_verify(
         &self,
         body: models::SocialLinkVerifyRequest,
-    ) -> Result<(), TransportError> {
+    ) -> Result<models::SocialLinkVerification, TransportError> {
         let data = self
             .client
             .transport()
@@ -623,12 +604,13 @@ impl Server {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        let _: Server = self.client.hydrate("Server", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// server.subservers.issue_link_code
-    pub async fn subservers_issue_link_code(&self) -> Result<(), TransportError> {
+    pub async fn subservers_issue_link_code(
+        &self,
+    ) -> Result<models::PluginVerification, TransportError> {
         let data = self
             .client
             .transport()
@@ -639,15 +621,14 @@ impl Server {
                 None,
             )
             .await?;
-        let _: Server = self.client.hydrate("Server", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// server.members.create
     pub async fn members_create(
         &self,
         body: models::TeamMemberCreateRequest,
-    ) -> Result<(), TransportError> {
+    ) -> Result<models::TeamMemberItem, TransportError> {
         let data = self
             .client
             .transport()
@@ -658,12 +639,14 @@ impl Server {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        let _: Server = self.client.hydrate("Server", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// server.members.delete
-    pub async fn members_delete(&self, member_id: String) -> Result<(), TransportError> {
+    pub async fn members_delete(
+        &self,
+        member_id: String,
+    ) -> Result<models::TeamMemberDeleteResponse, TransportError> {
         let data = self
             .client
             .transport()
@@ -674,8 +657,7 @@ impl Server {
                 None,
             )
             .await?;
-        let _: Server = self.client.hydrate("Server", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// server.members.update
@@ -683,7 +665,7 @@ impl Server {
         &self,
         member_id: String,
         body: models::TeamMemberUpdateRequest,
-    ) -> Result<(), TransportError> {
+    ) -> Result<models::TeamMemberItem, TransportError> {
         let data = self
             .client
             .transport()
@@ -694,15 +676,14 @@ impl Server {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        let _: Server = self.client.hydrate("Server", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// server.roles.create
     pub async fn roles_create(
         &self,
         body: models::TeamRoleCreateRequest,
-    ) -> Result<(), TransportError> {
+    ) -> Result<models::TeamRoleItem, TransportError> {
         let data = self
             .client
             .transport()
@@ -713,12 +694,14 @@ impl Server {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        let _: Server = self.client.hydrate("Server", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// server.roles.delete
-    pub async fn roles_delete(&self, role_id: String) -> Result<(), TransportError> {
+    pub async fn roles_delete(
+        &self,
+        role_id: String,
+    ) -> Result<models::TeamRoleDeleteResponse, TransportError> {
         let data = self
             .client
             .transport()
@@ -729,8 +712,7 @@ impl Server {
                 None,
             )
             .await?;
-        let _: Server = self.client.hydrate("Server", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// server.roles.update
@@ -738,7 +720,7 @@ impl Server {
         &self,
         role_id: String,
         body: models::TeamRoleUpdateRequest,
-    ) -> Result<(), TransportError> {
+    ) -> Result<models::TeamRoleItem, TransportError> {
         let data = self
             .client
             .transport()
@@ -749,8 +731,7 @@ impl Server {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        let _: Server = self.client.hydrate("Server", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// server.translations.delete
@@ -784,7 +765,7 @@ impl Server {
         field: String,
         locale: String,
         body: models::ServerTranslationUpsertRequest,
-    ) -> Result<(), TransportError> {
+    ) -> Result<models::ServerTranslation, TransportError> {
         let data = self
             .client
             .transport()
@@ -800,15 +781,14 @@ impl Server {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        let _: Server = self.client.hydrate("Server", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// server.whitelist.add_direct
     pub async fn whitelist_add_direct(
         &self,
         body: models::WhitelistDirectAddRequest,
-    ) -> Result<(), TransportError> {
+    ) -> Result<models::WhitelistDirectEntry, TransportError> {
         let data = self
             .client
             .transport()
@@ -819,12 +799,14 @@ impl Server {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        let _: Server = self.client.hydrate("Server", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// server.whitelist.remove_direct
-    pub async fn whitelist_remove_direct(&self, entry_id: String) -> Result<(), TransportError> {
+    pub async fn whitelist_remove_direct(
+        &self,
+        entry_id: String,
+    ) -> Result<models::WhitelistDirectRemoval, TransportError> {
         let data = self
             .client
             .transport()
@@ -835,15 +817,14 @@ impl Server {
                 None,
             )
             .await?;
-        let _: Server = self.client.hydrate("Server", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// server.whitelist.create_import
     pub async fn whitelist_create_import(
         &self,
         body: models::WhitelistImportRequest,
-    ) -> Result<(), TransportError> {
+    ) -> Result<models::WhitelistImportJob, TransportError> {
         let data = self
             .client
             .transport()
@@ -854,15 +835,14 @@ impl Server {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        let _: Server = self.client.hydrate("Server", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// server.whitelist.pull_minecraft_import
     pub async fn whitelist_pull_minecraft_import(
         &self,
         body: models::WhitelistMinecraftPullRequest,
-    ) -> Result<(), TransportError> {
+    ) -> Result<models::WhitelistImportJob, TransportError> {
         let data = self
             .client
             .transport()
@@ -873,8 +853,7 @@ impl Server {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        let _: Server = self.client.hydrate("Server", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// server.tickets.list

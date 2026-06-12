@@ -42,7 +42,10 @@ impl Comment {
     }
 
     /// comment.delete
-    pub async fn delete(&self, project_id: String) -> Result<(), TransportError> {
+    pub async fn delete(
+        &self,
+        project_id: String,
+    ) -> Result<models::DeleteCommentResult, TransportError> {
         let data = self
             .client
             .transport()
@@ -57,12 +60,14 @@ impl Comment {
                 None,
             )
             .await?;
-        let _: Comment = self.client.hydrate("Comment", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// comment.like
-    pub async fn like(&self, project_id: String) -> Result<(), TransportError> {
+    pub async fn like(
+        &self,
+        project_id: String,
+    ) -> Result<models::CommentLikeResult, TransportError> {
         let data = self
             .client
             .transport()
@@ -77,8 +82,7 @@ impl Comment {
                 None,
             )
             .await?;
-        let _: Comment = self.client.hydrate("Comment", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// comment.reply

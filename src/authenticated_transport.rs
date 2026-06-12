@@ -62,6 +62,13 @@ pub struct AuthenticatedTransport {
     provider: Arc<dyn CredentialProvider>,
     client: reqwest::Client,
     retry: RetryOptions,
+    /// When set, every request carries `X-On-Behalf-Of: <subject>`. Only a bot
+    /// account may use this: the bot's own credential still authenticates the
+    /// call, and the platform resolves `subject` (`<source>:<id>`, e.g.
+    /// `discord:123` or `leavepulse:42`) to the human the bot acts for. The
+    /// effective permissions are the intersection of the bot's and the human's
+    /// — on-behalf never escalates. Set via [`on_behalf_of`](Self::on_behalf_of).
+    on_behalf_subject: Option<String>,
 }
 
 impl AuthenticatedTransport {
@@ -73,6 +80,7 @@ impl AuthenticatedTransport {
             provider,
             client: reqwest::Client::new(),
             retry: RetryOptions::default(),
+            on_behalf_subject: None,
         }
     }
 
@@ -88,11 +96,38 @@ impl AuthenticatedTransport {
         self
     }
 
+    /// Return a transport that sends every request on behalf of `subject`,
+    /// sharing this transport's credential and config. `subject` is
+    /// `<source>:<id>` — `discord:<id>`, `telegram:<id>`, or
+    /// `leavepulse:<user_id>`. Intended for bot accounts; the platform ignores
+    /// the header for non-bot callers.
+    pub fn on_behalf_of(mut self, subject: impl Into<String>) -> Self {
+        self.on_behalf_subject = Some(subject.into());
+        self
+    }
+
     fn base_for(&self, channel: Channel) -> &str {
         match channel {
             Channel::Auth => &self.auth_base_url,
             Channel::Platform | Channel::PlatformPublic => &self.base_url,
         }
+    }
+
+    /// Apply auth + on-behalf headers for an authenticated channel. Bearer comes
+    /// from the provider; the on-behalf header rides alongside when set.
+    async fn apply_auth(
+        &self,
+        mut req: reqwest::RequestBuilder,
+        channel: Channel,
+    ) -> Result<reqwest::RequestBuilder, TransportError> {
+        if channel.authenticated() {
+            let token = self.provider.token().await?;
+            req = req.bearer_auth(token);
+            if let Some(subject) = &self.on_behalf_subject {
+                req = req.header("x-on-behalf-of", subject);
+            }
+        }
+        Ok(req)
     }
 
     /// Apply the body kind to a request builder.
@@ -137,10 +172,7 @@ impl AuthenticatedTransport {
         let mut refreshed = false;
         loop {
             let mut req = self.client.request(reqwest_method.clone(), &url);
-            if channel.authenticated() {
-                let token = self.provider.token().await?;
-                req = req.bearer_auth(token);
-            }
+            req = self.apply_auth(req, channel).await?;
             req = Self::apply_body(req, &body);
 
             let response = req
@@ -219,10 +251,7 @@ impl AuthenticatedTransport {
         let mut refreshed = false;
         loop {
             let mut req = self.client.request(reqwest_method.clone(), &url);
-            if channel.authenticated() {
-                let token = self.provider.token().await?;
-                req = req.bearer_auth(token);
-            }
+            req = self.apply_auth(req, channel).await?;
             if let Some(etag) = prior_etag {
                 req = req.header("if-none-match", etag);
             }
@@ -303,10 +332,7 @@ impl AuthenticatedTransport {
         let mut refreshed = false;
         loop {
             let mut req = self.client.request(reqwest_method.clone(), &url);
-            if channel.authenticated() {
-                let token = self.provider.token().await?;
-                req = req.bearer_auth(token);
-            }
+            req = self.apply_auth(req, channel).await?;
             if let Some(etag) = if_match {
                 req = req.header("if-match", etag);
             }

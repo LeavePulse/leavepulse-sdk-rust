@@ -5,6 +5,7 @@ use serde_json::Value;
 
 use crate::cache::DataCell;
 use crate::client::LeavePulse;
+use crate::models;
 use crate::resource;
 use crate::transport::{Channel, Method, TransportError};
 
@@ -36,7 +37,7 @@ impl Session {
     }
 
     /// session.revoke
-    pub async fn revoke(&self) -> Result<(), TransportError> {
+    pub async fn revoke(&self) -> Result<models::SessionRevokeResult, TransportError> {
         let data = self
             .client
             .transport()
@@ -47,7 +48,6 @@ impl Session {
                 None,
             )
             .await?;
-        let _: Session = self.client.hydrate("Session", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 }

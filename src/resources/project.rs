@@ -105,7 +105,7 @@ impl Project {
         &self,
         body: models::CommentCreateRequest,
         params: models::ProjectCommentsCreateParams,
-    ) -> Result<(), TransportError> {
+    ) -> Result<models::Comment, TransportError> {
         let data = self
             .client
             .transport()
@@ -119,12 +119,11 @@ impl Project {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        let _: Project = self.client.hydrate("Project", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// project.heart
-    pub async fn heart(&self) -> Result<(), TransportError> {
+    pub async fn heart(&self) -> Result<models::ProjectHeartResult, TransportError> {
         let data = self
             .client
             .transport()
@@ -135,12 +134,11 @@ impl Project {
                 None,
             )
             .await?;
-        let _: Project = self.client.hydrate("Project", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// project.thumb
-    pub async fn thumb(&self) -> Result<(), TransportError> {
+    pub async fn thumb(&self) -> Result<models::ProjectThumbResult, TransportError> {
         let data = self
             .client
             .transport()
@@ -151,8 +149,7 @@ impl Project {
                 None,
             )
             .await?;
-        let _: Project = self.client.hydrate("Project", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// project.change_slug
@@ -232,7 +229,7 @@ impl Project {
     pub async fn policies_create(
         &self,
         body: models::WhitelistBindingWriteRequest,
-    ) -> Result<(), TransportError> {
+    ) -> Result<models::WhitelistBindingDetail, TransportError> {
         let data = self
             .client
             .transport()
@@ -243,8 +240,7 @@ impl Project {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        let _: Project = self.client.hydrate("Project", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// project.policies.delete
@@ -272,7 +268,7 @@ impl Project {
         &self,
         policy_id: String,
         body: models::WhitelistBindingWriteRequest,
-    ) -> Result<(), TransportError> {
+    ) -> Result<models::WhitelistBindingDetail, TransportError> {
         let data = self
             .client
             .transport()
@@ -287,8 +283,7 @@ impl Project {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        let _: Project = self.client.hydrate("Project", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// project.policies.test
@@ -296,7 +291,7 @@ impl Project {
         &self,
         policy_id: String,
         params: models::ProjectPoliciesTestParams,
-    ) -> Result<(), TransportError> {
+    ) -> Result<models::WhitelistBindingTestResult, TransportError> {
         let data = self
             .client
             .transport()
@@ -314,8 +309,7 @@ impl Project {
                 None,
             )
             .await?;
-        let _: Project = self.client.hydrate("Project", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// project.comments.list

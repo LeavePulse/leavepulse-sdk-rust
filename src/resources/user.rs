@@ -57,7 +57,7 @@ impl User {
         &self,
         user_id: String,
         body: models::ReportUserRequest,
-    ) -> Result<(), TransportError> {
+    ) -> Result<models::ReportUserResult, TransportError> {
         let data = self
             .client
             .transport()
@@ -68,8 +68,7 @@ impl User {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        let _: User = self.client.hydrate("User", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// user.heatmap

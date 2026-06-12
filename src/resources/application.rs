@@ -61,7 +61,7 @@ impl Application {
         &self,
         server_id: String,
         body: models::WhitelistApplyRequest,
-    ) -> Result<(), TransportError> {
+    ) -> Result<models::WhitelistApplication, TransportError> {
         let data = self
             .client
             .transport()
@@ -72,8 +72,7 @@ impl Application {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        let _: Application = self.client.hydrate("Application", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// application.set_status
@@ -81,7 +80,7 @@ impl Application {
         &self,
         server_id: String,
         body: models::WhitelistStatusRequest,
-    ) -> Result<(), TransportError> {
+    ) -> Result<models::WhitelistApplication, TransportError> {
         let data = self
             .client
             .transport()
@@ -96,8 +95,7 @@ impl Application {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        let _: Application = self.client.hydrate("Application", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// application.approve
@@ -105,7 +103,7 @@ impl Application {
         &self,
         server_id: String,
         body: models::WhitelistDecisionRequest,
-    ) -> Result<(), TransportError> {
+    ) -> Result<models::WhitelistApplication, TransportError> {
         let data = self
             .client
             .transport()
@@ -120,8 +118,7 @@ impl Application {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        let _: Application = self.client.hydrate("Application", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// application.deny
@@ -129,7 +126,7 @@ impl Application {
         &self,
         server_id: String,
         body: models::WhitelistDecisionRequest,
-    ) -> Result<(), TransportError> {
+    ) -> Result<models::WhitelistApplication, TransportError> {
         let data = self
             .client
             .transport()
@@ -144,8 +141,7 @@ impl Application {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        let _: Application = self.client.hydrate("Application", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// application.resubmit
@@ -153,7 +149,7 @@ impl Application {
         &self,
         server_id: String,
         body: models::WhitelistApplyRequest,
-    ) -> Result<(), TransportError> {
+    ) -> Result<models::WhitelistApplication, TransportError> {
         let data = self
             .client
             .transport()
@@ -168,7 +164,6 @@ impl Application {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        let _: Application = self.client.hydrate("Application", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 }

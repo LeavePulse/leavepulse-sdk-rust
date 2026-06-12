@@ -87,7 +87,7 @@ impl Binding {
         &self,
         binding_id: String,
         params: models::BindingTestParams,
-    ) -> Result<(), TransportError> {
+    ) -> Result<models::WhitelistBindingTestResult, TransportError> {
         let data = self
             .client
             .transport()
@@ -104,8 +104,7 @@ impl Binding {
                 None,
             )
             .await?;
-        let _: Binding = self.client.hydrate("Binding", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// binding.entries.add
@@ -113,7 +112,7 @@ impl Binding {
         &self,
         binding_id: String,
         body: models::WhitelistDirectAddRequest,
-    ) -> Result<(), TransportError> {
+    ) -> Result<models::WhitelistDirectEntry, TransportError> {
         let data = self
             .client
             .transport()
@@ -124,12 +123,14 @@ impl Binding {
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
             )
             .await?;
-        let _: Binding = self.client.hydrate("Binding", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// binding.entries.remove
-    pub async fn entries_remove(&self, binding_id: String) -> Result<(), TransportError> {
+    pub async fn entries_remove(
+        &self,
+        binding_id: String,
+    ) -> Result<models::WhitelistDirectRemoval, TransportError> {
         let data = self
             .client
             .transport()
@@ -144,8 +145,7 @@ impl Binding {
                 None,
             )
             .await?;
-        let _: Binding = self.client.hydrate("Binding", data, None);
-        Ok(())
+        serde_json::from_value(data).map_err(|e| TransportError::Transport(e.into()))
     }
 
     /// binding.entries.list
