@@ -404,4 +404,16 @@ impl Transport for AuthenticatedTransport {
         self.conditional_request(method, path, channel, prior_etag)
             .await
     }
+
+    async fn request_with_if_match(
+        &self,
+        method: Method,
+        path: &str,
+        channel: Channel,
+        body: Option<Value>,
+        if_match: Option<&str>,
+    ) -> Result<Value, TransportError> {
+        AuthenticatedTransport::request_with_if_match(self, method, path, channel, body, if_match)
+            .await
+    }
 }

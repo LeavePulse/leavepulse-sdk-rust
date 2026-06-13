@@ -103,15 +103,20 @@ impl Build {
     }
 
     /// build.update
-    pub async fn update(&self, body: models::BuildUpdateRequest) -> Result<(), TransportError> {
+    pub async fn update(
+        &self,
+        body: models::BuildUpdateRequest,
+        if_match: Option<i64>,
+    ) -> Result<(), TransportError> {
         let data = self
             .client
             .transport()
-            .request(
+            .request_with_if_match(
                 Method::Patch,
                 &format!("/v1/builds/{}", self.id()),
                 Channel::Platform,
                 Some(serde_json::to_value(body).map_err(|e| TransportError::Transport(e.into()))?),
+                if_match.map(|r| r.to_string()).as_deref(),
             )
             .await?;
         let _: Build = self.client.hydrate("Build", data, None);

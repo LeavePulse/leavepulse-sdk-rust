@@ -91,6 +91,20 @@ pub trait Transport: Send + Sync {
         channel: Channel,
         prior_etag: Option<&str>,
     ) -> Result<ConditionalOutcome, TransportError>;
+
+    /// Write with an optimistic-concurrency `If-Match` validator. On the trait so
+    /// the generated client can reach it through `Box<dyn Transport>`; the
+    /// default ignores the validator for transports that don't support it.
+    async fn request_with_if_match(
+        &self,
+        method: Method,
+        path: &str,
+        channel: Channel,
+        body: Option<Value>,
+        _if_match: Option<&str>,
+    ) -> Result<Value, TransportError> {
+        self.request(method, path, channel, body).await
+    }
 }
 
 /// Tuning for a transport's automatic retry behaviour.
@@ -168,6 +182,17 @@ impl Transport for BearerTransport {
     ) -> Result<ConditionalOutcome, TransportError> {
         // Disambiguate from this trait method: call the inherent one.
         BearerTransport::conditional(self, method, path, channel, prior_etag).await
+    }
+
+    async fn request_with_if_match(
+        &self,
+        method: Method,
+        path: &str,
+        channel: Channel,
+        body: Option<Value>,
+        if_match: Option<&str>,
+    ) -> Result<Value, TransportError> {
+        BearerTransport::request_with_if_match(self, method, path, channel, body, if_match).await
     }
 }
 

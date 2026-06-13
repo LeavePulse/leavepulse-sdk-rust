@@ -173,21 +173,21 @@ impl FromCell for User {
 /// The LeavePulse SDK client.
 pub struct LeavePulse {
     transport: Box<dyn Transport>,
-    etag_store: Box<dyn EtagStore>,
+    etag_store: Arc<dyn EtagStore>,
     cache: IdentityMap,
 }
 
 impl LeavePulse {
     /// Build a client with the default in-memory ETag store.
     pub fn new(transport: Box<dyn Transport>) -> Arc<Self> {
-        Self::with_etag_store(transport, Box::new(MemoryEtagStore::new()))
+        Self::with_etag_store(transport, Arc::new(MemoryEtagStore::new()))
     }
 
     /// Build a client with a custom ETag store (e.g. a persistent
-    /// `FileEtagStore` for desktop apps so 304s survive restarts).
+    /// `FileEtagStore` shared across clients so 304s survive restarts).
     pub fn with_etag_store(
         transport: Box<dyn Transport>,
-        etag_store: Box<dyn EtagStore>,
+        etag_store: Arc<dyn EtagStore>,
     ) -> Arc<Self> {
         Arc::new(Self {
             transport,
