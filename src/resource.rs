@@ -38,6 +38,50 @@ pub fn read_id(cell: &DataCell) -> String {
     extract_id(&data)
 }
 
+/// Rewrite integer id fields (`id` and any `*_id`) into JSON strings in place.
+///
+/// Domain ids are Snowflakes — `integer` on the wire, but past 2^53 a JSON
+/// `number` silently loses its low digits in any safe-integer-limited consumer
+/// (JavaScript, a Tauri IPC payload). The typed [`crate::snowflake::Snowflake`]
+/// already serializes as a string, but a raw [`snapshot`] bypasses the typed
+/// models and would hand out the original number. Normalizing the cell at
+/// hydration time means every snapshot is IPC-safe, matching how [`read_id`]
+/// and the resource id getters already coerce ids to strings. Runs one level
+/// deep into nested objects/arrays so envelope ids (e.g. `summary.id`) and
+/// embedded resource lists are covered too.
+pub fn stringify_ids(value: &mut Value) {
+    fn is_id_key(key: &str) -> bool {
+        key == "id" || key.ends_with("_id")
+    }
+    fn rewrite_object(map: &mut serde_json::Map<String, Value>) {
+        for (key, val) in map.iter_mut() {
+            if is_id_key(key) {
+                if let Value::Number(n) = val {
+                    if n.is_i64() || n.is_u64() {
+                        *val = Value::String(n.to_string());
+                    }
+                }
+            }
+        }
+    }
+    if let Value::Object(map) = value {
+        rewrite_object(map);
+        for val in map.values_mut() {
+            match val {
+                Value::Object(nested) => rewrite_object(nested),
+                Value::Array(items) => {
+                    for item in items {
+                        if let Value::Object(nested) = item {
+                            rewrite_object(nested);
+                        }
+                    }
+                }
+                _ => {}
+            }
+        }
+    }
+}
+
 /// Append a query string to a path, dropping `None` values and URL-encoding
 /// each value. Returns the path unchanged when no params are present. Generated
 /// SDK methods pass their optional query args here before issuing the request.
@@ -116,4 +160,56 @@ pub fn normalize(payload: Value, data_root: Option<&str>) -> Value {
         merged.insert(k, v);
     }
     Value::Object(merged)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use serde_json::json;
+
+    #[test]
+    fn stringifies_top_level_ids_and_leaves_other_numbers() {
+        let mut v = json!({
+            "id": 149076749580242940i64,
+            "project_id": 12345,
+            "schema_version": 1,
+            "name": "frog"
+        });
+        stringify_ids(&mut v);
+        assert_eq!(v["id"], json!("149076749580242940"));
+        assert_eq!(v["project_id"], json!("12345"));
+        // not an id field — must stay numeric
+        assert_eq!(v["schema_version"], json!(1));
+        assert_eq!(v["name"], json!("frog"));
+    }
+
+    #[test]
+    fn preserves_value_beyond_safe_integer() {
+        let big = 149076749580242940i64;
+        let mut v = json!({ "id": big });
+        stringify_ids(&mut v);
+        let s = v["id"].as_str().unwrap();
+        assert_eq!(s, "149076749580242940");
+        assert_eq!(s.parse::<i64>().unwrap(), big);
+    }
+
+    #[test]
+    fn stringifies_nested_envelope_and_embedded_lists() {
+        let mut v = json!({
+            "summary": { "id": 7, "owner_id": 8 },
+            "servers": [{ "id": 9 }, { "id": 10 }]
+        });
+        stringify_ids(&mut v);
+        assert_eq!(v["summary"]["id"], json!("7"));
+        assert_eq!(v["summary"]["owner_id"], json!("8"));
+        assert_eq!(v["servers"][0]["id"], json!("9"));
+        assert_eq!(v["servers"][1]["id"], json!("10"));
+    }
+
+    #[test]
+    fn leaves_string_ids_untouched() {
+        let mut v = json!({ "id": "already-a-string" });
+        stringify_ids(&mut v);
+        assert_eq!(v["id"], json!("already-a-string"));
+    }
 }

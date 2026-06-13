@@ -3750,6 +3750,8 @@ pub struct ServerDetail {
     pub role: ServerRole,
     pub updated_at: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub user_permissions: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub verification_source: Option<VerificationSource>,
 }
 
@@ -5710,6 +5712,16 @@ pub struct WhitelistFormDetail {
     pub summary: WhitelistFormCard,
 }
 
+/// WhitelistFormDetailPage
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct WhitelistFormDetailPage {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<WhitelistFormDetail>>,
+    pub page: i64,
+    pub per_page: i64,
+    pub total: i64,
+}
+
 /// WhitelistFormField
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WhitelistFormField {
@@ -5726,16 +5738,6 @@ pub struct WhitelistFormField {
 pub struct WhitelistFormImportMappingRequest {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub import_mapping: Option<std::collections::HashMap<String, serde_json::Value>>,
-}
-
-/// WhitelistFormPage
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct WhitelistFormPage {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<WhitelistFormCard>>,
-    pub page: i64,
-    pub per_page: i64,
-    pub total: i64,
 }
 
 /// WhitelistFormPatch

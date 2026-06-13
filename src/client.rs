@@ -360,7 +360,8 @@ impl LeavePulse {
         payload: Value,
         data_root: Option<&str>,
     ) -> T {
-        let data = resource::normalize(payload, data_root);
+        let mut data = resource::normalize(payload, data_root);
+        resource::stringify_ids(&mut data);
         let id = resource::extract_id(&data);
         let cell = self.cache.upsert(type_, &id, data);
         T::from_cell(cell, Arc::clone(self))
