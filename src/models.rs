@@ -1606,8 +1606,6 @@ pub struct LaunchManifestInlineContent {
     pub mods: Option<Vec<LaunchManifestModRef>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resourcepacks: Option<Vec<LaunchManifestPackRef>>,
-    #[serde(rename = "type")]
-    pub r#type: String,
 }
 
 /// LaunchManifestJvm
@@ -1657,8 +1655,6 @@ pub struct LaunchManifestMrpackContent {
     pub sha512: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub size: Option<i64>,
-    #[serde(rename = "type")]
-    pub r#type: String,
     pub url: String,
 }
 
@@ -3807,7 +3803,7 @@ pub struct ServerIssuesItem {
 /// ServerLaunchManifest
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServerLaunchManifest {
-    pub content: serde_json::Value,
+    pub content: ServerLaunchManifestContent,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub etag: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6158,6 +6154,15 @@ pub struct UsersProfilePrivacy {
     pub show_top_server: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub show_user_id: Option<bool>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(tag = "type")]
+pub enum ServerLaunchManifestContent {
+    #[serde(rename = "inline")]
+    Inline(LaunchManifestInlineContent),
+    #[serde(rename = "mrpack")]
+    Mrpack(LaunchManifestMrpackContent),
 }
 
 /// Query parameters for `binding.entries.list`.
